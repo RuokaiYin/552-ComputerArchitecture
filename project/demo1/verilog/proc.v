@@ -47,7 +47,7 @@ module proc (/*AUTOARG*/
         // IN from Fetch
 	.instr(instr), .No_Branch(No_Branch), .halt_back(halt_back),
         // IN from Exec
-        .result(result), .neg(neg), .zero(zero),
+        // .result(result), .neg(neg), .zero(zero),
         // IN from WB
         .WB(WB),
         // Global In
