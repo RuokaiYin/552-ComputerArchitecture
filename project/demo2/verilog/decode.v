@@ -18,7 +18,7 @@ module decode (
         // Out to Exec
 	data1,data2,extend,Op_ext,
         // Out to Fetch
-        PC_back,
+        PC_back, Branch,
         // Global out
         err);
 	
@@ -27,7 +27,7 @@ module decode (
    input clk, rst, halt_back;
    input [15:0] instr, WB, No_Branch;
 
-   output Halt,Mem_read,Mem_wrt,err;
+   output Halt,Mem_read,Mem_wrt,err,Branch;
    output [1:0] Op_ext, WB_sel,Alu_src;
    output [2:0] Alu_result;
    output [4:0] Alu_op;
@@ -36,7 +36,7 @@ module decode (
    // local control unit
    wire[15:0] result_jmp;
    wire[1:0] WB_tar, Branch_sel;
-   wire I_sel, J_sel, Sign_sel, Reg_wrt, Jmp, Jmp_sel, Branch, neg, zero;
+   wire I_sel, J_sel, Sign_sel, Reg_wrt, Jmp, Jmp_sel, neg, zero;
 
    // control unit
    wire err_control;

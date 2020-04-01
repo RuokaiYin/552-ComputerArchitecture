@@ -8,7 +8,7 @@ module fetch (
 	// system inputs
 	clk, rst, 
 	// inputs from Decode
-	PC_Back, Halt,  
+	PC_Back, Halt, STALL, 
 	// Outputs to Decode
 	PC_Next, No_Branch, instr, halt_back // PC_curr
 	// system output
@@ -16,7 +16,7 @@ module fetch (
 	); 
 
    // TODO: Your code here
-   input clk, rst, Halt; 
+   input clk, rst, Halt, STALL; 
    input [15:0] PC_Back;
 
    output [15:0] PC_Next, No_Branch, instr; 
@@ -25,7 +25,7 @@ module fetch (
    // use a 16-bit register to store the PC value
    wire [15:0] PC_curr;
    wire err_reg;
-   reg_16 pc_reg (.readData(PC_curr), .err(err_reg), .clk(clk), .rst(rst), .writeData(PC_Back), .writeEn(1'b1));
+   reg_16 pc_reg (.readData(PC_curr), .err(err_reg), .clk(clk), .rst(rst), .writeData(PC_Back), .writeEn(~STALL));
 
    // add current PC value by 2 
    wire [15:0]two;
