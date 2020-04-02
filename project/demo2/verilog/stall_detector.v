@@ -7,7 +7,7 @@ input [2:0] target_reg_ID, target_reg_EX;
 output STALL;
 
 wire alu_src;
-assign alu_src = (instr_reg[15:14] === 2'b11) & (instr_reg[15:11] !== 5'b11001);
+assign alu_src = ((instr_reg[15:14] === 2'b11) & (instr_reg[15:11] !== 5'b11001)) | ((instr_reg[15:11] === 5'b10000) | (instr_reg[15:11] == 5'b10011));
 
 wire IDEX_wrt;
 wire IDEX_Rs;
