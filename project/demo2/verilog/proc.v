@@ -53,14 +53,14 @@ module proc (/*AUTOARG*/
    wire [15:0] pc_next_reg_IF, no_branch_reg, instr_reg;
    reg_16 IFD_reg_PCNEXTIF(.readData(pc_next_reg_IF), .err(IFD_err), .clk(clk), .rst(rst), .writeData(PC_Next), .writeEn(IFD_en));
    reg_16 IFD_reg_NOBRANCH(.readData(no_branch_reg), .err(IFD_err), .clk(clk), .rst(rst), .writeData(No_Branch), .writeEn(IFD_en));
-   reg_16_instr IFD_reg_INSTR(.readData(instr_reg), .err(IFD_err), .clk(clk), .rst(rst), .writeData(instr_withNOP), .writeEn(IFD_en));
+   reg_16 IFD_reg_INSTR(.readData(instr_reg), .err(IFD_err), .clk(clk), .rst(rst), .writeData(instr_withNOP), .writeEn(IFD_en));
    reg_16 #(.SIZE(1)) IFD_reg_HALTBACK(.readData(halt_back_reg), .err(IFD_err), .clk(clk), .rst(rst), .writeData(halt_back), .writeEn(IFD_en));
 
 
    wire [15:0] instr_withNOP_stall;
    // add a mux to choose from normal instr or NOP on stall of other cases, after IF/ID pip reg.
    assign instr_withNOP_stall = (STALL | rst) ? 16'b00001_xxxxxxxxxxx : instr_reg;
-
+   
    
 
    // Decode stage

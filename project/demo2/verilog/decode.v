@@ -39,9 +39,18 @@ module decode (
    wire[1:0] WB_tar, Branch_sel;
    wire I_sel, J_sel, Sign_sel, Jmp, Jmp_sel, neg, zero, Branch;
 
+   wire valid,err_valid_temp;
+   wire [15:0] previous_instr;
+   reg_16 valid_reg(.readData(previous_instr), .err(err_valid_temp), .clk(clk), .rst(rst), .writeData(instr), .writeEn(1'b1));
+
+   assign valid = |(previous_instr[15:11] | (instr[15:11]));
+
+   wire [4:0] instr_valid;
+   assign instr_valid = valid ? instr[15:11] : 5'b00001; 
+
    // control unit
    wire err_control;
-   instr_decoder ins_dec(instr[15:11],halt_back,Halt,WB_sel,Branch_sel,Alu_src,Alu_result,Alu_op,Mem_read,Mem_wrt,I_sel,J_sel
+   instr_decoder ins_dec(instr_valid,halt_back,Halt,WB_sel,Branch_sel,Alu_src,Alu_result,Alu_op,Mem_read,Mem_wrt,I_sel,J_sel
 	,Sign_sel,WB_tar,Reg_wrt, Branch, Jmp_sel, Jmp, err_control);
    
    // signal to choose which reg to write
