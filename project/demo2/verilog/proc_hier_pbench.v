@@ -130,25 +130,25 @@ module proc_hier_pbench();
    //assign PC = DUT.PC_Out;
    //assign Inst = DUT.Instruction_f;
    
-   assign RegWrite = DUT.p0.MEMWB_reg_REGWRTMEM.Reg_wrt_reg_MEM;
+   assign RegWrite = DUT.p0.Reg_wrt_reg_MEM;
    // Is register file being written to, one bit signal (1 means yes, 0 means no)
    //    
-   assign WriteRegister = DUT.p0.MEMWB_reg_TARGETREGMEM.target_reg_MEM;
+   assign WriteRegister = DUT.p0.target_reg_MEM;
    // The name of the register being written to. (3 bit signal)
    
    assign WriteData = DUT.p0.wrib.WB;
    // Data being written to the register. (16 bits)
    
-   assign MemRead =  DUT.p0.EXMEM_reg_MEMREADEX.Mem_read_reg_EX;
+   assign MemRead =  DUT.p0.Mem_read_reg_EX;
    // Is memory being read, one bit signal (1 means yes, 0 means no)
    
-   assign MemWrite = (DUT.p0.EXMEM_reg_MEMWRTEX.Mem_wrt_reg_EX);
+   assign MemWrite = (DUT.p0.Mem_wrt_reg_EX);
    // Is memory being written to (1 bit signal)
    
    assign MemAddress = DUT.p0.mem.data_exe;
    // Address to access memory with (for both reads and writes to memory, 16 bits)
    
-   assign MemDataIn = DUT.p0.EXMEM_reg_DATA2EX.data2_reg_EX;
+   assign MemDataIn = DUT.p0.data2_reg_EX;
    // Data to be written to memory for memory writes (16 bits)
    
    assign MemDataOut = DUT.p0.mem.data_mem;
@@ -171,7 +171,7 @@ module proc_hier_pbench();
    // Signal indicating a valid data cache hit
    // Above assignment is a dummy example
    
-   assign Halt = DUT.p0.EXMEM_reg_HALTEX.Halt_reg_EX;
+   assign Halt = DUT.p0.Halt_reg_EX;
    // Processor halted
    
    
