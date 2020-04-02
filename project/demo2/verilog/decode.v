@@ -90,7 +90,7 @@ module decode (
    assign Op_ext = instr[1:0];
 
    // signal to detect Branch stall
-   assign Branch_stall = (Jmp | Jmp_sel) | Branch;
+   assign Branch_stall = (Jmp | Jmp_sel) | branch_sel_mux;
 
    // wire err_sig;
    // assign err_sig = ^{instr, No_Branch, halt_back,result,neg,zero,WB};
