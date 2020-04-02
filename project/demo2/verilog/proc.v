@@ -89,7 +89,7 @@ module proc (/*AUTOARG*/
         // Global out
         .err(err_1));
 
-   
+   wire [4:0] Alu_op_reg;
    // stall detector
    stall_detector stalldetec(.instr_reg(instr_reg), .Reg_wrt_reg_ID(Reg_wrt_reg_ID), .target_reg_ID(target_reg_ID), .Reg_wrt_reg_EX(Reg_wrt_reg_EX), 
    .target_reg_EX(target_reg_EX), .Alu_src_reg(Alu_src_reg), .Alu_op_reg(Alu_op_reg), .STALL(STALL));
@@ -100,7 +100,6 @@ module proc (/*AUTOARG*/
    wire Mem_read_reg_ID, Mem_wrt_reg_ID, Halt_reg_ID;
    wire [1:0] Op_ext_reg, WB_sel_reg_ID;
    wire [2:0] Alu_result_reg_ID;
-   wire [4:0] Alu_op_reg;
    wire [15:0] data1_reg, data2_reg_ID, extend_reg_ID, pc_next_reg_ID;
    assign IDEX_en = 1'b1;
    reg_16 #(.SIZE(1)) IDEX_reg_MEMREADID(.readData(Mem_read_reg_ID), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(Mem_read), .writeEn(IDEX_en));
