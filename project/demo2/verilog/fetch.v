@@ -23,13 +23,13 @@ module fetch (
    output halt_back; 
 
    // use a 16-bit register to store the PC value
-   wire [15:0] PC_curr, PC_curr_reg;
+   wire [15:0] PC_curr, PC_wb;
    wire err_reg;
-   reg_16 pc_reg (.readData(PC_curr_reg), .err(err_reg), .clk(clk), .rst(rst), .writeData(PC_Next), .writeEn(~STALL));
+    // a mux to choose from normal pc+2 or pc_back
+   assign PC_wb = Branch_stall ? PC_Back : PC_Next;
+   reg_16 pc_reg (.readData(PC_curr), .err(err_reg), .clk(clk), .rst(rst), .writeData(PC_wb), .writeEn(~STALL));
    
-   // a mux to choose from normal pc+2 or pc_back
-   assign PC_curr = Branch_stall ? PC_Back : PC_curr_reg;
-
+  
    // add current PC value by 2 
    wire [15:0]two;
    wire C_out;
