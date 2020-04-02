@@ -25,7 +25,8 @@ module proc (/*AUTOARG*/
    /* your code here -- should include instantiations of fetch, decode, execute, mem and wb modules */
 
    // Fetch Stage
-   wire  Halt, halt_back; 
+   wire  Halt, halt_back;
+   wire STALL; 
    wire [15:0] PC_Back,PC_Next, No_Branch, instr; 
 	fetch fet(
         // system inputs
@@ -55,8 +56,7 @@ module proc (/*AUTOARG*/
    reg_16 IFD_reg_INSTR(.readData(instr_reg), .err(IFD_err), .clk(clk), .rst(rst), .writeData(instr_withNOP), .writeEn(IFD_en));
    reg_16 #(.SIZE(1)) IFD_reg_HALTBACK(.readData(halt_back_reg), .err(IFD_err), .clk(clk), .rst(rst), .writeData(halt_back), .writeEn(IFD_en));
 
-  
-   wire STALL; // TODO: solve for STALL signal.
+
    wire [15:0] instr_withNOP_stall;
    // add a mux to choose from normal instr or NOP on stall of other cases, after IF/ID pip reg.
    assign instr_withNOP_stall = (STALL | rst) ? 16'bxxxxxxxxxxx_00001 : instr_reg;
