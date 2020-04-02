@@ -86,6 +86,8 @@ module proc_hier_pbench();
                    MemWrite,
                    MemAddress,
                    MemDataIn);
+
+         $display("PC: %8x", PC);          
          if (RegWrite) begin
             $fdisplay(trace_file,"REG: %d VALUE: 0x%04x",
                       WriteRegister,
