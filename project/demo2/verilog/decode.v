@@ -10,47 +10,47 @@ module decode (
         // IN from Exec //TODO：make branch inside
         // result,neg,zero,
         // IN from WB
-        WB,
+        WB, target_reg_WB, Reg_wrt_WB,
         // Global In
         clk, rst,
 	// Out Control Logic
-	Halt,WB_sel,Alu_src,Alu_result,Alu_op,Mem_read,Mem_wrt,
+	Halt,WB_sel,Alu_src,Alu_result,Alu_op,Mem_read,Mem_wrt,target_reg,Reg_wrt,
         // Out to Exec
 	data1,data2,extend,Op_ext,
         // Out to Fetch
-        PC_back, Branch,
+        PC_back, Branch_stall,
         // Global out
         err);
 	
 
    // TODO: Your code here
-   input clk, rst, halt_back;
+   input clk, rst, halt_back, Reg_wrt_WB;
+   input [2:0] target_reg_WB;
    input [15:0] instr, WB, No_Branch;
 
-   output Halt,Mem_read,Mem_wrt,err,Branch;
+   output Halt,Mem_read,Mem_wrt,err,Branch_stall, Reg_wrt;
    output [1:0] Op_ext, WB_sel,Alu_src;
-   output [2:0] Alu_result;
+   output [2:0] Alu_result, target_reg;
    output [4:0] Alu_op;
    output [15:0] data1,data2,extend, PC_back;
 
    // local control unit
    wire[15:0] result_jmp;
    wire[1:0] WB_tar, Branch_sel;
-   wire I_sel, J_sel, Sign_sel, Reg_wrt, Jmp, Jmp_sel, neg, zero;
+   wire I_sel, J_sel, Sign_sel, Jmp, Jmp_sel, neg, zero, Branch;
 
    // control unit
    wire err_control;
    instr_decoder ins_dec(instr[15:11],halt_back,Halt,WB_sel,Branch_sel,Alu_src,Alu_result,Alu_op,Mem_read,Mem_wrt,I_sel,J_sel
 	,Sign_sel,WB_tar,Reg_wrt, Branch, Jmp_sel, Jmp, err_control);
    
-   // register file
-   wire [2:0] target_reg;
-
+   // signal to choose which reg to write
    assign target_reg = (WB_tar[1]) ? ((WB_tar[0]) ? (3'b111) : (instr[4:2])) : ((WB_tar[0]) ? (instr[7:5]) : (instr[10:8]));
 
+   // register file
    wire err_reg;
-   regFile regi_file(.read1Data(data1), .read2Data(data2), .err(err_reg), .clk(clk), .rst(rst), .read1RegSel(instr[10:8]), 
-   	.read2RegSel(instr[7:5]), .writeRegSel(target_reg), .writeData(WB), .writeEn(Reg_wrt));  
+   regFile_bypass regi_file(.read1Data(data1), .read2Data(data2), .err(err_reg), .clk(clk), .rst(rst), .read1RegSel(instr[10:8]), 
+   	.read2RegSel(instr[7:5]), .writeRegSel(target_reg_WB), .writeData(WB), .writeEn(Reg_wrt_WB));  
 
    // Logic for extension
    wire [15:0] zero_extend, sign_extend;
@@ -79,6 +79,9 @@ module decode (
    assign pc_back_sel = (Branch & branch_sel_mux) | Jmp;
    assign PC_back = pc_back_sel ? Bran : branch_mux_1;
    assign Op_ext = instr[1:0];
+
+   // signal to detect Branch stall
+   assign Branch_stall = (Jmp | Jmp_sel) | Branch;
 
    // wire err_sig;
    // assign err_sig = ^{instr, No_Branch, halt_back,result,neg,zero,WB};
