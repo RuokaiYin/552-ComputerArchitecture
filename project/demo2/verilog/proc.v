@@ -27,12 +27,12 @@ module proc (/*AUTOARG*/
    // Fetch Stage
    wire  Halt, halt_back;
    wire STALL, Branch_stall; 
-   wire [15:0] PC_Back,PC_Next, No_Branch, instr, PC_Back_reg; 
+   wire [15:0] PC_Back,PC_Next, No_Branch, instr; 
 	fetch fet(
         // system inputs
 	.clk(clk), .rst(rst), 
 	// inputs from Decode
-	.PC_Back(PC_Back_reg), .Halt(Halt), .STALL(STALL), .Branch_stall(Branch_stall),
+	.PC_Back(PC_Back), .Halt(Halt), .STALL(STALL), .Branch_stall(Branch_stall),
 	// Outputs to Decode
 	.No_Branch(No_Branch), .instr(instr), .halt_back(halt_back),
         // Output to WB
@@ -115,7 +115,7 @@ module proc (/*AUTOARG*/
    reg_16 #(.SIZE(16)) IDEX_reg_DATA1(.readData(data1_reg), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(data1), .writeEn(IDEX_en));
    reg_16 #(.SIZE(16)) IDEX_reg_DATA2ID(.readData(data2_reg_ID), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(data2), .writeEn(IDEX_en));
    reg_16 #(.SIZE(16)) IDEX_reg_EXTENDID(.readData(extend_reg_ID), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(extend), .writeEn(IDEX_en));
-   reg_16 #(.SIZE(16)) IDEX_reg_PCBACK(.readData(PC_Back_reg), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(PC_Back), .writeEn(IDEX_en));
+//    reg_16 #(.SIZE(16)) IDEX_reg_PCBACK(.readData(PC_Back_reg), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(PC_Back), .writeEn(IDEX_en));
    reg_16 #(.SIZE(16)) IDEX_reg_PCNEXTID(.readData(pc_next_reg_ID), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(pc_next_reg_IF), .writeEn(IDEX_en));
    
 
