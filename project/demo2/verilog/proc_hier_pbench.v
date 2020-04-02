@@ -130,10 +130,10 @@ module proc_hier_pbench();
    //assign PC = DUT.PC_Out;
    //assign Inst = DUT.Instruction_f;
    
-   assign RegWrite = DUT.p0.dec.Reg_wrt_reg_MEM;
+   assign RegWrite = DUT.p0.MEMWB_reg_REGWRTMEM.Reg_wrt_reg_MEM;
    // Is register file being written to, one bit signal (1 means yes, 0 means no)
    //    
-   assign WriteRegister = DUT.p0.dec.target_reg_MEM;
+   assign WriteRegister = DUT.p0.MEMWB_reg_TARGETREGMEM.target_reg_MEM;
    // The name of the register being written to. (3 bit signal)
    
    assign WriteData = DUT.p0.wrib.WB;

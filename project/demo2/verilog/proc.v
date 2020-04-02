@@ -108,7 +108,7 @@ module proc (/*AUTOARG*/
    reg_16 #(.SIZE(1)) IDEX_reg_HALTID(.readData(Halt_reg_ID), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(Halt), .writeEn(IDEX_en));
    reg_16 #(.SIZE(1)) IDEX_reg_REGWRTID(.readData(Reg_wrt_reg_ID), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(Reg_wrt), .writeEn(IDEX_en));
    reg_16 #(.SIZE(2)) IDEX_reg_OPEXT(.readData(Op_ext_reg), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(Op_ext), .writeEn(IDEX_en));
-   reg_16 #(.SIZE(3)) IDEX_reg_WBSELID(.readData(WB_sel_reg_ID), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(WB_sel), .writeEn(IDEX_en));
+   reg_16 #(.SIZE(2)) IDEX_reg_WBSELID(.readData(WB_sel_reg_ID), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(WB_sel), .writeEn(IDEX_en));
    reg_16 #(.SIZE(3)) IDEX_reg_TARGETREGID(.readData(target_reg_ID), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(target_reg), .writeEn(IDEX_en));
    reg_16 #(.SIZE(5)) IDEX_reg_ALUSRC(.readData(Alu_src_reg), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(Alu_src), .writeEn(IDEX_en));
    reg_16 #(.SIZE(16)) IDEX_reg_ALURESULTID(.readData(Alu_result_reg_ID), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(Alu_result), .writeEn(IDEX_en));
