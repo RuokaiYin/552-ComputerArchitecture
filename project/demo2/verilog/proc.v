@@ -92,7 +92,7 @@ module proc (/*AUTOARG*/
    
    // stall detector
    stall_detector stalldetec(.instr_reg(instr_reg), .Reg_wrt_reg_ID(Reg_wrt_reg_ID), .target_reg_ID(target_reg_ID), .Reg_wrt_reg_EX(Reg_wrt_reg_EX), 
-   .target_reg_EX(target_reg_EX), .Alu_src_reg(Alu_src_reg), .STALL(STALL));
+   .target_reg_EX(target_reg_EX), .Alu_src_reg(Alu_src_reg), .Alu_op_reg(Alu_op_reg), .STALL(STALL));
 
 
     // ID/EX pip reg
@@ -194,7 +194,7 @@ module proc (/*AUTOARG*/
         // IN from Fetch
         .PC_Next(pc_next_reg_MEM),
         // IN from Decode
-        .extend(extend_reg_MEM), .WB_sel(WB_sel),
+        .extend(extend_reg_MEM), .WB_sel(WB_sel_reg_MEM),
         // IN from Mem
         .data_mem(data_mem_reg), .data_exe(data_exe_reg),
         // Out to Decode
