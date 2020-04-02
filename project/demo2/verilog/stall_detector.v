@@ -1,6 +1,7 @@
 module stall_detector (instr_reg, Reg_wrt_reg_ID, target_reg_ID, Reg_wrt_reg_EX, target_reg_EX, Alu_src_reg, STALL);
 input [15:0] instr_reg;
 input Reg_wrt_reg_ID, Reg_wrt_reg_EX;
+input [1:0] Alu_src_reg;
 input [2:0] target_reg_ID, target_reg_EX; 
 output STALL;
 
