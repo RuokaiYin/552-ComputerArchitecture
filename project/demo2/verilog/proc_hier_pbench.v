@@ -87,18 +87,6 @@ module proc_hier_pbench();
                    MemAddress,
                    MemDataIn);
 
-         $display("Cycle %d PC: %8x I: %8x R: %d %3d %8x M: %d %d %8x %8x",
-                   DUT.c0.cycle_count,
-                   PC,
-                   Inst,
-                   RegWrite,
-                   WriteRegister,
-                   WriteData,
-                   MemRead,
-                   MemWrite,
-                   MemAddress,
-                   MemDataIn);
-                             
          if (RegWrite) begin
             $fdisplay(trace_file,"REG: %d VALUE: 0x%04x",
                       WriteRegister,

@@ -42,7 +42,7 @@ module proc (/*AUTOARG*/
    
    wire [15:0] instr_withNOP;
    // add a mux to choose from normal instr or NOP on stall of Branch
-   assign instr_withNOP = Branch_stall ? 16'bxxxxxxxxxxx_00001 : instr;
+   assign instr_withNOP = Branch_stall ? 16'b00001_xxxxxxxxxxx : instr;
 
 
    // IF/ID Pip Reg
@@ -59,7 +59,7 @@ module proc (/*AUTOARG*/
 
    wire [15:0] instr_withNOP_stall;
    // add a mux to choose from normal instr or NOP on stall of other cases, after IF/ID pip reg.
-   assign instr_withNOP_stall = (STALL | rst) ? 16'bxxxxxxxxxxx_00001 : instr_reg;
+   assign instr_withNOP_stall = (STALL | rst) ? 16'b00001_xxxxxxxxxxx : instr_reg;
 
    
 
