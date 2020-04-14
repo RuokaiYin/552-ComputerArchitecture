@@ -23,7 +23,7 @@ module proc (/*AUTOARG*/
    
    wire err_1, err_2;
    /* your code here -- should include instantiations of fetch, decode, execute, mem and wb modules */
-   wire err_mem_fetch;
+   wire err_mem_fetch, Stall_imem;
 
    // Fetch Stage
    wire  Halt, halt_back;
@@ -38,7 +38,7 @@ module proc (/*AUTOARG*/
 	.No_Branch(No_Branch), .instr(instr), .halt_back(halt_back),
         // Output to WB
         .PC_Next(PC_Next), // .PC_curr(PC_curr)
-	.err(err_mem_fetch));
+	.err(err_mem_fetch), .Stall_imem(Stall_imem));
 
    
    wire [15:0] instr_withNOP;
@@ -61,7 +61,7 @@ module proc (/*AUTOARG*/
 
    wire [15:0] instr_withNOP_stall;
    // add a mux to choose from normal instr or NOP on stall of other cases, after IF/ID pip reg.
-   assign instr_withNOP_stall = (STALL | rst) ? 16'b00001_xxxxxxxxxxx : instr_reg;
+   assign instr_withNOP_stall = ((STALL|Stall_imem) | rst) ? 16'b00001_xxxxxxxxxxx : instr_reg;
    
    
 

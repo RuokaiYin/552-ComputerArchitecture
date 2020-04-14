@@ -12,7 +12,7 @@ module fetch (
 	// Outputs to Decode
 	PC_Next, No_Branch, instr, halt_back, // PC_curr
 	//system output
-	err
+	err,Stall_imem
 	); 
 
    // TODO: Your code here
@@ -20,11 +20,12 @@ module fetch (
    input [15:0] PC_Back;
 
    output [15:0] PC_Next, No_Branch, instr; 
-   output halt_back, err; 
+   output halt_back, err, Stall_imem; 
 
    // use a 16-bit register to store the PC value
    wire [15:0] PC_curr, PC_wb;
    wire err_reg;
+   wire Done, CacheHit;
     // a mux to choose from normal pc+2 or pc_back
    assign PC_wb = Branch_stall ? PC_Back : PC_Next;
    reg_16 pc_reg (.readData(PC_curr), .err(err_reg), .clk(clk), .rst(rst), .writeData(PC_wb), .writeEn(~STALL));
@@ -44,7 +45,8 @@ module fetch (
    assign No_Branch = halt_q ? PC_curr : PC_Next;
 
    // instruction memory
-   memory2c_align instr_mem(.data_out(instr), .data_in(16'b0), .addr(PC_curr), .enable(~halt_q), .wr(1'b0), .createdump(halt_q), .clk(clk), .rst(rst), .err(err));
+   //memory2c_align instr_mem(.data_out(instr), .data_in(16'b0), .addr(PC_curr), .enable(~halt_q), .wr(1'b0), .createdump(halt_q), .clk(clk), .rst(rst), .err(err));
+   stallmem instr_mem(.DataOut(instr), .Done(Done), .Stall(Stall_imem), .CacheHit(CacheHit), .err(err), .Addr(PC_curr), .DataIn(16'b0), .Rd(~halt_q), .Wr(1'b0), .createdump(halt_q), .clk(clk), .rst(rst));
    assign halt_back = halt_q;
     
    // wire err_sig;
