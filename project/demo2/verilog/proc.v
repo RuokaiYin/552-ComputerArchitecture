@@ -33,7 +33,7 @@ module proc (/*AUTOARG*/
         // system inputs
 	.clk(clk), .rst(rst), 
 	// inputs from Decode
-	.PC_Back(PC_Back), .Halt(Halt), .STALL(STALL), .Branch_stall(Branch_stall),
+	.PC_Back(PC_Back), .Halt(Halt), .STALL(STALL), .Branch_stall(Branch_stall|Stall_imem),
 	// Outputs to Decode
 	.No_Branch(No_Branch), .instr(instr), .halt_back(halt_back),
         // Output to WB
