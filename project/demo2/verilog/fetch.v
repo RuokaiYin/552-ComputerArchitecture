@@ -43,12 +43,12 @@ module fetch (
    dff dff_halt (.q(halt_q), .d(Halt), .clk(clk), .rst(rst));
 
    assign No_Branch = halt_q ? PC_curr : PC_Next;
-
+   wire stall_temp;
    // instruction memory
    //memory2c_align instr_mem(.data_out(instr), .data_in(16'b0), .addr(PC_curr), .enable(~halt_q), .wr(1'b0), .createdump(halt_q), .clk(clk), .rst(rst), .err(err));
-   stallmem instr_mem(.DataOut(instr), .Done(Done), .Stall(Stall_imem), .CacheHit(CacheHit), .err(err), .Addr(PC_curr), .DataIn(16'b0), .Rd(~halt_q), .Wr(1'b0), .createdump(halt_q), .clk(clk), .rst(rst));
+   stallmem instr_mem(.DataOut(instr), .Done(Done), .Stall(stall_temp), .CacheHit(CacheHit), .err(err), .Addr(PC_curr), .DataIn(16'b0), .Rd(~halt_q), .Wr(1'b0), .createdump(halt_q), .clk(clk), .rst(rst));
    assign halt_back = halt_q;
-    
+   assign Stall_imem = stall_temp & ~Done;
    // wire err_sig;
    // assign err_sig = ^{PC_Back, Halt};
    // assign err = (err_sig === 1'bx) | err_reg;
