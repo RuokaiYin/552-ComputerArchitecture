@@ -180,11 +180,11 @@ module proc (/*AUTOARG*/
 
 
     // MEM/WB pip reg
-   wire MEMWB_en, MEMWB_err, err_mem_fetch_reg_MEM, err_mem_mem_reg;
+   wire MEMWB_en, MEMWB_err, err_mem_fetch_reg_MEM;//, err_mem_mem_reg;
    wire[1:0] WB_sel_reg_MEM;
    wire[15:0] data_mem_reg, data_exe_reg, extend_reg_MEM, pc_next_reg_MEM;
    assign MEMWB_en = 1'b1;
-   reg_16 #(.SIZE(1)) MEMWB_reg_ERRMEMMEM(.readData(err_mem_mem_reg), .err(MEMWB_err), .clk(clk), .rst(rst), .writeData(err_mem_mem), .writeEn(MEMWB_en));
+//    reg_16 #(.SIZE(1)) MEMWB_reg_ERRMEMMEM(.readData(err_mem_mem_reg), .err(MEMWB_err), .clk(clk), .rst(rst), .writeData(err_mem_mem), .writeEn(MEMWB_en));
    reg_16 #(.SIZE(1)) MEMWB_reg_ERRMEM(.readData(err_mem_fetch_reg_MEM), .err(MEMWB_err), .clk(clk), .rst(rst), .writeData(err_mem_fetch_reg_EX), .writeEn(MEMWB_en));
    reg_16 #(.SIZE(1)) MEMWB_reg_REGWRTMEM(.readData(Reg_wrt_reg_MEM), .err(MEMWB_err), .clk(clk), .rst(rst), .writeData(Reg_wrt_reg_EX), .writeEn(MEMWB_en));
    reg_16 #(.SIZE(2)) MEMWB_reg_WBSELMEM(.readData(WB_sel_reg_MEM), .err(MEMWB_err), .clk(clk), .rst(rst), .writeData(WB_sel_reg_EX), .writeEn(MEMWB_en));
@@ -206,7 +206,7 @@ module proc (/*AUTOARG*/
         // Out to Decode
         .WB(WB));
    	
-	assign err = err_mem_fetch_reg_MEM | err_mem_mem_reg;
+	assign err = err_mem_fetch_reg_MEM | err_mem_mem;
 		
 endmodule 
 
