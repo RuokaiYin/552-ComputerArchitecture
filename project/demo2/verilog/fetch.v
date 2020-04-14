@@ -10,9 +10,9 @@ module fetch (
 	// inputs from Decode
 	PC_Back, Halt, STALL, Branch_stall,
 	// Outputs to Decode
-	PC_Next, No_Branch, instr, halt_back // PC_curr
-	// system output
-	// err
+	PC_Next, No_Branch, instr, halt_back, // PC_curr
+	//system output
+	err
 	); 
 
    // TODO: Your code here
@@ -20,7 +20,7 @@ module fetch (
    input [15:0] PC_Back;
 
    output [15:0] PC_Next, No_Branch, instr; 
-   output halt_back; 
+   output halt_back, err; 
 
    // use a 16-bit register to store the PC value
    wire [15:0] PC_curr, PC_wb;
@@ -44,8 +44,7 @@ module fetch (
    assign No_Branch = halt_q ? PC_curr : PC_Next;
 
    // instruction memory
-   memory2c instr_mem (.data_out(instr), .data_in(16'b0), .addr(PC_curr), .enable(~halt_q), .wr(1'b0), .createdump(halt_q), .clk(clk), .rst(rst));
-
+   memory2c_align instr_mem(.data_out(instr), .data_in(16'b0), .addr(PC_curr), .enable(~halt_q), .wr(1'b0), .createdump(halt_q), .clk(clk), .rst(rst), .err(err));
    assign halt_back = halt_q;
     
    // wire err_sig;

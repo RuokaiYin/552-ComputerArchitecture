@@ -13,8 +13,7 @@ module memory (
 	// inputs from Execute
 	result, zero, neg, BTR, SLBI, Cout, Alu_result, 
 	// outputs to WB
-	data_mem, data_exe
-	// err
+	data_mem, data_exe, err
     );
 
    // TODO: Your code here
@@ -23,6 +22,7 @@ module memory (
    input [2:0] Alu_result;
    input zero, neg, Mem_read, Mem_wrt, clk, rst, Halt;
 
+   output err;
    output [15:0] data_mem, data_exe;
    // output err;
 
@@ -34,7 +34,7 @@ module memory (
                       (Alu_result[1] ? (Alu_result[0] ? {15'b0, neg} : {15'b0, zero}) : (Alu_result[0] ? Cout : result));
 
    // create a data memory
-   memory2c mem_data (.data_out(data_mem), .data_in(data2), .addr(data_exe), .enable(~Halt & (Mem_wrt | Mem_read)), .wr(Mem_wrt), .createdump(Halt), .clk(clk), .rst(rst));
+   memory2c_align mem_data(.data_out(data_mem), .data_in(data2), .addr(data_exe), .enable(~Halt & (Mem_wrt | Mem_read)), .wr(Mem_wrt), .createdump(Halt), .clk(clk), .rst(rst), .err(err));
 
    // wire err_sig;
    // assign err_sig = ^{result, BTR, SLBI, Cout, data2, Alu_result};

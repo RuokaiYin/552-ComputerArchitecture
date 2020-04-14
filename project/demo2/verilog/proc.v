@@ -23,6 +23,7 @@ module proc (/*AUTOARG*/
    
    wire err_1, err_2;
    /* your code here -- should include instantiations of fetch, decode, execute, mem and wb modules */
+   wire err_mem_fetch;
 
    // Fetch Stage
    wire  Halt, halt_back;
@@ -36,8 +37,8 @@ module proc (/*AUTOARG*/
 	// Outputs to Decode
 	.No_Branch(No_Branch), .instr(instr), .halt_back(halt_back),
         // Output to WB
-        .PC_Next(PC_Next) // .PC_curr(PC_curr)
-	);
+        .PC_Next(PC_Next), // .PC_curr(PC_curr)
+	.err(err_mem_fetch));
 
    
    wire [15:0] instr_withNOP;
@@ -49,12 +50,13 @@ module proc (/*AUTOARG*/
    wire IFD_en,IFD_err;
    assign IFD_en = ~STALL;
 
-   wire halt_back_reg;
+   wire halt_back_reg, err_mem_fetch_reg_IF;
    wire [15:0] pc_next_reg_IF, no_branch_reg, instr_reg;
    reg_16 IFD_reg_PCNEXTIF(.readData(pc_next_reg_IF), .err(IFD_err), .clk(clk), .rst(rst), .writeData(PC_Next), .writeEn(IFD_en));
    reg_16 IFD_reg_NOBRANCH(.readData(no_branch_reg), .err(IFD_err), .clk(clk), .rst(rst), .writeData(No_Branch), .writeEn(IFD_en));
    reg_16 IFD_reg_INSTR(.readData(instr_reg), .err(IFD_err), .clk(clk), .rst(rst), .writeData(instr_withNOP), .writeEn(IFD_en));
    reg_16 #(.SIZE(1)) IFD_reg_HALTBACK(.readData(halt_back_reg), .err(IFD_err), .clk(clk), .rst(rst), .writeData(halt_back), .writeEn(IFD_en));
+   reg_16 #(.SIZE(1)) IFD_reg_ERRMEM(.readData(err_mem_fetch_reg_IF), .err(IFD_err), .clk(clk), .rst(rst), .writeData(err_mem_fetch), .writeEn(IFD_en));
 
 
    wire [15:0] instr_withNOP_stall;
@@ -64,7 +66,7 @@ module proc (/*AUTOARG*/
    
 
    // Decode stage
-   wire Mem_read, Mem_wrt, Reg_wrt, Reg_wrt_reg_ID, Reg_wrt_reg_MEM, Reg_wrt_reg_EX;
+   wire Mem_read, Mem_wrt, Reg_wrt, Reg_wrt_reg_ID, Reg_wrt_reg_MEM, Reg_wrt_reg_EX, err_mem_fetch_reg_ID;
    wire [15:0] WB;
    wire [1:0] Op_ext, WB_sel,Alu_src, Alu_src_reg;
    wire [2:0] Alu_result, target_reg, target_reg_ID, target_reg_MEM, target_reg_EX;
@@ -102,6 +104,7 @@ module proc (/*AUTOARG*/
    wire [2:0] Alu_result_reg_ID;
    wire [15:0] data1_reg, data2_reg_ID, extend_reg_ID, pc_next_reg_ID;
    assign IDEX_en = 1'b1;
+   reg_16 #(.SIZE(1)) IDEX_reg_ERRMEM(.readData(err_mem_fetch_reg_ID), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(err_mem_fetch_reg_IF), .writeEn(IDEX_en));
    reg_16 #(.SIZE(1)) IDEX_reg_MEMREADID(.readData(Mem_read_reg_ID), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(Mem_read), .writeEn(IDEX_en));
    reg_16 #(.SIZE(1)) IDEX_reg_MEMWRTID(.readData(Mem_wrt_reg_ID), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(Mem_wrt), .writeEn(IDEX_en));
    reg_16 #(.SIZE(1)) IDEX_reg_HALTID(.readData(Halt_reg_ID), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(Halt), .writeEn(IDEX_en));
@@ -133,11 +136,12 @@ module proc (/*AUTOARG*/
 
     // EX/MEM pip reg
    wire EXMEM_en, EXMEM_err;
-   wire neg_reg, zero_reg, Halt_reg_EX, Mem_read_reg_EX, Mem_wrt_reg_EX;
+   wire neg_reg, zero_reg, Halt_reg_EX, Mem_read_reg_EX, Mem_wrt_reg_EX, err_mem_fetch_reg_EX;
    wire [1:0] WB_sel_reg_EX;
    wire [2:0] Alu_result_reg_EX;
    wire [15:0] data2_reg_EX, extend_reg_EX, pc_next_reg_EX, result_reg, Cout_reg, SLBI_reg, BTR_reg; 
-   assign EXMEM_en = 1'b1; 
+   assign EXMEM_en = 1'b1;
+   reg_16 #(.SIZE(1)) EXMEM_reg_ERRMEM(.readData(err_mem_fetch_reg_EX), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(err_mem_fetch_reg_ID), .writeEn(EXMEM_en)); 
    reg_16 #(.SIZE(1)) EXMEM_reg_NEG(.readData(neg_reg), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(neg), .writeEn(EXMEM_en));
    reg_16 #(.SIZE(1)) EXMEM_reg_ZERO(.readData(zero_reg), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(zero), .writeEn(EXMEM_en));
    reg_16 #(.SIZE(1)) EXMEM_reg_HALTEX(.readData(Halt_reg_EX), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(Halt_reg_ID), .writeEn(EXMEM_en));
@@ -161,6 +165,7 @@ module proc (/*AUTOARG*/
 
     // MEM Stage
    wire [15:0] data_mem, data_exe;
+   wire err_mem_mem;
 	
         memory mem(
 	// system inputs
@@ -170,15 +175,17 @@ module proc (/*AUTOARG*/
 	// inputs from Execute
 	.result(result_reg), .zero(zero_reg), .neg(neg_reg), .BTR(BTR_reg), .SLBI(SLBI_reg), .Cout(Cout_reg),  
 	// outputs to WB
-	.data_mem(data_mem), .data_exe(data_exe)
+	.data_mem(data_mem), .data_exe(data_exe), .err(err_mem_mem)
 	);
 
 
     // MEM/WB pip reg
-   wire MEMWB_en, MEMWB_err;
+   wire MEMWB_en, MEMWB_err, err_mem_fetch_reg_MEM, err_mem_mem_reg;
    wire[1:0] WB_sel_reg_MEM;
    wire[15:0] data_mem_reg, data_exe_reg, extend_reg_MEM, pc_next_reg_MEM;
    assign MEMWB_en = 1'b1;
+   reg_16 #(.SIZE(1)) MEMWB_reg_ERRMEMMEM(.readData(err_mem_mem_reg), .err(MEMWB_err), .clk(clk), .rst(rst), .writeData(err_mem_mem), .writeEn(MEMWB_en));
+   reg_16 #(.SIZE(1)) MEMWB_reg_ERRMEM(.readData(err_mem_fetch_reg_MEM), .err(MEMWB_err), .clk(clk), .rst(rst), .writeData(err_mem_fetch_reg_EX), .writeEn(MEMWB_en));
    reg_16 #(.SIZE(1)) MEMWB_reg_REGWRTMEM(.readData(Reg_wrt_reg_MEM), .err(MEMWB_err), .clk(clk), .rst(rst), .writeData(Reg_wrt_reg_EX), .writeEn(MEMWB_en));
    reg_16 #(.SIZE(2)) MEMWB_reg_WBSELMEM(.readData(WB_sel_reg_MEM), .err(MEMWB_err), .clk(clk), .rst(rst), .writeData(WB_sel_reg_EX), .writeEn(MEMWB_en));
    reg_16 #(.SIZE(3)) MEMWB_reg_TARGETREGMEM(.readData(target_reg_MEM), .err(MEMWB_err), .clk(clk), .rst(rst), .writeData(target_reg_EX), .writeEn(MEMWB_en));
@@ -199,7 +206,7 @@ module proc (/*AUTOARG*/
         // Out to Decode
         .WB(WB));
    	
-	assign err = 1'b0;
+	assign err = err_mem_fetch_reg_MEM | err_mem_mem_reg;
 		
 endmodule 
 
