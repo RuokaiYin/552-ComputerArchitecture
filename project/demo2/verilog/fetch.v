@@ -27,7 +27,7 @@ module fetch (
    wire err_reg;
    wire Done, CacheHit;
     // a mux to choose from normal pc+2 or pc_back
-   assign PC_wb = Branch_stall ? PC_Back : PC_Next;
+   assign PC_wb = (Branch_stall|Stall_imem) ? PC_Back : PC_Next;
    reg_16 pc_reg (.readData(PC_curr), .err(err_reg), .clk(clk), .rst(rst), .writeData(PC_wb), .writeEn(~STALL));
    
   
