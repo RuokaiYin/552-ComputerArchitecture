@@ -55,7 +55,7 @@ reg [3:0] next_state;
 dff state_fsm(.q(state_q), .d(next_state), .clk(clk), .rst(rst));
 assign state = rst ? IDLE : state_q;
 
-wire err_fsm;
+reg err_fsm;
 // FSM
 always @* 
 	begin
