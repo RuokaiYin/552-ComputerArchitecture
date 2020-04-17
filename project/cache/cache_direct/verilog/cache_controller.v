@@ -75,6 +75,7 @@ always @*
 		Done = 1'b0;
 		CacheHit = 1'b0;
 		Stall_sys = 1'b1;
+		err_fsm = 1'b0;
 
 		case(state)
 			default: err_fsm = 1'b1;
@@ -152,14 +153,14 @@ always @*
 				begin
 					enable_ct = 1'b1;
 					rd_mem = 1'b1;
-					Addr_mem = {Addr[15:3] + 3'b000};
+					Addr_mem = {Addr[15:3],3'b000};
 					next_state = ACC_WT_1;
 				end
 			ACC_WT_1:
 				begin
 					enable_ct = 1'b1;
 					rd_mem = 1'b1;
-					Addr_mem = {Addr[15:3] + 3'b010};
+					Addr_mem = {Addr[15:3],3'b010};
 					next_state = ACC_WT_2;
 				end
 			ACC_WT_2:
@@ -167,7 +168,7 @@ always @*
 				    // read from mem
 					enable_ct = 1'b1;
 					rd_mem = 1'b1;
-					Addr_mem = {Addr[15:3] + 3'b100};
+					Addr_mem = {Addr[15:3],3'b100};
 					// wrt to cache
 					wr_cache = 1'b1;
 					valid_in_ct = 1'b1;
@@ -182,7 +183,7 @@ always @*
 				    // read from mem
 					enable_ct = 1'b1;
 					rd_mem = 1'b1;
-					Addr_mem = {Addr[15:3] + 3'b110};
+					Addr_mem = {Addr[15:3],3'b110};
 					// wrt to cache
 					wr_cache = 1'b1;
 					valid_in_ct = 1'b1;
