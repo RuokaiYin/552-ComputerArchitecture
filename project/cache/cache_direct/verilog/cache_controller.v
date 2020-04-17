@@ -24,11 +24,11 @@ input clk, rst, creat_dump, Wr, Rd, hit, dirty, valid, stall;
 input [15:0] Addr, DataIn, DataOut_mem, DataOut_cache;
 input [4:0] tag_out;
 
-output enable_ct, cmp_ct, wr_cache, valid_in_ct, wr_mem, rd_mem, Done, CacheHit, Stall_sys;
-output [15:0] DataIn_ct, Addr_mem, DataIn_mem;
-output [7:0] index_cache;
-output [2:0] offset_cache;
-output [4:0] tag_cache;
+output reg enable_ct, cmp_ct, wr_cache, valid_in_ct, wr_mem, rd_mem, Done, CacheHit, Stall_sys;
+output reg[15:0] DataIn_ct, Addr_mem, DataIn_mem;
+output reg[7:0] index_cache;
+output reg[2:0] offset_cache;
+output reg[4:0] tag_cache;
 
 
 // define states
@@ -50,9 +50,10 @@ localparam CMP_WT_1 = 4'b1110;
 localparam CMP_RD_1 = 4'b1111;
 
 // ff for state machine
-wire [3:0] state, next_state, state_q;
+wire [3:0] state, state_q;
+reg [3:0] next_state;
 dff state_fsm(.q(state_q), .d(next_state), .clk(clk), .rst(rst));
-assign state = rst ? 4'b0000 : state_q;
+assign state = rst ? IDLE : state_q;
 
 wire err_fsm;
 // FSM
