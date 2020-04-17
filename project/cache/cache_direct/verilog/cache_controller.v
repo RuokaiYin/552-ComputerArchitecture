@@ -88,9 +88,9 @@ always @*
 				begin
 					enable_ct = 1'b1;
 					cmp_ct = 1'b1;
-					index_cache = Addr[15:8];
+					index_cache = Addr[10:3];
 					offset_cache = Addr[2:0];
-					tag_cache = Addr[7:3];
+					tag_cache = Addr[15:11];
 					next_state = hit ? (valid ? (HIT) : (ACC_WT_0)) : (dirty ? (valid ? (ACC_RD_0) : (ACC_WT_0)) : (ACC_WT_0));
 				end
 			CMP_WT_0:
@@ -98,9 +98,9 @@ always @*
 					enable_ct = 1'b1;
 					cmp_ct = 1'b1;
 					wr_cache = 1'b1;
-					index_cache = Addr[15:8];
+					index_cache = Addr[10:3];
 					offset_cache = Addr[2:0];
-					tag_cache = Addr[7:3];
+					tag_cache = Addr[15:11];
 					next_state = hit ? (valid ? (HIT) : (ACC_WT_0)) : (dirty ? (valid ? (ACC_RD_0) : (ACC_WT_0)) : (ACC_WT_0));
 				end
 			HIT:
@@ -112,7 +112,7 @@ always @*
 			ACC_RD_0:
 				begin
 					enable_ct = 1'b1;
-					index_cache = Addr[15:8];
+					index_cache = Addr[10:3];
 					offset_cache = 3'b000;
 					Addr_mem = {Addr[15:8],tag_out,3'b000};
 					DataIn_mem = DataOut_cache;
@@ -122,7 +122,7 @@ always @*
 			ACC_RD_1:
 				begin
 					enable_ct = 1'b1;
-					index_cache = Addr[15:8];
+					index_cache = Addr[10:3];
 					offset_cache = 3'b010;
 					Addr_mem = {Addr[15:8],tag_out,3'b010};
 					DataIn_mem = DataOut_cache;
@@ -132,7 +132,7 @@ always @*
 			ACC_RD_2:
 				begin
 					enable_ct = 1'b1;
-					index_cache = Addr[15:8];
+					index_cache = Addr[10:3];
 					offset_cache = 3'b100;
 					Addr_mem = {Addr[15:8],tag_out,3'b100};
 					DataIn_mem = DataOut_cache;
@@ -142,7 +142,7 @@ always @*
 			ACC_RD_3:
 				begin
 					enable_ct = 1'b1;
-					index_cache = Addr[15:8];
+					index_cache = Addr[10:3];
 					offset_cache = 3'b110;
 					Addr_mem = {Addr[15:8],tag_out,3'b110};
 					DataIn_mem = DataOut_cache;
@@ -172,9 +172,9 @@ always @*
 					// wrt to cache
 					wr_cache = 1'b1;
 					valid_in_ct = 1'b1;
-					index_cache = Addr[15:8];
+					index_cache = Addr[10:3];
 					offset_cache = 3'b000;
-					tag_cache = Addr[7:3];
+					tag_cache = Addr[15:11];
 					DataIn_ct = DataOut_mem;
 					next_state = ACC_WT_3;
 				end
@@ -187,9 +187,9 @@ always @*
 					// wrt to cache
 					wr_cache = 1'b1;
 					valid_in_ct = 1'b1;
-					index_cache = Addr[15:8];
+					index_cache = Addr[10:3];
 					offset_cache = 3'b010;
-					tag_cache = Addr[7:3];
+					tag_cache = Addr[15:11];
 					DataIn_ct = DataOut_mem;
 					next_state = ACC_WT_4;
 				end
@@ -199,9 +199,9 @@ always @*
 					enable_ct = 1'b1;
 					wr_cache = 1'b1;
 					valid_in_ct = 1'b1;
-					index_cache = Addr[15:8];
+					index_cache = Addr[10:3];
 					offset_cache = 3'b100;
-					tag_cache = Addr[7:3];
+					tag_cache = Addr[15:11];
 					DataIn_ct = DataOut_mem;
 					next_state = ACC_WT_5;
 				end
@@ -211,9 +211,9 @@ always @*
 					enable_ct = 1'b1;
 					wr_cache = 1'b1;
 					valid_in_ct = 1'b1;
-					index_cache = Addr[15:8];
+					index_cache = Addr[10:3];
 					offset_cache = 3'b110;
-					tag_cache = Addr[7:3];
+					tag_cache = Addr[15:11];
 					DataIn_ct = DataOut_mem;
 					next_state = Rd ? (CMP_RD_1) : (Wr ? (CMP_WT_1) : IDLE);
 				end
@@ -222,9 +222,9 @@ always @*
 					enable_ct = 1'b1;
 					cmp_ct = 1'b1;
 					wr_cache = 1'b0;
-					index_cache = Addr[15:8];
+					index_cache = Addr[10:3];
 					offset_cache = Addr[2:0];
-					tag_cache = Addr[7:3];
+					tag_cache = Addr[15:11];
 					Done = 1'b1;
 					next_state = IDLE;
 				end
@@ -233,9 +233,9 @@ always @*
 					enable_ct = 1'b1;
 					cmp_ct = 1'b1;
 					wr_cache = 1'b1;
-					index_cache = Addr[15:8];
+					index_cache = Addr[10:3];
 					offset_cache = Addr[2:0];
-					tag_cache = Addr[7:3];
+					tag_cache = Addr[15:11];
 					Done = 1'b1;
 					next_state = IDLE;
 				end
