@@ -32,22 +32,22 @@ output [4:0] tag_cache;
 
 
 // define states
-localparam IDLE 4'b0000;
-localparam HIT 4'b0001;
-localparam CMP_RD_0 4'b0010;
-localparam CMP_WT_0 4'b0011;
-localparam ACC_RD_0 4'b0100;
-localparam ACC_RD_1 4'b0101;
-localparam ACC_RD_2 4'b0110;
-localparam ACC_RD_3 4'b0111;
-localparam ACC_WT_0 4'b1000;
-localparam ACC_WT_1 4'b1001;
-localparam ACC_WT_2 4'b1010;
-localparam ACC_WT_3 4'b1011;
-localparam ACC_WT_4 4'b1100;
-localparam ACC_WT_5 4'b1101;
-localparam CMP_WT_1 4'b1110;
-localparam CMP_RD_1 4'b1111;
+localparam IDLE = 4'b0000;
+localparam HIT = 4'b0001;
+localparam CMP_RD_0 = 4'b0010;
+localparam CMP_WT_0 = 4'b0011;
+localparam ACC_RD_0 = 4'b0100;
+localparam ACC_RD_1 = 4'b0101;
+localparam ACC_RD_2 = 4'b0110;
+localparam ACC_RD_3 = 4'b0111;
+localparam ACC_WT_0 = 4'b1000;
+localparam ACC_WT_1 = 4'b1001;
+localparam ACC_WT_2 = 4'b1010;
+localparam ACC_WT_3 = 4'b1011;
+localparam ACC_WT_4 = 4'b1100;
+localparam ACC_WT_5 = 4'b1101;
+localparam CMP_WT_1 = 4'b1110;
+localparam CMP_RD_1 = 4'b1111;
 
 // ff for state machine
 wire [3:0] state, next_state, state_q;
