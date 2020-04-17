@@ -56,7 +56,8 @@ assign state = rst ? 4'b0000 : state_q;
 
 wire err_fsm;
 // FSM
-always @* begin
+always @* 
+	begin
 		enable_ct = 1'b0;
 		index_cache = 8'bxxxx_xxxx;
 		offset_cache = 3'bxxx;
@@ -78,7 +79,7 @@ always @* begin
 			`IDLE:
 				begin
 					Stall_sys = 1'b0;
-					next_state = Rd ? (CMP_RD_0) : (Wr ? (CMP_WT_0) : (state));
+					next_state = Rd ? (`CMP_RD_0) : (Wr ? (`CMP_WT_0) : (state));
 				end
 			`CMP_RD_0:
 				begin
@@ -87,7 +88,7 @@ always @* begin
 					index_cache = Addr[15:8];
 					offset_cache = Addr[2:0];
 					tag_cache = Addr[7:3];
-					next_state = hit ? (valid ? (HIT) : (ACC_WT_0)) : (dirty ? (valid ? (ACC_RD_0) : (ACC_WT_0)) : (ACC_WT_0));
+					next_state = hit ? (valid ? (`HIT) : (`ACC_WT_0)) : (dirty ? (valid ? (`ACC_RD_0) : (`ACC_WT_0)) : (`ACC_WT_0));
 				end
 			`CMP_WT_0:
 				begin
@@ -97,13 +98,13 @@ always @* begin
 					index_cache = Addr[15:8];
 					offset_cache = Addr[2:0];
 					tag_cache = Addr[7:3];
-					next_state = hit ? (valid ? (HIT) : (ACC_WT_0)) : (dirty ? (valid ? (ACC_RD_0) : (ACC_WT_0)) : (ACC_WT_0));
+					next_state = hit ? (valid ? (`HIT) : (`ACC_WT_0)) : (dirty ? (valid ? (`ACC_RD_0) : (`ACC_WT_0)) : (`ACC_WT_0));
 				end
 			`HIT:
 				begin
 					Done = 1'b1;
 					CacheHit = 1'b1;
-					next_state = IDLE;
+					next_state = `IDLE;
 				end
 			`ACC_RD_0:
 				begin
@@ -113,7 +114,7 @@ always @* begin
 					Addr_mem = {Addr[15:8],tag_out,3'b000};
 					DataIn_mem = DataOut_cache;
 					wr_mem = 1'b1;
-					next_state = ACC_RD_1;
+					next_state = `ACC_RD_1;
 				end
 			`ACC_RD_1:
 				begin
@@ -123,7 +124,7 @@ always @* begin
 					Addr_mem = {Addr[15:8],tag_out,3'b010};
 					DataIn_mem = DataOut_cache;
 					wr_mem = 1'b1;
-					next_state = ACC_RD_2;
+					next_state = `ACC_RD_2;
 				end
 			`ACC_RD_2:
 				begin
@@ -133,7 +134,7 @@ always @* begin
 					Addr_mem = {Addr[15:8],tag_out,3'b100};
 					DataIn_mem = DataOut_cache;
 					wr_mem = 1'b1;
-					next_state = ACC_RD_3;
+					next_state = `ACC_RD_3;
 				end
 			`ACC_RD_3:
 				begin
@@ -143,21 +144,21 @@ always @* begin
 					Addr_mem = {Addr[15:8],tag_out,3'b110};
 					DataIn_mem = DataOut_cache;
 					wr_mem = 1'b1;
-					next_state = ACC_WT_0;
+					next_state = `ACC_WT_0;
 				end
 			`ACC_WT_0:
 				begin
 					enable_ct = 1'b1;
 					rd_mem = 1'b1;
 					Addr_mem = {Addr[15:3] + 3'b000};
-					next_state = ACC_WT_1;
+					next_state = `ACC_WT_1;
 				end
 			`ACC_WT_1:
 				begin
 					enable_ct = 1'b1;
 					rd_mem = 1'b1;
 					Addr_mem = {Addr[15:3] + 3'b010};
-					next_state = ACC_WT_2;
+					next_state = `ACC_WT_2;
 				end
 			`ACC_WT_2:
 				begin
@@ -172,7 +173,7 @@ always @* begin
 					offset_cache = 3'b000;
 					tag_cache = Addr[7:3];
 					DataIn_ct = DataOut_mem;
-					next_state = ACC_WT_3;
+					next_state = `ACC_WT_3;
 				end
 			`ACC_WT_3:
 				begin
@@ -187,7 +188,7 @@ always @* begin
 					offset_cache = 3'b010;
 					tag_cache = Addr[7:3];
 					DataIn_ct = DataOut_mem;
-					next_state = ACC_WT_4;
+					next_state = `ACC_WT_4;
 				end
 			`ACC_WT_4:
 				begin
@@ -198,7 +199,7 @@ always @* begin
 					offset_cache = 3'b100;
 					tag_cache = Addr[7:3];
 					DataIn_ct = DataOut_mem;
-					next_state = ACC_WT_5;
+					next_state = `ACC_WT_5;
 				end
 			`ACC_WT_5:
 				begin
@@ -209,7 +210,7 @@ always @* begin
 					offset_cache = 3'b110;
 					tag_cache = Addr[7:3];
 					DataIn_ct = DataOut_mem;
-					next_state = Rd ? (CMP_RD_1) : (Wr ? (CMP_WT_1) : IDLE);
+					next_state = Rd ? (`CMP_RD_1) : (Wr ? (`CMP_WT_1) : `IDLE);
 				end
 			`CMP_RD_1:
 				begin
@@ -220,7 +221,7 @@ always @* begin
 					offset_cache = Addr[2:0];
 					tag_cache = Addr[7:3];
 					Done = 1'b1;
-					next_state = IDLE;
+					next_state = `IDLE;
 				end
 			`CMP_WT_1:
 				begin
@@ -231,7 +232,7 @@ always @* begin
 					offset_cache = Addr[2:0];
 					tag_cache = Addr[7:3];
 					Done = 1'b1;
-					next_state = IDLE;
+					next_state = `IDLE;
 				end
 		endcase
 	end
