@@ -71,7 +71,7 @@ module mem_system(/*AUTOARG*/
 
    
    // your code here
-cache_controller controller(
+cache_controller ctrl(
 	// Input from system
 	.clk(clk), .rst(rst), .creat_dump(createdump),
 	// Input from mem

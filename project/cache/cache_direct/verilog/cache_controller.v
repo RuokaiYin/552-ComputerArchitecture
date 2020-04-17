@@ -50,10 +50,10 @@ localparam CMP_WT_1 = 4'b1110;
 localparam CMP_RD_1 = 4'b1111;
 
 // ff for state machine
-wire err_fsm;
+wire err_reg;
 wire [3:0] state, state_q;
 reg [3:0] next_state;
-reg_16 #(.SIZE(1)) state_fsm(.readData(state_q), .err(err_fsm), .clk(clk), .rst(rst), .writeData(next_state), .writeEn(1'b1));
+reg_16 #(.SIZE(1)) state_fsm(.readData(state_q), .err(err_reg), .clk(clk), .rst(rst), .writeData(next_state), .writeEn(1'b1));
 assign state = rst ? IDLE : state_q;
 
 reg err_fsm;
