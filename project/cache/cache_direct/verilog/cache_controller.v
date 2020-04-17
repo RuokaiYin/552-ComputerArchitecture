@@ -119,7 +119,7 @@ always @*
 					enable_ct = 1'b1;
 					index_cache = Addr[10:3];
 					offset_cache = 3'b000;
-					Addr_mem = {Addr[15:8],tag_out,3'b000};
+					Addr_mem = {tag_out,Addr[10:3],3'b000};
 					DataIn_mem = DataOut_cache;
 					wr_mem = 1'b1;
 					next_state = ACC_RD_1;
@@ -129,7 +129,7 @@ always @*
 					enable_ct = 1'b1;
 					index_cache = Addr[10:3];
 					offset_cache = 3'b010;
-					Addr_mem = {Addr[15:8],tag_out,3'b010};
+					Addr_mem = {tag_out,Addr[10:3],3'b010};
 					DataIn_mem = DataOut_cache;
 					wr_mem = 1'b1;
 					next_state = ACC_RD_2;
@@ -139,7 +139,7 @@ always @*
 					enable_ct = 1'b1;
 					index_cache = Addr[10:3];
 					offset_cache = 3'b100;
-					Addr_mem = {Addr[15:8],tag_out,3'b100};
+					Addr_mem = {tag_out,Addr[10:3],3'b100};
 					DataIn_mem = DataOut_cache;
 					wr_mem = 1'b1;
 					next_state = ACC_RD_3;
@@ -149,7 +149,7 @@ always @*
 					enable_ct = 1'b1;
 					index_cache = Addr[10:3];
 					offset_cache = 3'b110;
-					Addr_mem = {Addr[15:8],tag_out,3'b110};
+					Addr_mem = {tag_out,Addr[10:3],3'b110};
 					DataIn_mem = DataOut_cache;
 					wr_mem = 1'b1;
 					next_state = ACC_WT_0;
