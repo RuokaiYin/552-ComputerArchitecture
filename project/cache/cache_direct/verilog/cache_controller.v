@@ -57,7 +57,6 @@ assign state = rst ? 4'b0000 : state_q;
 wire err_fsm;
 // FSM
 always @* 
-	begin
 		enable_ct = 1'b0;
 		index_cache = 8'bxxxx_xxxx;
 		offset_cache = 3'bxxx;
@@ -75,8 +74,7 @@ always @*
 		Stall_sys = 1'b1;
 
 		case(state)
-			default: // default case, rise an error
-				err_fsm = 1'b1;
+			default: err_fsm = 1'b1;
 			`IDLE:
 					Stall_sys = 1'b0;
 					next_state = Rd ? (CMP_RD_0) : (Wr ? (CMP_WT_0) : (state));
@@ -234,7 +232,6 @@ always @*
 					next_state = IDLE;
 				end
 		endcase
-	end
 
 //////////////////////////////////////////////////////////////////
 
