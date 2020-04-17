@@ -237,6 +237,7 @@ always @*
 					index_cache = Addr[10:3];
 					offset_cache = Addr[2:0];
 					tag_cache = Addr[15:11];
+					DataIn_ct = DataIn;
 					Done = 1'b1;
 					next_state = IDLE;
 				end
