@@ -105,6 +105,10 @@ always @*
 				end
 			HIT:
 				begin
+					index_cache = Addr[10:3];
+					offset_cache = Addr[2:0];
+					tag_cache = Addr[15:11];
+					cmp_ct = 1;
 					enable_ct = 1'b1;
 					Done = 1'b1;
 					CacheHit = 1'b1;
