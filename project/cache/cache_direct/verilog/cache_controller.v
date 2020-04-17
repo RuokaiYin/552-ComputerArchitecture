@@ -196,6 +196,7 @@ always @*
 			ACC_WT_4:
 				begin
 					// wrt to cache
+					enable_ct = 1'b1;
 					wr_cache = 1'b1;
 					valid_in_ct = 1'b1;
 					index_cache = Addr[15:8];
@@ -207,6 +208,7 @@ always @*
 			ACC_WT_5:
 				begin
 					// wrt to cache
+					enable_ct = 1'b1;
 					wr_cache = 1'b1;
 					valid_in_ct = 1'b1;
 					index_cache = Addr[15:8];
