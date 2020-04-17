@@ -52,7 +52,7 @@ output [4:0] tag_cache;
 // ff for state machine
 wire [3:0] state, next_state, state_q;
 dff state_fsm(.q(state_q), .d(next_state), .clk(clk), .rst(rst));
-assign state = rst ? `IDLE : state_q;
+assign state = rst ? 4'b0000 : state_q;
 
 wire err_fsm;
 // FSM
@@ -76,7 +76,7 @@ always @*
 
 		case(state)
 			default: // default case, rise an error
-				err_fsm = 1;
+				err_fsm = 1'b1;
 			`IDLE:
 				begin
 					Stall_sys = 1'b0;
