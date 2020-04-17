@@ -7,6 +7,8 @@ module cache_controller(
 	hit_0,dirty_0,tag_out_0,DataOut_cache_0,valid_0,
 	// Input from cache1
 	hit_1,dirty_1,tag_out_1,DataOut_cache_1,valid_1,
+    // Input from the whole cache
+    tag_out, DataOut_cache,
 	// Input from four bank
 	DataOut_mem,
 	// Output to cache
@@ -23,8 +25,8 @@ module cache_controller(
 
 // Input, output
 input clk, rst, creat_dump, Wr, Rd, hit_0, hit_1, dirty_0, dirty_1, valid_0, valid_1, victimway_in, Hit;
-input [15:0] Addr, DataIn, DataOut_mem, DataOut_cache_0, DataOut_cache_1;
-input [4:0] tag_out_0, tag_out_1;
+input [15:0] Addr, DataIn, DataOut_mem, DataOut_cache_0, DataOut_cache_1, DataOut_cache; // FIXME add tag_out and DataOut_cache
+input [4:0] tag_out_0, tag_out_1, tag_out;
 
 output reg enable_ct, cmp_ct, wr_cache, valid_in_ct, wr_mem, rd_mem, Done, CacheHit, Stall_sys, victimway_out, ori;
 output reg[15:0] DataIn_ct, Addr_mem, DataIn_mem;
@@ -58,7 +60,8 @@ reg [3:0] next_state;
 reg_16 #(.SIZE(4)) state_fsm(.readData(state_q), .err(err_reg), .clk(clk), .rst(rst), .writeData(next_state), .writeEn(1'b1));
 assign state = rst ? IDLE : state_q;
 
-reg enable_ct_d,enable_ct_q, enable_ct_en;
+reg enable_ct_d, enable_ct_en; // FIXME change enable_ct_q to wire
+wire enable_ct_q;
 reg_16 #(.SIZE(1)) latch_enable(.readData(enable_ct_q), .err(err_reg), .clk(clk), .rst(rst), .writeData(enable_ct_d), .writeEn(enable_ct_en));
 
 
@@ -96,19 +99,19 @@ always @*
 				end
 			CMP_RD_0:
 				begin
-					enable_ct = hit_0 | (~Hit & ~valid_0 & valid_1) | (~Hit & ~valid_0 & ~valid_1) | (~Hit & valid_1 & valid_0 & victimway_in);
+					enable_ct = (hit_0 & valid_0) | (~Hit & ~valid_0 & valid_1) | (~Hit & ~valid_0 & ~valid_1) | (~Hit & valid_1 & valid_0 & victimway_in);
 					cmp_ct = 1'b1;
 					index_cache = Addr[10:3];
 					offset_cache = Addr[2:0];
 					tag_cache = Addr[15:11];
 					ori = 1'b1;
-					enable_ct_d = hit_0 | (~Hit & ~valid_0 & valid_1) | (~Hit & ~valid_0 & ~valid_1) | (~Hit & valid_1 & valid_0 & victimway_in);
+					enable_ct_d = (hit_0 & valid_0) | (~Hit & ~valid_0 & valid_1) | (~Hit & ~valid_0 & ~valid_1) | (~Hit & valid_1 & valid_0 & victimway_in);
 					enable_ct_en = 1'b1;
-					next_state = (((~Hit)&(enable_ct)&(valid_0)&(dirty_0))|(((~Hit)&(enable_ct)&(valid_1)&(dirty_1))) ? (ACC_RD_0) : (ACC_WT_0);
+					next_state = Hit ? HIT : ((((~Hit)&(enable_ct)&(valid_0)&(dirty_0))|(((~Hit)&(!enable_ct)&(valid_1)&(dirty_1)))) ? (ACC_RD_0) : (ACC_WT_0));
 				end
 			CMP_WT_0:
 				begin
-					enable_ct = hit_0 | (~Hit & ~valid_0 & valid_1) | (~Hit & ~valid_0 & ~valid_1) | (~Hit & valid_1 & valid_0 & victimway_in);
+					enable_ct = (hit_0 & valid_0) | (~Hit & ~valid_0 & valid_1) | (~Hit & ~valid_0 & ~valid_1) | (~Hit & valid_1 & valid_0 & victimway_in);
 					cmp_ct = 1'b1;
 					wr_cache = 1'b1;
 					DataIn_ct = DataIn;
@@ -116,9 +119,9 @@ always @*
 					offset_cache = Addr[2:0];
 					tag_cache = Addr[15:11];
 					ori = 1'b1;
-					enable_ct_d = hit_0 | (~Hit & ~valid_0 & valid_1) | (~Hit & ~valid_0 & ~valid_1) | (~Hit & valid_1 & valid_0 & victimway_in);
+					enable_ct_d = (hit_0 & valid_0) | (~Hit & ~valid_0 & valid_1) | (~Hit & ~valid_0 & ~valid_1) | (~Hit & valid_1 & valid_0 & victimway_in);
 					enable_ct_en = 1'b1;
-					next_state = (((~Hit)&(enable_ct)&(valid_0)&(dirty_0))|(((~Hit)&(enable_ct)&(valid_1)&(dirty_1))) ? (ACC_RD_0) : (ACC_WT_0);
+					next_state = Hit ? HIT : ((((~Hit)&(enable_ct)&(valid_0)&(dirty_0))|(((~Hit)&(!enable_ct)&(valid_1)&(dirty_1)))) ? (ACC_RD_0) : (ACC_WT_0));
 				end
 			HIT:
 				begin
@@ -128,7 +131,8 @@ always @*
 					enable_ct = enable_ct_q;
 					Done = 1'b1;
 					CacheHit = 1'b1;
-					next_state = IDLE;
+                    victimway_out = ~victimway_in;
+                    next_state = IDLE;
 				end
 			ACC_RD_0:
 				begin
