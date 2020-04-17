@@ -6,7 +6,7 @@ module cache_controller(
 	// Input from cache
 	hit,dirty,tag_out,DataOut_cache,valid,
 	// Input from four bank
-	DataOut_mem,stall,
+	DataOut_mem,
 	// Output to cache
 	enable_ct,index_cache,
 	offset_cache,cmp_ct,
@@ -20,7 +20,7 @@ module cache_controller(
 );
 
 // Input, output
-input clk, rst, creat_dump, Wr, Rd, hit, dirty, valid, stall;
+input clk, rst, creat_dump, Wr, Rd, hit, dirty, valid;
 input [15:0] Addr, DataIn, DataOut_mem, DataOut_cache;
 input [4:0] tag_out;
 
@@ -50,9 +50,10 @@ localparam CMP_WT_1 = 4'b1110;
 localparam CMP_RD_1 = 4'b1111;
 
 // ff for state machine
+wire err_fsm;
 wire [3:0] state, state_q;
 reg [3:0] next_state;
-dff state_fsm(.q(state_q), .d(next_state), .clk(clk), .rst(rst));
+reg_16 #(.SIZE(1)) state_fsm(.readData(state_q), .err(err_fsm), .clk(clk), .rst(rst), .writeData(next_state), .writeEn(1'b1));
 assign state = rst ? IDLE : state_q;
 
 reg err_fsm;
