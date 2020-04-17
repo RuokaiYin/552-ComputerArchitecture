@@ -78,10 +78,8 @@ always @*
 			default: // default case, rise an error
 				err_fsm = 1'b1;
 			`IDLE:
-				begin
 					Stall_sys = 1'b0;
 					next_state = Rd ? (CMP_RD_0) : (Wr ? (CMP_WT_0) : (state));
-				end
 			`CMP_RD_0:
 				begin
 					enable_ct = 1'b1;
