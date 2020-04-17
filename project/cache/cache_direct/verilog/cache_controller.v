@@ -105,6 +105,7 @@ always @*
 				end
 			HIT:
 				begin
+					enable_ct = 1'b1;
 					Done = 1'b1;
 					CacheHit = 1'b1;
 					next_state = IDLE;
