@@ -98,6 +98,7 @@ always @*
 					enable_ct = 1'b1;
 					cmp_ct = 1'b1;
 					wr_cache = 1'b1;
+					DataIn_ct = DataIn;
 					index_cache = Addr[10:3];
 					offset_cache = Addr[2:0];
 					tag_cache = Addr[15:11];
