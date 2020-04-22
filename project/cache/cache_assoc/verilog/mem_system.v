@@ -30,7 +30,7 @@ module mem_system(/*AUTOARG*/
    wire [3:0] busy_dummy;
    wire [4:0] tag_out_0, tag_out_1, tag_out_c, tag_ct;
    wire [7:0] index_ct;
-   wire [15:0] data_out_0, data_out_1, data_out_c, data_in_ct, data_out_m, addr_in_m, data_in_m, DataOut_ct;
+   wire [15:0] data_out_0, data_out_1, data_out_c, data_in_ct, data_out_m, addr_in_m, data_in_m, DataOut_ct, dataout_temp;
     
 
 
@@ -124,7 +124,6 @@ module mem_system(/*AUTOARG*/
    reg_16 #(.SIZE(1)) latch_victimway(.readData(victimway_out_c), .err(err_reg), .clk(clk), .rst(rst), .writeData(victimway_in_c), .writeEn(1'b1));
 
 
-   wire[15:0] dataout_temp;
    reg_16 #(.SIZE(16)) latch_DataOut(.readData(dataout_temp), .err(err_reg), .clk(clk), .rst(rst), .writeData(DataOut_ct), .writeEn(1'b1));
    assign DataOut = final_state ? (DataOut_ct) : (dataout_temp);
 

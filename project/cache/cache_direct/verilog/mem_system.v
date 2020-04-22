@@ -27,7 +27,7 @@ module mem_system(/*AUTOARG*/
    wire err_c, err_m;
    wire stall_dummy, wr_m, rd_m, hit_c, dirty_c, valid_c, enable_ct, cmp_ct, wr_ct, valid_in_ct, final_state;
    wire [3:0] Busy_dummy;
-   wire [15:0] data_out_m, data_in_m, addr_in_m, data_in_ct, DataOut_cache, DataOut_ct;
+   wire [15:0] data_out_m, data_in_m, addr_in_m, data_in_ct, DataOut_cache, DataOut_ct, dataout_temp;
    wire [4:0] tag_out_c, tag_ct;
    wire [7:0] index_ct;
    wire [2:0] offset_ct;
@@ -94,7 +94,6 @@ cache_controller ctrl(
 
 assign err = err_c | err_m;
 wire err_reg;
-wire[15:0] dataout_temp;
 reg_16 #(.SIZE(16)) latch_DataOut(.readData(dataout_temp), .err(err_reg), .clk(clk), .rst(rst), .writeData(DataOut_ct), .writeEn(1'b1));
 
 assign DataOut = final_state ? (DataOut_ct) : (dataout_temp);
