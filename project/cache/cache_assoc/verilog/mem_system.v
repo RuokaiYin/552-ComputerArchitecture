@@ -123,7 +123,11 @@ module mem_system(/*AUTOARG*/
    assign enable_ct_1 = ori ? 1 : (!enable_ct); 
    reg_16 #(.SIZE(1)) latch_victimway(.readData(victimway_out_c), .err(err_reg), .clk(clk), .rst(rst), .writeData(victimway_in_c), .writeEn(1'b1));
 
-   assign DataOut = data_out_c;
+
+   wire[15:0] dataout_temp;
+   reg_16 #(.SIZE(16)) latch_DataOut(.readData(dataout_temp), .err(err_reg), .clk(clk), .rst(rst), .writeData(DataOut_ct), .writeEn(1'b1));
+   assign DataOut = final_state ? (DataOut_ct) : (dataout_temp);
+
    
 endmodule // mem_system
 
