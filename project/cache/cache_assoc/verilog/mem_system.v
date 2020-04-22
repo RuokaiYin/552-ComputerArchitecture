@@ -25,12 +25,12 @@ module mem_system(/*AUTOARG*/
 
    // needed wires
    wire enable_ct, hit_0, hit_1, dirty_0, dirty_1, valid_0, valid_1, err_c0, err_c1, cmp_ct, wr_ct, valid_in_ct;
-   wire Hit, stall_dummy, err_m, wr_m, rd_m, ori, victimway_in_c, victimway_out_c, err_reg, enable_ct_0, enable_ct_1;
+   wire Hit, stall_dummy, err_m, wr_m, rd_m, ori, victimway_in_c, victimway_out_c, err_reg, enable_ct_0, enable_ct_1, final_state;
    wire [2:0] offset_ct;
    wire [3:0] busy_dummy;
    wire [4:0] tag_out_0, tag_out_1, tag_out_c, tag_ct;
    wire [7:0] index_ct;
-   wire [15:0] data_out_0, data_out_1, data_out_c, data_in_ct, data_out_m, addr_in_m, data_in_m;
+   wire [15:0] data_out_0, data_out_1, data_out_c, data_in_ct, data_out_m, addr_in_m, data_in_m, DataOut_ct;
     
 
 
@@ -95,7 +95,7 @@ module mem_system(/*AUTOARG*/
       // Input from system
 	.clk(clk), .rst(rst), .creat_dump(createdump),
 	// Input from mem
-	.Addr(Addr), .DataIn(DataIn), .Rd(Rd), .Wr(Wr), .Hit(Hit), .victimway_in(victimway_out_c),
+	.Addr(Addr), .DataIn(DataIn), .Rd(Rd), .Wr(Wr), .Hit(Hit), .victimway_in(victimway_out_c), .Data_latch(dataout_temp),
 	// Input from cache0
 	.hit_0(hit_0), .dirty_0(dirty_0), .tag_out_0(tag_out_0) ,.DataOut_cache_0(data_out_0), .valid_0(valid_0),
 	// Input from cache1
@@ -113,7 +113,7 @@ module mem_system(/*AUTOARG*/
 	.Addr_mem(addr_in_m), .DataIn_mem(data_in_m),
 	.wr_mem(wr_m), .rd_mem(rd_m),
 	// Output to system
-	.Done(Done), .CacheHit(CacheHit), .Stall_sys(Stall), .victimway_out(victimway_in_c), .ori(ori)
+	.Done(Done), .CacheHit(CacheHit), .Stall_sys(Stall), .victimway_out(victimway_in_c), .ori(ori), .final_state(final_state), .DataOut_ct(DataOut_ct)
 );
    assign tag_out_c = enable_ct ? tag_out_0 : tag_out_1; 
    assign data_out_c = enable_ct ? data_out_0 : data_out_1;

@@ -2,7 +2,7 @@ module cache_controller(
 	// Input from system
 	clk,rst,creat_dump,
 	// Input from mem
-	Addr,DataIn,Rd,Wr,Hit,victimway_in,
+	Addr,DataIn,Rd,Wr,Hit,victimway_in, Data_latch,
 	// Input from cache0
 	hit_0,dirty_0,tag_out_0,DataOut_cache_0,valid_0,
 	// Input from cache1
@@ -20,16 +20,16 @@ module cache_controller(
 	Addr_mem,DataIn_mem,
 	wr_mem,rd_mem,
 	// Output to system
-	Done,CacheHit,Stall_sys,victimway_out,ori, final_state
+	Done,CacheHit,Stall_sys,victimway_out,ori, final_state, DataOut_ct
 );
 
 // Input, output
 input clk, rst, creat_dump, Wr, Rd, hit_0, hit_1, dirty_0, dirty_1, valid_0, valid_1, victimway_in, Hit;
-input [15:0] Addr, DataIn, DataOut_mem, DataOut_cache_0, DataOut_cache_1, DataOut_cache; // FIXME add tag_out and DataOut_cache
+input [15:0] Addr, DataIn, DataOut_mem, DataOut_cache_0, DataOut_cache_1, DataOut_cache, Data_latch; // FIXME add tag_out and DataOut_cache
 input [4:0] tag_out_0, tag_out_1, tag_out;
 
 output reg enable_ct, cmp_ct, wr_cache, valid_in_ct, wr_mem, rd_mem, Done, CacheHit, Stall_sys, victimway_out, ori, final_state;
-output reg[15:0] DataIn_ct, Addr_mem, DataIn_mem;
+output reg[15:0] DataIn_ct, Addr_mem, DataIn_mem, DataOut_ct;
 output reg[7:0] index_cache;
 output reg[2:0] offset_cache;
 output reg[4:0] tag_cache;

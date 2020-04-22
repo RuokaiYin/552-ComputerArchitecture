@@ -73,7 +73,7 @@ module mem_system(/*AUTOARG*/
    // your code here
 cache_controller ctrl(
 	// Input from system
-	.clk(clk), .rst(rst), .creat_dump(createdump), .Data_latch(DataOut), 
+	.clk(clk), .rst(rst), .creat_dump(createdump), .Data_latch(dataout_temp), 
 	// Input from mem
 	.Addr(Addr), .DataIn(DataIn), .Rd(Rd), .Wr(Wr),
 	// Input from cache
