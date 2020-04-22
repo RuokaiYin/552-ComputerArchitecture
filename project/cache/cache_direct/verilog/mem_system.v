@@ -25,9 +25,9 @@ module mem_system(/*AUTOARG*/
 
    // needed wires
    wire err_c, err_m;
-   wire stall_dummy, wr_m, rd_m, hit_c, dirty_c, valid_c, enable_ct, cmp_ct, wr_ct, valid_in_ct;
+   wire stall_dummy, wr_m, rd_m, hit_c, dirty_c, valid_c, enable_ct, cmp_ct, wr_ct, valid_in_ct, final_state;
    wire [3:0] Busy_dummy;
-   wire [15:0] data_out_m, data_in_m, addr_in_m, data_in_ct;
+   wire [15:0] data_out_m, data_in_m, addr_in_m, data_in_ct, DataOut_cache, DataOut_ct;
    wire [4:0] tag_out_c, tag_ct;
    wire [7:0] index_ct;
    wire [2:0] offset_ct;
@@ -37,7 +37,7 @@ module mem_system(/*AUTOARG*/
    parameter memtype = 0;
    cache #(0 + memtype) c0(// Outputs
                           .tag_out              (tag_out_c),
-                          .data_out             (DataOut),
+                          .data_out             (DataOut_cache),
                           .hit                  (hit_c),
                           .dirty                (dirty_c),
                           .valid                (valid_c),
@@ -73,11 +73,11 @@ module mem_system(/*AUTOARG*/
    // your code here
 cache_controller ctrl(
 	// Input from system
-	.clk(clk), .rst(rst), .creat_dump(createdump),
+	.clk(clk), .rst(rst), .creat_dump(createdump), .Data_latch(DataOut), 
 	// Input from mem
 	.Addr(Addr), .DataIn(DataIn), .Rd(Rd), .Wr(Wr),
 	// Input from cache
-	.hit(hit_c), .dirty(dirty_c), .tag_out(tag_out_c), .DataOut_cache(DataOut), .valid(valid_c),
+	.hit(hit_c), .dirty(dirty_c), .tag_out(tag_out_c), .DataOut_cache(DataOut_cache), .valid(valid_c),
 	// Input from four bank
 	.DataOut_mem(data_out_m),
 	// Output to cache
@@ -89,10 +89,15 @@ cache_controller ctrl(
 	.Addr_mem(addr_in_m), .DataIn_mem(data_in_m),
 	.wr_mem(wr_m), .rd_mem(rd_m),
 	// Output to system
-	.Done(Done), .CacheHit(CacheHit), .Stall_sys(Stall)
+	.Done(Done), .CacheHit(CacheHit), .Stall_sys(Stall), .DataOut_ct(DataOut_ct), .final_state(final_state)
 );
 
 assign err = err_c | err_m;
+wire err_reg;
+wire[15:0] dataout_temp;
+reg_16 #(.SIZE(16)) latch_DataOut(.readData(dataout_temp), .err(err_reg), .clk(clk), .rst(rst), .writeData(DataOut_ct), .writeEn(1'b1));
+
+assign DataOut = final_state ? (DataOut_ct) : (dataout_temp);
 
 endmodule // mem_system
 
