@@ -37,7 +37,7 @@ output reg[4:0] tag_cache;
 
 // define states
 localparam IDLE = 4'b0000;
-localparam HIT = 4'b0001;
+// localparam HIT = 4'b0001;
 localparam CMP_RD_0 = 4'b0010;
 localparam CMP_WT_0 = 4'b0011;
 localparam ACC_RD_0 = 4'b0100;
@@ -50,8 +50,8 @@ localparam ACC_WT_2 = 4'b1010;
 localparam ACC_WT_3 = 4'b1011;
 localparam ACC_WT_4 = 4'b1100;
 localparam ACC_WT_5 = 4'b1101;
-localparam CMP_WT_1 = 4'b1110;
-localparam CMP_RD_1 = 4'b1111;
+// localparam CMP_WT_1 = 4'b1110;
+// localparam CMP_RD_1 = 4'b1111;
 
 // ff for state machine
 wire err_reg;
@@ -104,6 +104,8 @@ always @*
 			IDLE:
 				begin
 					Stall_sys = 1'b0;
+					isWr = 1'b0;
+                    isRd = 1'b0;
 					next_state = Rd ? (CMP_RD_0) : (Wr ? (CMP_WT_0) : (state));
 				end
 			CMP_RD_0:
@@ -113,10 +115,15 @@ always @*
 					index_cache = Addr[10:3];
 					offset_cache = Addr[2:0];
 					tag_cache = Addr[15:11];
+					DataOut_ct = DataOut_cache;
 					ori = 1'b1;
 					enable_ct_d = (hit_0 & valid_0) | (~Hit & ~valid_0 & valid_1) | (~Hit & ~valid_0 & ~valid_1) | (~Hit & valid_1 & valid_0 & victimway_in);
 					enable_ct_en = 1'b1;
-					next_state = Hit ? HIT : ((((~Hit)&(enable_ct)&(valid_0)&(dirty_0))|(((~Hit)&(!enable_ct)&(valid_1)&(dirty_1)))) ? (ACC_RD_0) : (ACC_WT_0));
+					isRd = 1'b1;
+                    Done = Hit;
+                    CacheHit = Hit;
+                    final_state = Hit;
+					next_state = Hit ? IDLE : ((((~Hit)&(enable_ct)&(valid_0)&(dirty_0))|(((~Hit)&(!enable_ct)&(valid_1)&(dirty_1)))) ? (ACC_RD_0) : (ACC_WT_0));
 				end
 			CMP_WT_0:
 				begin
@@ -128,21 +135,21 @@ always @*
 					offset_cache = Addr[2:0];
 					tag_cache = Addr[15:11];
 					ori = 1'b1;
+					isWr = 1'b1;
 					enable_ct_d = (hit_0 & valid_0) | (~Hit & ~valid_0 & valid_1) | (~Hit & ~valid_0 & ~valid_1) | (~Hit & valid_1 & valid_0 & victimway_in);
 					enable_ct_en = 1'b1;
-					next_state = Hit ? HIT : ((((~Hit)&(enable_ct)&(valid_0)&(dirty_0))|(((~Hit)&(!enable_ct)&(valid_1)&(dirty_1)))) ? (ACC_RD_0) : (ACC_WT_0));
+                    Done = Hit;
+                    CacheHit = Hit;
+                    final_state = Hit;
+					next_state = Hit ? IDLE: ((((~Hit)&(enable_ct)&(valid_0)&(dirty_0))|(((~Hit)&(!enable_ct)&(valid_1)&(dirty_1)))) ? (ACC_RD_0) : (ACC_WT_0));
 				end
-			HIT:
-				begin
-					index_cache = Addr[10:3];
-					offset_cache = Addr[2:0];
-					tag_cache = Addr[15:11];
-					enable_ct = enable_ct_q;
-					Done = 1'b1;
-					CacheHit = 1'b1;
-                    victimway_out = ~victimway_in;
-                    next_state = IDLE;
-				end
+			// HIT:
+			// 	begin
+			// 		Done = 1'b1;
+			// 		CacheHit = 1'b1;
+            //         victimway_out = ~victimway_in;
+            //         next_state = IDLE;
+			// 	end
 			ACC_RD_0:
 				begin
 					enable_ct = enable_ct_q;
