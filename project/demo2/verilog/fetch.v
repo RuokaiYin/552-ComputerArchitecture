@@ -39,7 +39,7 @@ module fetch (
    // assign branch_with_stall = Stall_imem_nextcycle ? Branch_stall_q : Branch_stall;
 
     // a mux to choose from normal pc+2 or pc_back
-   assign PC_wb = (Branch_stall) ? PC_Back_with_stall : PC_Next;
+   assign PC_wb = (Branch_stall) ? PC_Back : PC_Next;
    assign PC_wb_plus_stall = Stall_imem ? PC_curr: PC_wb;
    reg_16 pc_reg (.readData(PC_curr), .err(err_reg), .clk(clk), .rst(rst), .writeData(PC_wb_plus_stall), .writeEn(~STALL));
    
