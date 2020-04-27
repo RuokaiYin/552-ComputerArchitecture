@@ -23,12 +23,13 @@ module fetch (
    output halt_back, err, Stall_imem; 
 
    // use a 16-bit register to store the PC value
-   wire [15:0] PC_curr, PC_wb;
+   wire [15:0] PC_curr, PC_wb, PC_wb_plus_stall;
    wire err_reg;
    wire Done, CacheHit;
     // a mux to choose from normal pc+2 or pc_back
-   assign PC_wb = (Branch_stall|Stall_imem) ? PC_Back : PC_Next;
-   reg_16 pc_reg (.readData(PC_curr), .err(err_reg), .clk(clk), .rst(rst), .writeData(PC_wb), .writeEn(~STALL));
+   assign PC_wb = (Branch_stall) ? PC_Back : PC_Next;
+   assign PC_wb_plus_stall = Stall_imem ? PC_Next: PC_wb
+   reg_16 pc_reg (.readData(PC_curr), .err(err_reg), .clk(clk), .rst(rst), .writeData(PC_wb_plus_stall), .writeEn(~STALL));
    
   
    // add current PC value by 2 
@@ -46,7 +47,7 @@ module fetch (
    wire stall_temp;
    // instruction memory
    //memory2c_align instr_mem(.data_out(instr), .data_in(16'b0), .addr(PC_curr), .enable(~halt_q), .wr(1'b0), .createdump(halt_q), .clk(clk), .rst(rst), .err(err));
-   stallmem instr_mem(.DataOut(instr), .Done(Done), .Stall(stall_temp), .CacheHit(CacheHit), .err(err), .Addr(PC_curr), .DataIn(16'b0), .Rd(~halt_q), .Wr(1'b0), .createdump(halt_q), .clk(clk), .rst(rst));
+   stallmem instr_mem(.DataOut(instr), .Done(Done), .Stall(stall_temp), .CacheHit(CacheHit), .err(err), .Addr(PC_curr), .DataIn(16'bx), .Rd(~halt_q), .Wr(1'b0), .createdump(halt_q), .clk(clk), .rst(rst));
    assign halt_back = halt_q;
    assign Stall_imem = stall_temp & ~Done;
    // wire err_sig;
