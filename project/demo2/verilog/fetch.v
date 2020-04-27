@@ -20,14 +20,26 @@ module fetch (
    input [15:0] PC_Back;
 
    output [15:0] PC_Next, No_Branch, instr; 
-   output halt_back, err, Stall_imem; 
+   output halt_back, err, Stall_imem;
 
+   wire Stall_imem_nextcycle, Branch_stall_q, Stall_imem_q; 
    // use a 16-bit register to store the PC value
-   wire [15:0] PC_curr, PC_wb, PC_wb_plus_stall;
-   wire err_reg;
+   wire [15:0] PC_curr, PC_wb, PC_wb_plus_stall, PC_Back_q, PC_Back_with_stall;
+   wire err_reg, err_reg_dummy1,err_reg_dummy2,err_reg_dummy3;
    wire Done, CacheHit;
+   wire branch_with_stall;
+
+   reg_16 #(.SIZE(1)) stall_imem_reg(.readData(Stall_imem_q), .err(err_reg_dummy1), .clk(clk), .rst(rst), .writeData(Stall_imem), .writeEn(1'b1));
+   assign Stall_imem_nextcycle = Stall_imem_q & ~Stall_imem; 
+
+   reg_16 #(.SIZE(1)) branch_stall_reg(.readData(Branch_stall_q), .err(err_reg_dummy2), .clk(clk), .rst(rst), .writeData(Branch_stall), .writeEn(Branch_stall));
+   reg_16 #(.SIZE(16)) pc_back_reg(.readData(PC_Back_q), .err(err_reg_dummy3), .clk(clk), .rst(rst), .writeData(PC_Back), .writeEn(Branch_stall));
+
+   assign PC_Back_with_stall = Stall_imem_nextcycle ? PC_Back_q : PC_Back;
+   assign branch_with_stall = Stall_imem_nextcycle ? Branch_stall_q : Branch_stall;
+
     // a mux to choose from normal pc+2 or pc_back
-   assign PC_wb = (Branch_stall) ? PC_Back : PC_Next;
+   assign PC_wb = (branch_with_stall) ? PC_Back_with_stall : PC_Next;
    assign PC_wb_plus_stall = Stall_imem ? PC_curr: PC_wb;
    reg_16 pc_reg (.readData(PC_curr), .err(err_reg), .clk(clk), .rst(rst), .writeData(PC_wb_plus_stall), .writeEn(~STALL));
    
