@@ -23,7 +23,7 @@ module proc (/*AUTOARG*/
    
    wire err_1, err_2;
    /* your code here -- should include instantiations of fetch, decode, execute, mem and wb modules */
-   wire err_mem_fetch, Stall_imem;
+   wire err_mem_fetch, Stall_imem, branch_with_stall;
 
    // Fetch Stage
    wire  Halt, halt_back;
@@ -38,7 +38,7 @@ module proc (/*AUTOARG*/
 	.No_Branch(No_Branch), .instr(instr), .halt_back(halt_back),
         // Output to WB
         .PC_Next(PC_Next), // .PC_curr(PC_curr)
-	.err(err_mem_fetch), .Stall_imem(Stall_imem));
+	.err(err_mem_fetch), .Stall_imem(Stall_imem), .branch_with_stall(branch_with_stall));
 
    
    wire [15:0] instr_withNOP;
