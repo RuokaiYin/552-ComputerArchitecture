@@ -12,7 +12,7 @@ module decode (
         // IN from WB
         WB, target_reg_WB, Reg_wrt_WB,
         // Global In
-        clk, rst,
+        clk, rst, Stall_dmem, 
 	// Out Control Logic
 	Halt,WB_sel,Alu_src,Alu_result,Alu_op,Mem_read,Mem_wrt,target_reg,Reg_wrt,
         // Out to Exec
@@ -24,7 +24,7 @@ module decode (
 	
 
    // TODO: Your code here
-   input clk, rst, halt_back, Reg_wrt_WB;
+   input clk, rst, halt_back, Reg_wrt_WB, Stall_dmem;
    input [2:0] target_reg_WB;
    input [15:0] instr, WB, No_Branch;
 
@@ -59,7 +59,7 @@ module decode (
    // register file
    wire err_reg;
    regFile_bypass regi_file(.read1Data(data1), .read2Data(data2), .err(err_reg), .clk(clk), .rst(rst), .read1RegSel(instr[10:8]), 
-   	.read2RegSel(instr[7:5]), .writeRegSel(target_reg_WB), .writeData(WB), .writeEn(Reg_wrt_WB));  
+   	.read2RegSel(instr[7:5]), .writeRegSel(target_reg_WB), .writeData(WB), .writeEn(Reg_wrt_WB & (~Stall_dmem)));  
 
    // Logic for extension
    wire [15:0] zero_extend, sign_extend;

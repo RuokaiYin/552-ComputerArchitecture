@@ -23,7 +23,7 @@ module proc (/*AUTOARG*/
    
    wire err_1, err_2;
    /* your code here -- should include instantiations of fetch, decode, execute, mem and wb modules */
-   wire err_mem_fetch, Stall_imem, branch_with_stall;
+   wire err_mem_fetch, Stall_imem, Stall_dmem, branch_with_stall;
 
    // Fetch Stage
    wire  Halt, halt_back;
@@ -31,7 +31,7 @@ module proc (/*AUTOARG*/
    wire [15:0] PC_Back,PC_Next, No_Branch, instr; 
 	fetch fet(
         // system inputs
-	.clk(clk), .rst(rst), 
+	.clk(clk), .rst(rst), .Stall_dmem(Stall_dmem),
 	// inputs from Decode
 	.PC_Back(PC_Back), .Halt(Halt), .STALL(STALL), .Branch_stall(Branch_stall),
 	// Outputs to Decode
@@ -48,7 +48,7 @@ module proc (/*AUTOARG*/
 
    // IF/ID Pip Reg
    wire IFD_en,IFD_err;
-   assign IFD_en = ~STALL;
+   assign IFD_en = (~STALL) & (~Stall_dmem);
 
    wire halt_back_reg, err_mem_fetch_reg_IF;
    wire [15:0] pc_next_reg_IF, no_branch_reg, instr_reg;
@@ -81,7 +81,7 @@ module proc (/*AUTOARG*/
         // IN from WB
         .WB(WB), .target_reg_WB(target_reg_MEM), .Reg_wrt_WB(Reg_wrt_reg_MEM),
         // Global In
-        .clk(clk), .rst(rst),
+        .clk(clk), .rst(rst), .Stall_dmem(Stall_dmem),
 	// Out Control Logic
 	.Halt(Halt),.WB_sel(WB_sel),.Alu_src(Alu_src),.Alu_result(Alu_result),.Alu_op(Alu_op),.Mem_read(Mem_read),.Mem_wrt(Mem_wrt), .target_reg(target_reg), .Reg_wrt(Reg_wrt),
         // Out to Exec
@@ -103,7 +103,7 @@ module proc (/*AUTOARG*/
    wire [1:0] Op_ext_reg, WB_sel_reg_ID;
    wire [2:0] Alu_result_reg_ID;
    wire [15:0] data1_reg, data2_reg_ID, extend_reg_ID, pc_next_reg_ID;
-   assign IDEX_en = 1'b1;
+   assign IDEX_en = ~Stall_dmem;
    reg_16 #(.SIZE(1)) IDEX_reg_ERRMEM(.readData(err_mem_fetch_reg_ID), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(err_mem_fetch_reg_IF), .writeEn(IDEX_en));
    reg_16 #(.SIZE(1)) IDEX_reg_MEMREADID(.readData(Mem_read_reg_ID), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(Mem_read), .writeEn(IDEX_en));
    reg_16 #(.SIZE(1)) IDEX_reg_MEMWRTID(.readData(Mem_wrt_reg_ID), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(Mem_wrt), .writeEn(IDEX_en));
@@ -140,7 +140,7 @@ module proc (/*AUTOARG*/
    wire [1:0] WB_sel_reg_EX;
    wire [2:0] Alu_result_reg_EX;
    wire [15:0] data2_reg_EX, extend_reg_EX, pc_next_reg_EX, result_reg, Cout_reg, SLBI_reg, BTR_reg; 
-   assign EXMEM_en = 1'b1;
+   assign EXMEM_en = ~Stall_dmem;
    reg_16 #(.SIZE(1)) EXMEM_reg_ERRMEM(.readData(err_mem_fetch_reg_EX), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(err_mem_fetch_reg_ID), .writeEn(EXMEM_en)); 
    reg_16 #(.SIZE(1)) EXMEM_reg_NEG(.readData(neg_reg), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(neg), .writeEn(EXMEM_en));
    reg_16 #(.SIZE(1)) EXMEM_reg_ZERO(.readData(zero_reg), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(zero), .writeEn(EXMEM_en));
@@ -175,7 +175,9 @@ module proc (/*AUTOARG*/
 	// inputs from Execute
 	.result(result_reg), .zero(zero_reg), .neg(neg_reg), .BTR(BTR_reg), .SLBI(SLBI_reg), .Cout(Cout_reg),  
 	// outputs to WB
-	.data_mem(data_mem), .data_exe(data_exe), .err(err_mem_mem)
+	.data_mem(data_mem), .data_exe(data_exe), .err(err_mem_mem),
+        // global output
+        .Stall_dmem(Stall_dmem)
 	);
 
 
@@ -183,7 +185,7 @@ module proc (/*AUTOARG*/
    wire MEMWB_en, MEMWB_err, err_mem_fetch_reg_MEM;//, err_mem_mem_reg;
    wire[1:0] WB_sel_reg_MEM;
    wire[15:0] data_mem_reg, data_exe_reg, extend_reg_MEM, pc_next_reg_MEM;
-   assign MEMWB_en = 1'b1;
+   assign MEMWB_en = Stall_dmem;
 //    reg_16 #(.SIZE(1)) MEMWB_reg_ERRMEMMEM(.readData(err_mem_mem_reg), .err(MEMWB_err), .clk(clk), .rst(rst), .writeData(err_mem_mem), .writeEn(MEMWB_en));
    reg_16 #(.SIZE(1)) MEMWB_reg_ERRMEM(.readData(err_mem_fetch_reg_MEM), .err(MEMWB_err), .clk(clk), .rst(rst), .writeData(err_mem_fetch_reg_EX), .writeEn(MEMWB_en));
    reg_16 #(.SIZE(1)) MEMWB_reg_REGWRTMEM(.readData(Reg_wrt_reg_MEM), .err(MEMWB_err), .clk(clk), .rst(rst), .writeData(Reg_wrt_reg_EX), .writeEn(MEMWB_en));

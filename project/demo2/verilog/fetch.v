@@ -6,7 +6,7 @@
 */
 module fetch (
 	// system inputs
-	clk, rst, 
+	clk, rst, Stall_dmem,
 	// inputs from Decode
 	PC_Back, Halt, STALL, Branch_stall,
 	// Outputs to Decode
@@ -16,7 +16,7 @@ module fetch (
 	); 
 
    // TODO: Your code here
-   input clk, rst, Halt, STALL, Branch_stall; 
+   input clk, rst, Halt, STALL, Branch_stall, Stall_dmem; 
    input [15:0] PC_Back;
 
    output [15:0] PC_Next, No_Branch, instr; 
@@ -40,7 +40,7 @@ module fetch (
 
     // a mux to choose from normal pc+2 or pc_back
    assign PC_wb = (branch_with_stall) ? PC_Back_with_stall : PC_Next;
-   assign PC_wb_plus_stall = Stall_imem ? PC_curr: PC_wb;
+   assign PC_wb_plus_stall = Stall_imem|Stall_dmem ? PC_curr: PC_wb;
    reg_16 pc_reg (.readData(PC_curr), .err(err_reg), .clk(clk), .rst(rst), .writeData(PC_wb_plus_stall), .writeEn(~STALL));
    
   
