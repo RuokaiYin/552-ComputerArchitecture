@@ -28,9 +28,11 @@ module memory (
    output [15:0] data_mem, data_exe;
    // output err;
 
-   wire err_reg_dummy1, Mem_read_q, Mem_wrt_q;
-   reg_16 #(.SIZE(1)) memwrt_reg(.readData(Mem_wrt_q), .err(err_reg_dummy1), .clk(clk), .rst(rst), .writeData(Mem_wrt), .writeEn(~Stall_dmem));
-   reg_16 #(.SIZE(1)) mwmread_reg(.readData(Mem_read_q), .err(err_reg_dummy1), .clk(clk), .rst(rst), .writeData(Mem_read), .writeEn(~Stall_dmem));
+   wire err_reg_dummy1, Mem_read_q, Mem_wrt_q, Stall_dmem_q;
+   reg_16 #(.SIZE(1)) stall_imem_reg(.readData(Stall_dmem_q), .err(err_reg_dummy1), .clk(clk), .rst(rst), .writeData(Stall_dmem), .writeEn(1'b1));
+   assign stall_to_not = Stall_dmem_q & ~Stall_dmem; 
+   reg_16 #(.SIZE(1)) memwrt_reg(.readData(Mem_wrt_q), .err(err_reg_dummy1), .clk(clk), .rst(rst|stall_to_not), .writeData(Mem_wrt), .writeEn(~Stall_dmem));
+   reg_16 #(.SIZE(1)) mwmread_reg(.readData(Mem_read_q), .err(err_reg_dummy1), .clk(clk), .rst(rst|stall_to_not), .writeData(Mem_read), .writeEn(~Stall_dmem));
 
    // use a 8-1 mux to choose desired result from Execute stage
    wire zero_or_neg;
