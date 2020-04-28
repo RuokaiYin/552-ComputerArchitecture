@@ -139,15 +139,14 @@ module proc (/*AUTOARG*/
    wire neg_reg, zero_reg, Halt_reg_EX, Mem_read_reg_EX, Mem_wrt_reg_EX, err_mem_fetch_reg_EX;
    wire [1:0] WB_sel_reg_EX;
    wire [2:0] Alu_result_reg_EX;
-   wire [15:0] data2_reg_EX, extend_reg_EX, pc_next_reg_EX, result_reg, Cout_reg, SLBI_reg, BTR_reg;
-   wire  Mem_read_reg_EX_test, Mem_wrt_reg_EX_test;
+   wire [15:0] data2_reg_EX, extend_reg_EX, pc_next_reg_EX, result_reg, Cout_reg, SLBI_reg, BTR_reg; 
    assign EXMEM_en = ~Stall_dmem;
    reg_16 #(.SIZE(1)) EXMEM_reg_ERRMEM(.readData(err_mem_fetch_reg_EX), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(err_mem_fetch_reg_ID), .writeEn(EXMEM_en)); 
    reg_16 #(.SIZE(1)) EXMEM_reg_NEG(.readData(neg_reg), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(neg), .writeEn(EXMEM_en));
    reg_16 #(.SIZE(1)) EXMEM_reg_ZERO(.readData(zero_reg), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(zero), .writeEn(EXMEM_en));
    reg_16 #(.SIZE(1)) EXMEM_reg_HALTEX(.readData(Halt_reg_EX), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(Halt_reg_ID), .writeEn(EXMEM_en));
-   reg_16 #(.SIZE(1)) EXMEM_reg_MEMREADEX(.readData(Mem_read_reg_EX), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(Mem_read_reg_ID), .writeEn(EXMEM_en));
-   reg_16 #(.SIZE(1)) EXMEM_reg_MEMWRTEX(.readData(Mem_wrt_reg_EX), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(Mem_wrt_reg_ID), .writeEn(EXMEM_en));
+   reg_16 #(.SIZE(1)) EXMEM_reg_MEMREADEX(.readData(Mem_read_reg_EX), .err(EXMEM_err), .clk(clk), .rst(rst|Stall_dmem), .writeData(Mem_read_reg_ID), .writeEn(1'b1));
+   reg_16 #(.SIZE(1)) EXMEM_reg_MEMWRTEX(.readData(Mem_wrt_reg_EX), .err(EXMEM_err), .clk(clk), .rst(rst|Stall_dmem), .writeData(Mem_wrt_reg_ID), .writeEn(1'b1));
    reg_16 #(.SIZE(1)) EXMEM_reg_REGWRTEX(.readData(Reg_wrt_reg_EX), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(Reg_wrt_reg_ID), .writeEn(EXMEM_en));
    reg_16 #(.SIZE(2)) EXMEM_reg_WBSELEX(.readData(WB_sel_reg_EX), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(WB_sel_reg_ID), .writeEn(EXMEM_en));
    reg_16 #(.SIZE(3)) EXMEM_reg_TARGETREGEX(.readData(target_reg_EX), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(target_reg_ID), .writeEn(EXMEM_en));
@@ -159,9 +158,6 @@ module proc (/*AUTOARG*/
    reg_16 #(.SIZE(16)) EXMEM_reg_COUT(.readData(Cout_reg), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(Cout), .writeEn(EXMEM_en));
    reg_16 #(.SIZE(16)) EXMEM_reg_SLBI(.readData(SLBI_reg), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(SLBI), .writeEn(EXMEM_en));
    reg_16 #(.SIZE(16)) EXMEM_reg_BTR(.readData(BTR_reg), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(BTR), .writeEn(EXMEM_en));
-
-   assign Mem_read_reg_EX_test = Mem_read_reg_EX & ~Stall_dmem;
-   assign Mem_wrt_reg_EX_test = Mem_wrt_reg_EX_test &~Stall_dmem;
 
 
 
