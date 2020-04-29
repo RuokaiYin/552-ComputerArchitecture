@@ -104,7 +104,7 @@ always @*
 			default: err_fsm = 1'b1;
 			IDLE:
 				begin
-					enable_ct = (Wr|Rd) ? ((hit_0 & valid_0) | (~Hit & ~valid_0 & valid_1) | (~Hit & ~valid_0 & ~valid_1) | (~Hit & valid_1 & valid_0 & victimway_in)) : 1'b0;;
+					enable_ct = (Wr|Rd) ? ((hit_0 & valid_0) | (~Hit & ~valid_0 & valid_1) | (~Hit & ~valid_0 & ~valid_1) | (~Hit & valid_1 & valid_0 & victimway_in)) : 1'b0;
 					cmp_ct = (Wr|Rd) ? 1'b1 : 1'b0;
 					wr_cache = Wr ? 1'b1 : 1'b0;
 					index_cache = Addr[10:3];
