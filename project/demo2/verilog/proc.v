@@ -134,8 +134,21 @@ module proc (/*AUTOARG*/
 	);
 
 
+// execute exe(
+// 	// Inputs from Decode
+// 	.data1(data1_reg), .data2(data2_reg_ID), .extend(extend_reg_ID), .Alu_Src(Alu_src_reg), .Alu_op(Alu_op_reg), .Op_ext(Op_ext_reg), 
+//         // Input from EX/MEM fowarding
+//         .EX_MEM_fowarding_data(), .EX_MEM_fwd(),
+//         // Input from MEM/WB fowarding
+//         .MEM_WB_fowarding_data(WB), .MEM_WB_fwd(),
+// 	// Outputs to Decode/Memory
+// 	.result(result), .zero(zero), .neg(neg), .Cout(Cout), .SLBI(SLBI), .BTR(BTR), .err(err_2)
+// 	);
+
+
     // EX/MEM pip reg
    wire EXMEM_en, EXMEM_err;
+   wire Mem_read_real, Mem_wrt_real; // Mem_read_copy, Mem_wrt_copy;
    wire neg_reg, zero_reg, Halt_reg_EX, Mem_read_reg_EX, Mem_wrt_reg_EX, err_mem_fetch_reg_EX;
    wire [1:0] WB_sel_reg_EX;
    wire [2:0] Alu_result_reg_EX;
@@ -145,8 +158,8 @@ module proc (/*AUTOARG*/
    reg_16 #(.SIZE(1)) EXMEM_reg_NEG(.readData(neg_reg), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(neg), .writeEn(EXMEM_en));
    reg_16 #(.SIZE(1)) EXMEM_reg_ZERO(.readData(zero_reg), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(zero), .writeEn(EXMEM_en));
    reg_16 #(.SIZE(1)) EXMEM_reg_HALTEX(.readData(Halt_reg_EX), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(Halt_reg_ID), .writeEn(EXMEM_en));
-   reg_16 #(.SIZE(1)) EXMEM_reg_MEMREADEX(.readData(Mem_read_reg_EX), .err(EXMEM_err), .clk(clk), .rst(rst|Stall_dmem), .writeData(Mem_read_reg_ID), .writeEn(1'b1));
-   reg_16 #(.SIZE(1)) EXMEM_reg_MEMWRTEX(.readData(Mem_wrt_reg_EX), .err(EXMEM_err), .clk(clk), .rst(rst|Stall_dmem), .writeData(Mem_wrt_reg_ID), .writeEn(1'b1));
+   reg_16 #(.SIZE(1)) EXMEM_reg_MEMREADEX(.readData(Mem_read_reg_EX), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(Mem_read_reg_ID), .writeEn(EXMEM_en));
+   reg_16 #(.SIZE(1)) EXMEM_reg_MEMWRTEX(.readData(Mem_wrt_reg_EX), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(Mem_wrt_reg_ID), .writeEn(EXMEM_en));
    reg_16 #(.SIZE(1)) EXMEM_reg_REGWRTEX(.readData(Reg_wrt_reg_EX), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(Reg_wrt_reg_ID), .writeEn(EXMEM_en));
    reg_16 #(.SIZE(2)) EXMEM_reg_WBSELEX(.readData(WB_sel_reg_EX), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(WB_sel_reg_ID), .writeEn(EXMEM_en));
    reg_16 #(.SIZE(3)) EXMEM_reg_TARGETREGEX(.readData(target_reg_EX), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(target_reg_ID), .writeEn(EXMEM_en));
@@ -159,7 +172,10 @@ module proc (/*AUTOARG*/
    reg_16 #(.SIZE(16)) EXMEM_reg_SLBI(.readData(SLBI_reg), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(SLBI), .writeEn(EXMEM_en));
    reg_16 #(.SIZE(16)) EXMEM_reg_BTR(.readData(BTR_reg), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(BTR), .writeEn(EXMEM_en));
 
-
+   // reg_16 #(.SIZE(1)) EXMEM_reg_MEMREADEX(.readData(Mem_read_), .err(EXMEM_err), .clk(clk), .rst(rst|Done), .writeDataMem_read_reg_EX .writeEn(EXMEM_en));
+   // reg_16 #(.SIZE(1)) EXMEM_reg_MEMWRTEX(.readData(Mem_wrt_real), .err(EXMEM_err), .clk(clk), .rst(rst|Done), .writeData(Mem_wrt_reg_ID), .writeEn(1'b1));
+   assign Mem_read_real = Mem_read_reg_EX & (~Stall_dmem); 
+   assign Mem_wrt_real = Mem_wrt_reg_EX & (~Stall_dmem);
 
 
 
@@ -182,7 +198,7 @@ module proc (/*AUTOARG*/
 
 
     // MEM/WB pip reg
-   wire MEMWB_en, MEMWB_err, err_mem_fetch_reg_MEM;//, err_mem_mem_reg;
+   wire MEMWB_en, MEMWB_err, err_mem_fetch_reg_MEM, Halt_reg_MEM;//, err_mem_mem_reg;
    wire[1:0] WB_sel_reg_MEM;
    wire[15:0] data_mem_reg, data_exe_reg, extend_reg_MEM, pc_next_reg_MEM;
    assign MEMWB_en = ~Stall_dmem;
@@ -195,7 +211,7 @@ module proc (/*AUTOARG*/
    reg_16 #(.SIZE(16)) MEMWB_reg_DATAEXE(.readData(data_exe_reg), .err(MEMWB_err), .clk(clk), .rst(rst), .writeData(data_exe), .writeEn(MEMWB_en));
    reg_16 #(.SIZE(16)) MEMWB_reg_EXTENDMEM(.readData(extend_reg_MEM), .err(MEMWB_err), .clk(clk), .rst(rst), .writeData(extend_reg_EX), .writeEn(MEMWB_en));
    reg_16 #(.SIZE(16)) MEMWB_reg_PCNEXTMEM(.readData(pc_next_reg_MEM), .err(MEMWB_err), .clk(clk), .rst(rst), .writeData(pc_next_reg_EX), .writeEn(MEMWB_en));
-
+   reg_16 #(.SIZE(1)) MEMWB_reg_HALTMEM(.readData(Halt_reg_MEM), .err(MEMWB_err), .clk(clk), .rst(rst), .writeData(Halt_reg_EX), .writeEn(MEMWB_en));
 
     // WB Stage
 	wb wrib(

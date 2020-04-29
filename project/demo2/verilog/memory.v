@@ -46,7 +46,9 @@ module memory (
 //    assign Mem_read_tmp = Stall_dmem ? Mem_read_q : Mem_read;
    // create a data memory
    //memory2c_align mem_data(.data_out(data_mem), .data_in(data2), .addr(data_exe), .enable(~Halt & (Mem_wrt | Mem_read)), .wr(Mem_wrt), .createdump(Halt), .clk(clk), .rst(rst), .err(err));
-   stallmem mem_data(.DataOut(data_mem), .Done(Done), .Stall(Stall_dmem), .CacheHit(CacheHit), .err(err), .Addr(data_exe), .DataIn(data2), .Rd(~Halt & (Mem_wrt | Mem_read)), .Wr(Mem_wrt), .createdump(Halt), .clk(clk), .rst(rst));
+   // stallmem mem_data(.DataOut(data_mem), .Done(Done), .Stall(Stall_dmem), .CacheHit(CacheHit), .err(err), .Addr(data_exe), .DataIn(data2), .Rd(~Halt & (Mem_wrt | Mem_read)), .Wr(Mem_wrt), .createdump(Halt), .clk(clk), .rst(rst));
+   mem_system #(.memtype(0))mem_data(.DataOut(data_mem), .Done(Done), .Stall(Stall_dmem), .CacheHit(CacheHit), .err(err), .Addr(data_exe), .DataIn(data2), .Rd((~Halt) & Mem_read), .Wr(Mem_wrt), .createdump(Halt), .clk(clk), .rst(rst));
+
    // wire err_sig;
    // assign err_sig = ^{result, BTR, SLBI, Cout, data2, Alu_result};
    // assign err = (err_sig === 1'bx);

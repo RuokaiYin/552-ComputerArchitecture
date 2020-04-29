@@ -39,11 +39,12 @@ module decode (
    wire[1:0] WB_tar, Branch_sel;
    wire I_sel, J_sel, Sign_sel, Jmp, Jmp_sel, neg, zero, Branch;
 
-   wire valid,err_valid_temp;
+   wire valid,err_valid_temp, Stall_dmem_q;
    wire [15:0] previous_instr;
    reg_16 valid_reg(.readData(previous_instr), .err(err_valid_temp), .clk(clk), .rst(rst), .writeData(instr), .writeEn(1'b1));
-
-   assign valid = |(previous_instr[15:11] | (instr[15:11]));
+   reg_16 #(.SIZE(1))previous_stall_dmem(.readData(Stall_dmem_q), .err(err_valid_temp), .clk(clk), .rst(rst), .writeData(Stall_dmem), .writeEn(1'b1));
+   assign valid = (|(previous_instr[15:11] | (instr[15:11]))) | Stall_dmem_q;
+   
 
    wire [4:0] instr_valid;
    assign instr_valid = valid ? instr[15:11] : 5'b00001; 
