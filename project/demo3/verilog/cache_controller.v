@@ -54,7 +54,7 @@ localparam ACC_WT_5 = 4'b1101;
 // localparam CMP_RD_1 = 4'b1111;
 
 // ff for state machine
-wire err_reg;
+wire err_reg, valid_req;
 wire [3:0] state, state_q;
 reg [3:0] next_state;
 reg_16 #(.SIZE(4)) state_fsm(.readData(state_q), .err(err_reg), .clk(clk), .rst(rst), .writeData(next_state), .writeEn(1'b1));
@@ -99,6 +99,7 @@ always @*
 		enable_ct_en = 1'b0;
 		enable_ct_d = 1'b0;
 		final_state = 1'b0;
+		valid_req = 1'b0;
 
 		case(state)
 			default: err_fsm = 1'b1;
@@ -123,6 +124,7 @@ always @*
                     final_state = Hit;
 					Stall_sys = (Wr|Rd) ? ~Hit : 1'b0;
 					next_state = (Wr|Rd) ? (Hit ? IDLE : ((((~Hit)&(enable_ct)&(valid_0)&(dirty_0))|(((~Hit)&(!enable_ct)&(valid_1)&(dirty_1)))) ? (ACC_RD_0) : (ACC_WT_0))) : IDLE;
+					valid_req = (Wr|Rd) ? (Hit ? 1'b1 : ((((~Hit)&(enable_ct)&(valid_0)&(dirty_0))|(((~Hit)&(!enable_ct)&(valid_1)&(dirty_1)))) ? (1'b1) : (1'b1))) : 1'b0;
 				end
 			CMP_RD_0:
 				begin
