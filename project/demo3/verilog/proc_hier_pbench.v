@@ -131,7 +131,7 @@ module proc_hier_pbench();
    assign PC = DUT.p0.fet.PC_curr;
    assign Inst = DUT.p0.instr_reg;
    
-   assign RegWrite = DUT.p0.Reg_wrt_reg_MEM;
+   assign RegWrite = (DUT.p0.Reg_wrt_reg_MEM) & (~DUT.p0.Stall_dmem);
    // Is register file being written to, one bit signal (1 means yes, 0 means no)
    //    
    assign WriteRegister = DUT.p0.target_reg_MEM;
@@ -149,7 +149,7 @@ module proc_hier_pbench();
    assign MemAddress = DUT.p0.mem.data_exe;
    // Address to access memory with (for both reads and writes to memory, 16 bits)
    
-   assign MemDataIn = DUT.p0.data2_reg_EX;
+   assign MemDataIn = DUT.p0.mem.data2;
    // Data to be written to memory for memory writes (16 bits)
    
    assign MemDataOut = DUT.p0.mem.data_mem;
@@ -166,7 +166,7 @@ module proc_hier_pbench();
 
    assign DCacheReq = DUT.p0.mem.mem_data.ctrl.valid_req;
    // // Signal indicating a valid instruction data read or write request to cache
-   // // Above assignment is a dummy example
+   // // Above assignment is a dummy examplememmem
    // //    
    assign DCacheHit = DUT.p0.mem.CacheHit;
    
