@@ -1,6 +1,6 @@
-module stall_detector (instr_reg, Reg_wrt_reg_ID, Mem_read_ID, target_reg_ID, Reg_wrt_reg_EX, target_reg_EX, STALL);
+module stall_detector (instr_reg, Reg_wrt_reg_ID, Mem_read_ID, Mem_read_EX, target_reg_ID, Reg_wrt_reg_EX, target_reg_EX, STALL);
 input [15:0] instr_reg;
-input Reg_wrt_reg_ID, Reg_wrt_reg_EX, Mem_read_ID;
+input Reg_wrt_reg_ID, Reg_wrt_reg_EX, Mem_read_ID, Mem_read_EX;
 // input [1:0] Alu_src_reg;
 input [2:0] target_reg_ID, target_reg_EX; 
 // input [4:0] Alu_op_reg; 
@@ -18,25 +18,24 @@ assign IDEX_Rs = (instr_reg[10:8] === target_reg_ID); // Rs RAW
 assign IDEX_Rt = (instr_reg[7:5] === target_reg_ID) & (Rt_valid); // Rt RAW
 assign IDEX_stall = IDEX_wrt & (IDEX_Rs | IDEX_Rt);
 
-// wire EXM_wrt;
-// wire EXM_Rs;
-// wire EXM_Rt;
-// wire EXM_stall;
-// assign EXM_wrt = (Reg_wrt_reg_EX === 1'b1) & (instr_reg[15:11] !== 5'b11000);
-// assign EXM_Rs = (instr_reg[10:8] === target_reg_EX);
-// assign EXM_Rt = (instr_reg[7:5] === target_reg_EX) & (Rt_valid);
-// assign EXM_stall = EXM_wrt & (EXM_Rs | EXM_Rt);
-
-// assign STALL = 1'b0; // IDEX_stall | EXM_stall; 
+wire EXM_wrt;
+wire EXM_Rs;
+wire EXM_Rt;
+wire EXM_stall;
+assign EXM_wrt = (Reg_wrt_reg_EX === 1'b1) & (instr_reg[15:11] !== 5'b11000);
+assign EXM_Rs = (instr_reg[10:8] === target_reg_EX);
+assign EXM_Rt = (instr_reg[7:5] === target_reg_EX) & (Rt_valid);
+assign EXM_stall = EXM_wrt & (EXM_Rs | EXM_Rt);
 
 
 // Two situations that a STALL cannot be avoided
 // a stall is needed when it is dependent on previous load
 // a stall is needed when a branch/jumpR is dependent on its previous instruction
+// a stall is needed when a branch/jumpR is dependent on the load before its previous instruction i.e. load, other, branch/jumpR
 wire isBranch, isJumpR; 
 assign isBranch = (instr_reg[15:11] === 5'b01100) | (instr_reg[15:11] === 5'b01101) | (instr_reg[15:11] === 5'b01110) | (instr_reg[15:11] === 5'b01111);
 assign isJumpR = (instr_reg[15:11] === 5'b00101) | (instr_reg[15:11] === 5'b00111);
-assign STALL = (IDEX_stall & Mem_read_ID) | (IDEX_stall & isBranch) | (IDEX_stall & isJumpR);
+assign STALL = (IDEX_stall & Mem_read_ID) | (IDEX_stall & (isBranch|isJumpR) | EXM_stall & Mem_read_EX & (isBranch|isJumpR));
 
 
 endmodule
