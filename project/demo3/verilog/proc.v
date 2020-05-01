@@ -25,6 +25,11 @@ module proc (/*AUTOARG*/
    /* your code here -- should include instantiations of fetch, decode, execute, mem and wb modules */
    wire err_mem_fetch, Stall_imem, Stall_dmem, branch_with_stall;
 
+
+   // test wires
+   wire[15:0] instr_test_ex, instr_test_mem;
+
+
    // Fetch Stage
    wire  Halt, halt_back;
    wire STALL, Branch_stall; 
@@ -148,6 +153,7 @@ module proc (/*AUTOARG*/
    wire [2:0] Alu_result_reg_ID;
    wire [15:0] extend_reg_ID, pc_next_reg_ID;
    assign IDEX_en = ~Stall_dmem;
+   reg_16 test_instr_EX(.readData(instr_test_ex), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(instr_withNOP_stall), .writeEn(IDEX_en));
    reg_16 #(.SIZE(1)) IDEX_reg_ERRMEM(.readData(err_mem_fetch_reg_ID), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(err_mem_fetch_reg_IF), .writeEn(IDEX_en));
    reg_16 #(.SIZE(1)) IDEX_reg_MEMREADID(.readData(Mem_read_reg_ID), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(Mem_read), .writeEn(IDEX_en));
    reg_16 #(.SIZE(1)) IDEX_reg_MEMWRTID(.readData(Mem_wrt_reg_ID), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(Mem_wrt), .writeEn(IDEX_en));
@@ -184,6 +190,7 @@ module proc (/*AUTOARG*/
    wire Halt_reg_EX, Mem_wrt_reg_EX, err_mem_fetch_reg_EX;
    wire [15:0] data2_reg_EX; 
    assign EXMEM_en = ~Stall_dmem;
+   reg_16 test_instr_MEM(.readData(instr_test_mem), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(instr_test_ex), .writeEn(EXMEM_en));
    reg_16 #(.SIZE(1)) EXMEM_reg_ERRMEM(.readData(err_mem_fetch_reg_EX), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(err_mem_fetch_reg_ID), .writeEn(EXMEM_en)); 
    reg_16 #(.SIZE(1)) EXMEM_reg_NEG(.readData(neg_reg), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(neg), .writeEn(EXMEM_en));
    reg_16 #(.SIZE(1)) EXMEM_reg_ZERO(.readData(zero_reg), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(zero), .writeEn(EXMEM_en));
