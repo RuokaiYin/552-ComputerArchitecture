@@ -186,7 +186,7 @@ module proc (/*AUTOARG*/
 
     // EX/MEM pip reg
    wire EXMEM_en, EXMEM_err;
-   wire Mem_read_real, Mem_wrt_real; // Mem_read_copy, Mem_wrt_copy;
+   wire Mem_read_real, Mem_wrt_real, Reg_wrt_real; // Mem_read_copy, Mem_wrt_copy;
    wire Halt_reg_EX, Mem_wrt_reg_EX, err_mem_fetch_reg_EX;
    wire [15:0] data2_reg_EX; 
    assign EXMEM_en = ~Stall_dmem;
@@ -213,7 +213,7 @@ module proc (/*AUTOARG*/
    // reg_16 #(.SIZE(1)) EXMEM_reg_MEMWRTEX(.readData(Mem_wrt_real), .err(EXMEM_err), .clk(clk), .rst(rst|Done), .writeData(Mem_wrt_reg_ID), .writeEn(1'b1));
    assign Mem_read_real = Mem_read_reg_EX & (~Stall_dmem); 
    assign Mem_wrt_real = Mem_wrt_reg_EX & (~Stall_dmem);
-
+   assign Reg_wrt_real = (Reg_wrt_reg_MEM & fStall_dmem_prevcycle) | (Reg_wrt_reg_MEM & (~fStall_dmem_nextcycle & Stall_dmem));
 
 
     // MEM Stage

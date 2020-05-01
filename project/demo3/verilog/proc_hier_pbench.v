@@ -132,7 +132,8 @@ module proc_hier_pbench();
    assign PC = DUT.p0.fet.PC_curr;
    assign Inst = DUT.p0.instr_reg;
    
-   assign RegWrite = (DUT.p0.Reg_wrt_reg_MEM) & (~DUT.p0.Stall_dmem);
+   // assign RegWrite = (DUT.p0.Reg_wrt_reg_MEM) & (~DUT.p0.Stall_dmem);
+   assign RegWrite = DUT.p0.Reg_wrt_real;
    // Is register file being written to, one bit signal (1 means yes, 0 means no)
    //    
    assign WriteRegister = DUT.p0.target_reg_MEM;
