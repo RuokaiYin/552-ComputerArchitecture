@@ -68,13 +68,60 @@ module proc (/*AUTOARG*/
    // add a mux to choose from normal instr or NOP on stall of other cases, after IF/ID pip reg.
    assign instr_withNOP_stall = (STALL | rst) ? 16'b00001_xxxxxxxxxxx : instr_reg;
    
+   wire [4:0] Alu_op_reg;
+
+   // forwarding and stall
+   wire[2:0] target_reg_ID, target_reg_EX;
+   wire Rs_exe, Rs_mem, Rt_exe, Rt_mem, Rs_exe_q, Rs_mem_q, Rt_exe_q, Rt_mem_q, err_forwarding, Mem_read_reg_ID, Reg_wrt_reg_ID, Reg_wrt_reg_EX;
+   // stall detector
+   stall_detector stalldetec(.instr_reg(instr_reg), .Reg_wrt_reg_ID(Reg_wrt_reg_ID), .target_reg_ID(target_reg_ID), .Reg_wrt_reg_EX(Reg_wrt_reg_EX), 
+   .target_reg_EX(target_reg_EX), .Mem_read_ID(Mem_read_reg_ID), .STALL(STALL));
+
+   forwarding_detector forwardingdetec(.instr_reg(instr_reg), .Reg_wrt_reg_ID(Reg_wrt_reg_ID), .target_reg_ID(target_reg_ID), .Reg_wrt_reg_EX(Reg_wrt_reg_EX), 
+   .target_reg_EX(target_reg_EX), .Mem_read_ID(Mem_read_reg_ID), .Rs_exe(Rs_exe), .Rs_mem(Rs_mem), .Rt_exe(Rt_exe), .Rt_mem(Rt_mem));
+   reg_16 #(.SIZE(1)) Rs_exe_reg(.readData(Rs_exe_q), .err(err_forwarding), .clk(clk), .rst(rst), .writeData(Rs_exe), .writeEn(1'b1));
+   reg_16 #(.SIZE(1)) Rs_mem_reg(.readData(Rs_mem_q), .err(err_forwarding), .clk(clk), .rst(rst), .writeData(Rs_mem), .writeEn(1'b1));
+   reg_16 #(.SIZE(1)) Rt_exe_reg(.readData(Rt_exe_q), .err(err_forwarding), .clk(clk), .rst(rst), .writeData(Rt_exe), .writeEn(1'b1));
+   reg_16 #(.SIZE(1)) Rt_mem_reg(.readData(Rt_mem_q), .err(err_forwarding), .clk(clk), .rst(rst), .writeData(Rt_mem), .writeEn(1'b1));
+
+   wire[15:0] data1_real, data2_real, data_exe_temp, data_mem_temp, data1_reg, data2_reg_ID, result_temp;
+   wire [1:0] WB_sel_reg_EX, WB_sel_reg_MEM;
+   wire [15:0] pc_next_reg_EX, extend_reg_EX, data_exe_reg, result_reg, data_mem_reg, extend_reg_MEM, pc_next_reg_MEM;
+   wire [15:0] SLBI_reg, BTR_reg, Cout_reg;
+   wire[15:0] data1_real_stall, data2_real_stall;
+   wire [15:0] data1_real_q, data2_real_q;
+   wire neg_reg, zero_reg; 
+   wire fStall_dmem_q, fStall_dmem_nextcycle, fStall_dmem_prevcycle;
+   wire [2:0] Alu_result_reg_EX;
+   assign result_temp = Alu_result_reg_EX[2] ? 
+                        (Alu_result_reg_EX[1] ? 
+                        (Alu_result_reg_EX[0] ? 16'bx : SLBI_reg) : 
+                        (Alu_result_reg_EX[0] ? BTR_reg : {15'b0, (zero_reg|neg_reg)})) : 
+                        (Alu_result_reg_EX[1] ? (Alu_result_reg_EX[0] ? {15'b0, neg_reg} : {15'b0, zero_reg}) : 
+                        (Alu_result_reg_EX[0] ? Cout_reg : result_reg));
+   assign data_exe_temp = (WB_sel_reg_EX[1]) ? ((WB_sel_reg_EX[0]) ? (pc_next_reg_EX) : (extend_reg_EX)) : ((WB_sel_reg_EX[0]) ? (result_temp) : 16'b0);
+   assign data_mem_temp = (WB_sel_reg_MEM[1]) ? ((WB_sel_reg_MEM[0]) ? (pc_next_reg_MEM) : (extend_reg_MEM)) : ((WB_sel_reg_MEM[0]) ? (data_exe_reg) : (data_mem_reg));
+   assign data1_real = Rs_exe_q ? (data_exe_temp) : (Rs_mem_q ? data_mem_temp : data1_reg);
+   assign data2_real = Rt_exe_q ? (data_exe_temp) : (Rt_mem_q ? data_mem_temp : data2_reg_ID);
+
+   // deal with dmem stall 
+   reg_16 #(.SIZE(16)) data1_real_reg(.readData(data1_real_q), .err(err_forwarding), .clk(clk), .rst(rst), .writeData(data1_real), .writeEn(fStall_dmem_prevcycle));
+   reg_16 #(.SIZE(16)) data2_real_reg(.readData(data2_real_q), .err(err_forwarding), .clk(clk), .rst(rst), .writeData(data2_real), .writeEn(fStall_dmem_prevcycle));
    
+   assign data1_real_stall = fStall_dmem_nextcycle ? data1_real_q : data1_real;
+   assign data2_real_stall = fStall_dmem_nextcycle ? data2_real_q : data2_real;
+   reg_16 #(.SIZE(1)) fstall_dmem_reg(.readData(fStall_dmem_q), .err(err_forwarding), .clk(clk), .rst(rst), .writeData(Stall_dmem), .writeEn(1'b1));
+   assign fStall_dmem_nextcycle = fStall_dmem_q & ~Stall_dmem;
+   assign fStall_dmem_prevcycle = ~fStall_dmem_q & Stall_dmem; 
+
+
+
 
    // Decode stage
-   wire Mem_read, Mem_wrt, Reg_wrt, Reg_wrt_reg_ID, Reg_wrt_reg_MEM, Reg_wrt_reg_EX, err_mem_fetch_reg_ID;
+   wire Mem_read, Mem_wrt, Reg_wrt, Reg_wrt_reg_MEM, err_mem_fetch_reg_ID;
    wire [15:0] WB;
    wire [1:0] Op_ext, WB_sel,Alu_src, Alu_src_reg;
-   wire [2:0] Alu_result, target_reg, target_reg_ID, target_reg_MEM, target_reg_EX;
+   wire [2:0] Alu_result, target_reg, target_reg_MEM;
    wire [4:0] Alu_op;
    wire [15:0] data1,data2,extend;
 	
@@ -86,7 +133,7 @@ module proc (/*AUTOARG*/
         // IN from WB
         .WB(WB), .target_reg_WB(target_reg_MEM), .Reg_wrt_WB(Reg_wrt_reg_MEM),
         // Global In
-        .clk(clk), .rst(rst), .Stall_dmem(Stall_dmem),
+        .clk(clk), .rst(rst), .Stall_dmem(Stall_dmem), .takeForward(Rs_mem), .data1_exe(data_exe_temp),
 	// Out Control Logic
 	.Halt(Halt),.WB_sel(WB_sel),.Alu_src(Alu_src),.Alu_result(Alu_result),.Alu_op(Alu_op),.Mem_read(Mem_read),.Mem_wrt(Mem_wrt), .target_reg(target_reg), .Reg_wrt(Reg_wrt),
         // Out to Exec
@@ -96,18 +143,12 @@ module proc (/*AUTOARG*/
         // Global out
         .err(err_1));
 
-   wire [4:0] Alu_op_reg;
-   // stall detector
-   stall_detector stalldetec(.instr_reg(instr_reg), .Reg_wrt_reg_ID(Reg_wrt_reg_ID), .target_reg_ID(target_reg_ID), .Reg_wrt_reg_EX(Reg_wrt_reg_EX), 
-   .target_reg_EX(target_reg_EX), .STALL(STALL));
-
-
     // ID/EX pip reg
    wire IDEX_en,IDEX_err;
-   wire Mem_read_reg_ID, Mem_wrt_reg_ID, Halt_reg_ID;
+   wire Mem_wrt_reg_ID, Halt_reg_ID;
    wire [1:0] Op_ext_reg, WB_sel_reg_ID;
    wire [2:0] Alu_result_reg_ID;
-   wire [15:0] data1_reg, data2_reg_ID, extend_reg_ID, pc_next_reg_ID;
+   wire [15:0] extend_reg_ID, pc_next_reg_ID;
    assign IDEX_en = ~Stall_dmem;
    reg_16 test_instr_EX(.readData(instr_test_ex), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(instr_withNOP_stall), .writeEn(IDEX_en));
    reg_16 #(.SIZE(1)) IDEX_reg_ERRMEM(.readData(err_mem_fetch_reg_ID), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(err_mem_fetch_reg_IF), .writeEn(IDEX_en));
@@ -127,38 +168,24 @@ module proc (/*AUTOARG*/
 //    reg_16 #(.SIZE(16)) IDEX_reg_PCBACK(.readData(PC_Back_reg), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(PC_Back), .writeEn(IDEX_en));
    reg_16 #(.SIZE(16)) IDEX_reg_PCNEXTID(.readData(pc_next_reg_ID), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(pc_next_reg_IF), .writeEn(IDEX_en));
    
-
+    
     // Execute stage
    wire neg, zero;
    wire [15:0] Cout, SLBI, BTR, result;
 	
         execute exe(
 	// Inputs from Decode
-	.data1(data1_reg), .data2(data2_reg_ID), .extend(extend_reg_ID), .Alu_Src(Alu_src_reg), .Alu_op(Alu_op_reg), .Op_ext(Op_ext_reg), 
+	.data1(data1_real_stall), .data2(data2_real_stall), .extend(extend_reg_ID), .Alu_Src(Alu_src_reg), .Alu_op(Alu_op_reg), .Op_ext(Op_ext_reg), 
 	// Outputs to Decode/Memory
 	.result(result), .zero(zero), .neg(neg), .Cout(Cout), .SLBI(SLBI), .BTR(BTR), .err(err_2)
 	);
 
 
-// execute exe(
-// 	// Inputs from Decode
-// 	.data1(data1_reg), .data2(data2_reg_ID), .extend(extend_reg_ID), .Alu_Src(Alu_src_reg), .Alu_op(Alu_op_reg), .Op_ext(Op_ext_reg), 
-//         // Input from EX/MEM fowarding
-//         .EX_MEM_fowarding_data(), .EX_MEM_fwd(),
-//         // Input from MEM/WB fowarding
-//         .MEM_WB_fowarding_data(WB), .MEM_WB_fwd(),
-// 	// Outputs to Decode/Memory
-// 	.result(result), .zero(zero), .neg(neg), .Cout(Cout), .SLBI(SLBI), .BTR(BTR), .err(err_2)
-// 	);
-
-
     // EX/MEM pip reg
    wire EXMEM_en, EXMEM_err;
    wire Mem_read_real, Mem_wrt_real; // Mem_read_copy, Mem_wrt_copy;
-   wire neg_reg, zero_reg, Halt_reg_EX, Mem_read_reg_EX, Mem_wrt_reg_EX, err_mem_fetch_reg_EX;
-   wire [1:0] WB_sel_reg_EX;
-   wire [2:0] Alu_result_reg_EX;
-   wire [15:0] data2_reg_EX, extend_reg_EX, pc_next_reg_EX, result_reg, Cout_reg, SLBI_reg, BTR_reg; 
+   wire Halt_reg_EX, Mem_read_reg_EX, Mem_wrt_reg_EX, err_mem_fetch_reg_EX;
+   wire [15:0] data2_reg_EX; 
    assign EXMEM_en = ~Stall_dmem;
    reg_16 test_instr_MEM(.readData(instr_test_mem), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(instr_test_ex), .writeEn(EXMEM_en));
    reg_16 #(.SIZE(1)) EXMEM_reg_ERRMEM(.readData(err_mem_fetch_reg_EX), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(err_mem_fetch_reg_ID), .writeEn(EXMEM_en)); 
@@ -171,7 +198,7 @@ module proc (/*AUTOARG*/
    reg_16 #(.SIZE(2)) EXMEM_reg_WBSELEX(.readData(WB_sel_reg_EX), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(WB_sel_reg_ID), .writeEn(EXMEM_en));
    reg_16 #(.SIZE(3)) EXMEM_reg_TARGETREGEX(.readData(target_reg_EX), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(target_reg_ID), .writeEn(EXMEM_en));
    reg_16 #(.SIZE(3)) EXMEM_reg_ALURESULTEX(.readData(Alu_result_reg_EX), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(Alu_result_reg_ID), .writeEn(EXMEM_en));
-   reg_16 #(.SIZE(16)) EXMEM_reg_DATA2EX(.readData(data2_reg_EX), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(data2_reg_ID), .writeEn(EXMEM_en));
+   reg_16 #(.SIZE(16)) EXMEM_reg_DATA2EX(.readData(data2_reg_EX), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(data2_real_stall), .writeEn(EXMEM_en));
    reg_16 #(.SIZE(16)) EXMEM_reg_EXTENDEX(.readData(extend_reg_EX), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(extend_reg_ID), .writeEn(EXMEM_en));
    reg_16 #(.SIZE(16)) EXMEM_reg_PCNEXTEX(.readData(pc_next_reg_EX), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(pc_next_reg_ID), .writeEn(EXMEM_en));
    reg_16 #(.SIZE(16)) EXMEM_reg_RESULT(.readData(result_reg), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(result), .writeEn(EXMEM_en));
@@ -206,8 +233,7 @@ module proc (/*AUTOARG*/
 
     // MEM/WB pip reg
    wire MEMWB_en, MEMWB_err, err_mem_fetch_reg_MEM, Halt_reg_MEM;//, err_mem_mem_reg;
-   wire[1:0] WB_sel_reg_MEM;
-   wire[15:0] data_mem_reg, data_exe_reg, extend_reg_MEM, pc_next_reg_MEM;
+   // wire[15:0] data_mem_reg, extend_reg_MEM, pc_next_reg_MEM;
    assign MEMWB_en = ~Stall_dmem;
 //    reg_16 #(.SIZE(1)) MEMWB_reg_ERRMEMMEM(.readData(err_mem_mem_reg), .err(MEMWB_err), .clk(clk), .rst(rst), .writeData(err_mem_mem), .writeEn(MEMWB_en));
    reg_16 #(.SIZE(1)) MEMWB_reg_ERRMEM(.readData(err_mem_fetch_reg_MEM), .err(MEMWB_err), .clk(clk), .rst(rst), .writeData(err_mem_fetch_reg_EX), .writeEn(MEMWB_en));
@@ -234,4 +260,3 @@ module proc (/*AUTOARG*/
 	assign err = err_mem_fetch_reg_MEM | err_mem_mem;
 		
 endmodule 
-

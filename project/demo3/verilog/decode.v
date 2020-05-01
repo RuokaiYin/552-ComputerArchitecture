@@ -12,7 +12,7 @@ module decode (
         // IN from WB
         WB, target_reg_WB, Reg_wrt_WB,
         // Global In
-        clk, rst, Stall_dmem, 
+        clk, rst, Stall_dmem, takeForward, data1_exe, 
 	// Out Control Logic
 	Halt,WB_sel,Alu_src,Alu_result,Alu_op,Mem_read,Mem_wrt,target_reg,Reg_wrt,
         // Out to Exec
@@ -24,9 +24,9 @@ module decode (
 	
 
    // TODO: Your code here
-   input clk, rst, halt_back, Reg_wrt_WB, Stall_dmem;
+   input clk, rst, halt_back, Reg_wrt_WB, Stall_dmem, takeForward;
    input [2:0] target_reg_WB;
-   input [15:0] instr, WB, No_Branch;
+   input [15:0] instr, WB, No_Branch, data1_exe;
 
    output Halt,Mem_read,Mem_wrt,err,Branch_stall, Reg_wrt;
    output [1:0] Op_ext, WB_sel,Alu_src;
@@ -77,12 +77,15 @@ module decode (
    wire idle_cout_bran, idle_cout_jmp; // no-use wire for C_out
    
    // logic zero and neg
-   assign zero = ~(|data1);
-   assign neg = data1[15];
+   wire [15:0] data1_jump; 
+   assign zero = takeForward ? ~(|data1_exe) : ~(|data1);
+   assign neg = takeForward ? data1_exe[15] : data1[15];
+   assign data1_jump = takeForward ? data1_exe : data1; 
+
 
    // adders
    cla_16b bran_adder(.A(extend), .B(No_Branch), .C_in(1'b0), .S(Bran), .C_out(idle_cout_bran)); // adder to add branch result
-   cla_16b jmp_adder(.A(extend), .B(data1), .C_in(1'b0), .S(result_jmp), .C_out(idle_cout_jmp)); // adder to add jmp result
+   cla_16b jmp_adder(.A(extend), .B(data1_jump), .C_in(1'b0), .S(result_jmp), .C_out(idle_cout_jmp)); // adder to add jmp result
    
    assign branch_mux_1 = Jmp_sel ? result_jmp : No_Branch;
    assign branch_sel_mux = (Branch_sel[1]) ? ((Branch_sel[0]) ? (~neg) : (neg)) : ((Branch_sel[0]) ? (~zero) : (zero));
