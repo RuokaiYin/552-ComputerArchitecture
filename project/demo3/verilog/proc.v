@@ -72,10 +72,10 @@ module proc (/*AUTOARG*/
 
    // forwarding and stall
    wire[2:0] target_reg_ID, target_reg_EX;
-   wire Rs_exe, Rs_mem, Rt_exe, Rt_mem, Rs_exe_q, Rs_mem_q, Rt_exe_q, Rt_mem_q, err_forwarding, Mem_read_reg_ID, Reg_wrt_reg_ID, Reg_wrt_reg_EX, Mem_read_reg_EX;
+   wire Rs_exe, Rs_mem, Rt_exe, Rt_mem, Rs_exe_q, Rs_mem_q, Rt_exe_q, Rt_mem_q, err_forwarding, Mem_read_reg_ID, Reg_wrt_reg_ID, Reg_wrt_reg_EX;
    // stall detector
    stall_detector stalldetec(.instr_reg(instr_reg), .Reg_wrt_reg_ID(Reg_wrt_reg_ID), .target_reg_ID(target_reg_ID), .Reg_wrt_reg_EX(Reg_wrt_reg_EX), 
-   .target_reg_EX(target_reg_EX), .Mem_read_ID(Mem_read_reg_ID), .Mem_read_EX(Mem_read_reg_EX), .STALL(STALL));
+   .target_reg_EX(target_reg_EX), .Mem_read_ID(Mem_read_reg_ID), .STALL(STALL));
 
    forwarding_detector forwardingdetec(.instr_reg(instr_reg), .Reg_wrt_reg_ID(Reg_wrt_reg_ID), .target_reg_ID(target_reg_ID), .Reg_wrt_reg_EX(Reg_wrt_reg_EX), 
    .target_reg_EX(target_reg_EX), .Mem_read_ID(Mem_read_reg_ID), .Rs_exe(Rs_exe), .Rs_mem(Rs_mem), .Rt_exe(Rt_exe), .Rt_mem(Rt_mem));
@@ -90,7 +90,7 @@ module proc (/*AUTOARG*/
    wire [15:0] SLBI_reg, BTR_reg, Cout_reg;
    wire[15:0] data1_real_stall, data2_real_stall;
    wire [15:0] data1_real_q, data2_real_q;
-   wire neg_reg, zero_reg, takeForward;
+   wire neg_reg, zero_reg; 
    wire fStall_dmem_q, fStall_dmem_nextcycle, fStall_dmem_prevcycle;
    wire [2:0] Alu_result_reg_EX;
    assign result_temp = Alu_result_reg_EX[2] ? 
@@ -114,9 +114,6 @@ module proc (/*AUTOARG*/
    assign fStall_dmem_nextcycle = fStall_dmem_q & ~Stall_dmem;
    assign fStall_dmem_prevcycle = ~fStall_dmem_q & Stall_dmem; 
 
-   // For branch and jumpR
-   assign takeForward = Rs_mem & (~Mem_read_reg_EX);
-
 
 
 
@@ -136,7 +133,7 @@ module proc (/*AUTOARG*/
         // IN from WB
         .WB(WB), .target_reg_WB(target_reg_MEM), .Reg_wrt_WB(Reg_wrt_reg_MEM),
         // Global In
-        .clk(clk), .rst(rst), .Stall_dmem(Stall_dmem), .takeForward(takeForward), .data1_exe(data_exe_temp),
+        .clk(clk), .rst(rst), .Stall_dmem(Stall_dmem), .takeForward(Rs_mem), .data1_exe(data_exe_temp),
 	// Out Control Logic
 	.Halt(Halt),.WB_sel(WB_sel),.Alu_src(Alu_src),.Alu_result(Alu_result),.Alu_op(Alu_op),.Mem_read(Mem_read),.Mem_wrt(Mem_wrt), .target_reg(target_reg), .Reg_wrt(Reg_wrt),
         // Out to Exec
@@ -187,7 +184,7 @@ module proc (/*AUTOARG*/
     // EX/MEM pip reg
    wire EXMEM_en, EXMEM_err;
    wire Mem_read_real, Mem_wrt_real; // Mem_read_copy, Mem_wrt_copy;
-   wire Halt_reg_EX, Mem_wrt_reg_EX, err_mem_fetch_reg_EX;
+   wire Halt_reg_EX, Mem_read_reg_EX, Mem_wrt_reg_EX, err_mem_fetch_reg_EX;
    wire [15:0] data2_reg_EX; 
    assign EXMEM_en = ~Stall_dmem;
    reg_16 test_instr_MEM(.readData(instr_test_mem), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(instr_test_ex), .writeEn(EXMEM_en));
@@ -263,4 +260,3 @@ module proc (/*AUTOARG*/
 	assign err = err_mem_fetch_reg_MEM | err_mem_mem;
 		
 endmodule 
-
