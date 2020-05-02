@@ -136,6 +136,6 @@ assign Alu_op = op_temp[6:2];
 assign Halt = halt_back ? 1'b1 : op_temp[1];
 assign Jmp = op_temp[0];
 
-assign err = (err_temp === 1);
+assign err = (err_temp == 1);
 
 endmodule
