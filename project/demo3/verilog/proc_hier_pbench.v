@@ -61,7 +61,7 @@ module proc_hier_pbench();
       if (!DUT.c0.rst) begin
          if (Halt || RegWrite || MemWrite) begin
             inst_count = inst_count + 1;
-            $display("Halt: %d RegWrite: %d MemWrite: %d", Halt, RegWrite, MemWrite);
+            // $display("Halt: %d RegWrite: %d MemWrite: %d", Halt, RegWrite, MemWrite);
          end
          if (DCacheHit) begin
             DCacheHit_count = DCacheHit_count + 1;      
