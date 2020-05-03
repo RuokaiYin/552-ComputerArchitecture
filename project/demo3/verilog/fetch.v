@@ -47,7 +47,7 @@ module fetch (
 
    assign PC_Back_with_stall = (Stall_imem_nextcycle|Stall_dmem_nextcycle) ? PC_Back_q : PC_Back;
    //assign branch_with_stall = (Stall_imem_nextcycle|Stall_dmem_nextcycle) ? Branch_stall_q : Branch_stall;
-   assign branch_with_stall = Stall_dmem_nextcycle ? 1'b0 : ((Stall_imem_nextcycle) ? Branch_stall_q : Branch_stall);
+   assign branch_with_stall = (Stall_imem_nextcycle) ? Branch_stall_q : Branch_stall;
 
     // a mux to choose from normal pc+2 or pc_back
    assign PC_wb = (branch_with_stall) ? PC_Back_with_stall : PC_Next;
