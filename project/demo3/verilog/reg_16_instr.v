@@ -28,6 +28,8 @@ module reg_16_instr (
    assign readData = rst ? 16'b00001_xxxxxxxxxxx : readData_temp;   
    
    // err_checker checker(.err(err),.writeData(writeData), .writeEn(writeEn));   
-  assign err = 1'b0;
+   wire err_temp;
+   assign err_temp = ^{writeEn, writeData};
+   assign err = (err_temp === 1'bx);
 
 endmodule
