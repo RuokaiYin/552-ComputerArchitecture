@@ -25,7 +25,6 @@ module proc (/*AUTOARG*/
    /* your code here -- should include instantiations of fetch, decode, execute, mem and wb modules */
    wire err_1, err_2;
    wire err_mem_fetch, Stall_imem, Stall_dmem, branch_with_stall;
-   wire fStall_dmem_q, fStall_dmem_nextcycle, fStall_dmem_prevcycle; // move up due to need to use it as early as decs' input
 
 
    // test wires
@@ -93,6 +92,7 @@ module proc (/*AUTOARG*/
    wire[15:0] data1_real_stall, data2_real_stall;
    wire [15:0] data1_real_q, data2_real_q;
    wire neg_reg, zero_reg, takeForward;
+   wire fStall_dmem_q, fStall_dmem_nextcycle, fStall_dmem_prevcycle;
    wire [2:0] Alu_result_reg_EX;
    assign result_temp = Alu_result_reg_EX[2] ? 
                         (Alu_result_reg_EX[1] ? 
