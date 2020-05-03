@@ -44,8 +44,7 @@ module proc (/*AUTOARG*/
 	// Outputs to Decode
 	.No_Branch(No_Branch), .instr(instr), .halt_back(halt_back),
         // Output to WB
-        .PC_Next(PC_Next),
-        // Other output
+        .PC_Next(PC_Next), // .PC_curr(PC_curr)
 	.err(err_mem_fetch), .Stall_imem(Stall_imem), .branch_with_stall(branch_with_stall));
 
    
