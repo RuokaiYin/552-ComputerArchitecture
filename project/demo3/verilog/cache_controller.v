@@ -38,8 +38,8 @@ output reg[4:0] tag_cache;
 // define states
 localparam IDLE = 4'b0000;
 // localparam HIT = 4'b0001;
-// localparam CMP_RD_0 = 4'b0010;
-// localparam CMP_WT_0 = 4'b0011;
+localparam CMP_RD_0 = 4'b0010;
+localparam CMP_WT_0 = 4'b0011;
 localparam ACC_RD_0 = 4'b0100;
 localparam ACC_RD_1 = 4'b0101;
 localparam ACC_RD_2 = 4'b0110;
@@ -127,6 +127,50 @@ always @*
 					next_state = (Wr|Rd) ? (Hit ? IDLE : ((((~Hit)&(enable_ct)&(valid_0)&(dirty_0))|(((~Hit)&(!enable_ct)&(valid_1)&(dirty_1)))) ? (ACC_RD_0) : (ACC_WT_0))) : IDLE;
 					valid_req = (Wr|Rd) ? (Hit ? 1'b1 : ((((~Hit)&(enable_ct)&(valid_0)&(dirty_0))|(((~Hit)&(!enable_ct)&(valid_1)&(dirty_1)))) ? (1'b1) : (1'b1))) : 1'b0;
 				end
+			CMP_RD_0:
+				begin
+					// enable_ct = (hit_0 & valid_0) | (~Hit & ~valid_0 & valid_1) | (~Hit & ~valid_0 & ~valid_1) | (~Hit & valid_1 & valid_0 & victimway_in);
+					// cmp_ct = 1'b1;
+					// index_cache = Addr[10:3];
+					// offset_cache = Addr[2:0];
+					// tag_cache = Addr[15:11];
+					// DataOut_ct = DataOut_cache;
+					// ori = 1'b1;
+					// enable_ct_d = (hit_0 & valid_0) | (~Hit & ~valid_0 & valid_1) | (~Hit & ~valid_0 & ~valid_1) | (~Hit & valid_1 & valid_0 & victimway_in);
+					// enable_ct_en = 1'b1;
+					// isRd = 1'b1;
+                    // Done = Hit;
+                    // CacheHit = Hit;
+                    // final_state = Hit;
+					// Stall_sys = ~Hit;
+					next_state = Hit ? IDLE : ((((~Hit)&(enable_ct)&(valid_0)&(dirty_0))|(((~Hit)&(!enable_ct)&(valid_1)&(dirty_1)))) ? (ACC_RD_0) : (ACC_WT_0));
+				end
+			CMP_WT_0:
+				begin
+					// enable_ct = (hit_0 & valid_0) | (~Hit & ~valid_0 & valid_1) | (~Hit & ~valid_0 & ~valid_1) | (~Hit & valid_1 & valid_0 & victimway_in);
+					// cmp_ct = 1'b1;
+					// wr_cache = 1'b1;
+					// DataIn_ct = DataIn;
+					// index_cache = Addr[10:3];
+					// offset_cache = Addr[2:0];
+					// tag_cache = Addr[15:11];
+					// ori = 1'b1;
+					// isWr = 1'b1;
+					// enable_ct_d = (hit_0 & valid_0) | (~Hit & ~valid_0 & valid_1) | (~Hit & ~valid_0 & ~valid_1) | (~Hit & valid_1 & valid_0 & victimway_in);
+					// enable_ct_en = 1'b1;
+                    // Done = Hit;
+                    // CacheHit = Hit;
+                    // final_state = Hit;
+					// Stall_sys = ~Hit;
+					next_state = Hit ? IDLE: ((((~Hit)&(enable_ct)&(valid_0)&(dirty_0))|(((~Hit)&(!enable_ct)&(valid_1)&(dirty_1)))) ? (ACC_RD_0) : (ACC_WT_0));
+				end
+			// HIT:
+			// 	begin
+			// 		Done = 1'b1;
+			// 		CacheHit = 1'b1;
+            //         victimway_out = ~victimway_in;
+            //         next_state = IDLE;
+			// 	end
 			ACC_RD_0:
 				begin
 					enable_ct = enable_ct_q;
@@ -193,8 +237,8 @@ always @*
 					index_cache = Addr[10:3];
 					offset_cache = 3'b000;
 					tag_cache = Addr[15:11];
-					DataIn_ct = (isWr_q & (Addr[2:0] == 3'b000)) ? DataIn : DataOut_mem;
-					DataOut_ct = (isRd_q & (Addr[2:0] == 3'b000)) ? DataOut_mem : Data_latch;
+					DataIn_ct = (isWr_q & (Addr[2:0] === 3'b000)) ? DataIn : DataOut_mem;
+					DataOut_ct = (isRd_q & (Addr[2:0] === 3'b000)) ? DataOut_mem : Data_latch;
 					next_state = ACC_WT_3;
 				end
 			ACC_WT_3:
@@ -209,8 +253,8 @@ always @*
 					index_cache = Addr[10:3];
 					offset_cache = 3'b010;
 					tag_cache = Addr[15:11];
-					DataIn_ct = (isWr_q & (Addr[2:0] == 3'b010)) ? DataIn : DataOut_mem;
-					DataOut_ct = (isRd_q & (Addr[2:0] == 3'b010)) ? DataOut_mem : Data_latch;
+					DataIn_ct = (isWr_q & (Addr[2:0] === 3'b010)) ? DataIn : DataOut_mem;
+					DataOut_ct = (isRd_q & (Addr[2:0] === 3'b010)) ? DataOut_mem : Data_latch;
 					next_state = ACC_WT_4;
 				end
 			ACC_WT_4:
@@ -222,8 +266,8 @@ always @*
 					index_cache = Addr[10:3];
 					offset_cache = 3'b100;
 					tag_cache = Addr[15:11];
-					DataIn_ct = (isWr_q & (Addr[2:0] == 3'b100)) ? DataIn : DataOut_mem;
-					DataOut_ct = (isRd_q & (Addr[2:0] == 3'b100)) ? DataOut_mem : Data_latch;
+					DataIn_ct = (isWr_q & (Addr[2:0] === 3'b100)) ? DataIn : DataOut_mem;
+					DataOut_ct = (isRd_q & (Addr[2:0] === 3'b100)) ? DataOut_mem : Data_latch;
 					next_state = ACC_WT_5;
 				end
 			ACC_WT_5:
@@ -236,13 +280,38 @@ always @*
 					index_cache = Addr[10:3];
 					offset_cache = 3'b110;
 					tag_cache = Addr[15:11];
-					DataIn_ct = (isWr_q & (Addr[2:0] == 3'b110)) ? DataIn : DataOut_mem;
-					DataOut_ct = (isRd_q & (Addr[2:0] == 3'b110)) ? DataOut_mem : Data_latch;
+					DataIn_ct = (isWr_q & (Addr[2:0] === 3'b110)) ? DataIn : DataOut_mem;
+					DataOut_ct = (isRd_q & (Addr[2:0] === 3'b110)) ? DataOut_mem : Data_latch;
 					next_state = IDLE;
 					final_state = 1'b1;
 					Done = 1'b1;
 					victimway_out = ~victimway_in;
 				end
+			// CMP_RD_1:
+			// 	begin
+			// 		enable_ct = enable_ct_q;
+			// 		cmp_ct = 1'b1;
+			// 		wr_cache = 1'b0;
+			// 		index_cache = Addr[10:3];
+			// 		offset_cache = Addr[2:0];
+			// 		tag_cache = Addr[15:11];
+			// 		Done = 1'b1;
+			// 		victimway_out = ~victimway_in;
+			// 		next_state = IDLE;
+			// 	end
+			// CMP_WT_1:
+			// 	begin
+			// 		enable_ct = enable_ct_q;
+			// 		cmp_ct = 1'b1;
+			// 		wr_cache = 1'b1;
+			// 		index_cache = Addr[10:3];
+			// 		offset_cache = Addr[2:0];
+			// 		tag_cache = Addr[15:11];
+			// 		DataIn_ct = DataIn;
+			// 		Done = 1'b1;
+			// 		victimway_out = ~victimway_in;
+			// 		next_state = IDLE;
+			// 	end
 		endcase
 	end
 

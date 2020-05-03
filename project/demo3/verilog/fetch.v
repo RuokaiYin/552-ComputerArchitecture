@@ -74,5 +74,8 @@ module fetch (
    
    assign halt_back = halt_q;
    assign Stall_imem = stall_temp & ~Done;
+   // wire err_sig;
+   // assign err_sig = ^{PC_Back, Halt};
+   // assign err = (err_sig === 1'bx) | err_reg;
    
 endmodule
