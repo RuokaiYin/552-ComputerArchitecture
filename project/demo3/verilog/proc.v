@@ -21,8 +21,9 @@ module proc (/*AUTOARG*/
    // As desribed in the homeworks, use the err signal to trap corner
    // cases that you think are illegal in your statemachines
    
-   wire err_1, err_2;
+   
    /* your code here -- should include instantiations of fetch, decode, execute, mem and wb modules */
+   wire err_1, err_2;
    wire err_mem_fetch, Stall_imem, Stall_dmem, branch_with_stall;
 
 
@@ -70,7 +71,7 @@ module proc (/*AUTOARG*/
    
    wire [4:0] Alu_op_reg;
 
-   // forwarding and stall
+   // Forwarding and Stall
    wire[2:0] target_reg_ID, target_reg_EX;
    wire Rs_exe, Rs_mem, Rt_exe, Rt_mem, Rs_exe_q, Rs_mem_q, Rt_exe_q, Rt_mem_q, err_forwarding, Mem_read_reg_ID, Reg_wrt_reg_ID, Reg_wrt_reg_EX, Mem_read_reg_EX;
    // stall detector
@@ -168,7 +169,6 @@ module proc (/*AUTOARG*/
    reg_16 #(.SIZE(16)) IDEX_reg_DATA1(.readData(data1_reg), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(data1), .writeEn(IDEX_en));
    reg_16 #(.SIZE(16)) IDEX_reg_DATA2ID(.readData(data2_reg_ID), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(data2), .writeEn(IDEX_en));
    reg_16 #(.SIZE(16)) IDEX_reg_EXTENDID(.readData(extend_reg_ID), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(extend), .writeEn(IDEX_en));
-//    reg_16 #(.SIZE(16)) IDEX_reg_PCBACK(.readData(PC_Back_reg), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(PC_Back), .writeEn(IDEX_en));
    reg_16 #(.SIZE(16)) IDEX_reg_PCNEXTID(.readData(pc_next_reg_ID), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(pc_next_reg_IF), .writeEn(IDEX_en));
    
     
@@ -209,8 +209,6 @@ module proc (/*AUTOARG*/
    reg_16 #(.SIZE(16)) EXMEM_reg_SLBI(.readData(SLBI_reg), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(SLBI), .writeEn(EXMEM_en));
    reg_16 #(.SIZE(16)) EXMEM_reg_BTR(.readData(BTR_reg), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(BTR), .writeEn(EXMEM_en));
 
-   // reg_16 #(.SIZE(1)) EXMEM_reg_MEMREADEX(.readData(Mem_read_), .err(EXMEM_err), .clk(clk), .rst(rst|Done), .writeDataMem_read_reg_EX .writeEn(EXMEM_en));
-   // reg_16 #(.SIZE(1)) EXMEM_reg_MEMWRTEX(.readData(Mem_wrt_real), .err(EXMEM_err), .clk(clk), .rst(rst|Done), .writeData(Mem_wrt_reg_ID), .writeEn(1'b1));
    assign Mem_read_real = Mem_read_reg_EX & (~Stall_dmem); 
    assign Mem_wrt_real = Mem_wrt_reg_EX & (~Stall_dmem);
    assign Reg_wrt_real = (Reg_wrt_reg_MEM & fStall_dmem_prevcycle) | (Reg_wrt_reg_MEM & (~fStall_dmem_nextcycle & ~Stall_dmem));
@@ -235,10 +233,8 @@ module proc (/*AUTOARG*/
 
 
     // MEM/WB pip reg
-   wire MEMWB_en, MEMWB_err, err_mem_fetch_reg_MEM, Halt_reg_MEM;//, err_mem_mem_reg;
-   // wire[15:0] data_mem_reg, extend_reg_MEM, pc_next_reg_MEM;
+   wire MEMWB_en, MEMWB_err, err_mem_fetch_reg_MEM, Halt_reg_MEM;
    assign MEMWB_en = ~Stall_dmem;
-//    reg_16 #(.SIZE(1)) MEMWB_reg_ERRMEMMEM(.readData(err_mem_mem_reg), .err(MEMWB_err), .clk(clk), .rst(rst), .writeData(err_mem_mem), .writeEn(MEMWB_en));
    reg_16 #(.SIZE(1)) MEMWB_reg_ERRMEM(.readData(err_mem_fetch_reg_MEM), .err(MEMWB_err), .clk(clk), .rst(rst), .writeData(err_mem_fetch_reg_EX), .writeEn(MEMWB_en));
    reg_16 #(.SIZE(1)) MEMWB_reg_REGWRTMEM(.readData(Reg_wrt_reg_MEM), .err(MEMWB_err), .clk(clk), .rst(rst), .writeData(Reg_wrt_reg_EX), .writeEn(MEMWB_en));
    reg_16 #(.SIZE(2)) MEMWB_reg_WBSELMEM(.readData(WB_sel_reg_MEM), .err(MEMWB_err), .clk(clk), .rst(rst), .writeData(WB_sel_reg_EX), .writeEn(MEMWB_en));

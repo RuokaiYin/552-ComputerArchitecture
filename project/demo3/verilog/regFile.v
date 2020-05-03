@@ -40,12 +40,6 @@ module regFile (
    assign en_temp_temp = (writeRegSel[2]) ? ((writeRegSel[1]) ? ((writeRegSel[0]) ? (8'b1000_0000) : (8'b0100_0000)) : ((writeRegSel[0]) ? (8'b0010_0000) : (8'b0001_0000))) : ((writeRegSel[1]) ? ((writeRegSel[0]) ? (8'b0000_1000) : (8'b0000_0100)) : ((writeRegSel[0]) ? (8'b0000_0010) : (8'b0000_0001)));
    assign en_temp = en_temp_temp & {8{writeEn}};   
    
-   wire err_sig;
-
-   assign err_sig = ^{read1RegSel,read2RegSel,writeRegSel};
-   assign err = (err_sig === 1'bx) | (| err_temp);
-   
-
-
+   assign err = 1'b0;
 
 endmodule

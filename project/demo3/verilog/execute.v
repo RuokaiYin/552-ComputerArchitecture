@@ -26,10 +26,7 @@ module execute (
    wire err_alu;
    wire invA, invB;
    wire [2:0] op;  
-   alu_control alu_deco(
-	.Alu_op(Alu_op), .Op_ext(Op_ext), 
-	.InvA(invA), .InvB(invB), .Cin(Cin), .sign(sign), .op(op), .err(err_alu)
-	);
+   alu_control alu_deco(.Alu_op(Alu_op), .Op_ext(Op_ext), .InvA(invA), .InvB(invB), .Cin(Cin), .sign(sign), .op(op), .err(err_alu));
 
    // use a 4-1 mux to choose the second operand
    wire [15:0] operand2;
@@ -44,8 +41,6 @@ module execute (
    assign SLBI = {result[15:8], extend[7:0]};
    assign neg = of ? ~neg_temp : neg_temp; 
 
-   // wire err_sig;
-   // assign err_sig = ^{data1, data2, extend, Alu_Src, Alu_op, Op_ext};
    assign err = err_alu;
    
 endmodule

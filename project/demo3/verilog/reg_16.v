@@ -25,9 +25,6 @@ module reg_16 (
 
    dff ff[SIZE-1:0](.q(readData) ,.d(in), .clk(clk), .rst(rst));   
    
-   // err_checker checker(.err(err),.writeData(writeData), .writeEn(writeEn));   
-   wire err_temp;
-   assign err_temp = ^{writeEn, writeData};
-   assign err = (err_temp === 1'bx);
+   assign err = 1'b0;
 
 endmodule

@@ -69,7 +69,7 @@ reg [6:0] temp_op;
 reg err_temp; 
 always @*
 casex ({Alu_op, Op_ext})
-        default: err_temp = 1;
+    default: err_temp = 1;
 	`ADDIA: temp_op = 7'b0001100;
 	`SUBIA: temp_op = 7'b1011100;
 	`XORIA: temp_op = 7'b0000111; 

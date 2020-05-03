@@ -12,7 +12,7 @@ module fetch (
 	// Outputs to Decode
 	PC_Next, No_Branch, instr, halt_back, // PC_curr
 	//system output
-	err,Stall_imem, branch_with_stall
+	err, Stall_imem, branch_with_stall
 	); 
 
    // TODO: Your code here
@@ -55,11 +55,9 @@ module fetch (
    
   
    // add current PC value by 2 
-   wire [15:0]two;
    wire C_out;
 
-   assign two = 16'b0000_0000_0000_0010;
-   cla_16b add_2 (.A(PC_curr), .B(two), .C_in(1'b0), .S(PC_Next), .C_out(C_out));
+   cla_16b add_2 (.A(PC_curr), .B(16'b0000_0000_0000_0010), .C_in(1'b0), .S(PC_Next), .C_out(C_out));
 
    // use a dff to store HALT signal
    wire halt_q;
@@ -74,8 +72,5 @@ module fetch (
    
    assign halt_back = halt_q;
    assign Stall_imem = stall_temp & ~Done;
-   // wire err_sig;
-   // assign err_sig = ^{PC_Back, Halt};
-   // assign err = (err_sig === 1'bx) | err_reg;
-   
+
 endmodule

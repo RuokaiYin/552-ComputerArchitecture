@@ -105,13 +105,9 @@ module mem_system(/*AUTOARG*/
 	// Input from four bank
 	.DataOut_mem(data_out_m),
 	// Output to cache
-	.enable_ct(enable_ct), .index_cache(index_ct),
-	.offset_cache(offset_ct), .cmp_ct(cmp_ct),
-	.wr_cache(wr_ct), .tag_cache(tag_ct),
-	.DataIn_ct(data_in_ct),.valid_in_ct(valid_in_ct),
+	.enable_ct(enable_ct), .index_cache(index_ct), .offset_cache(offset_ct), .cmp_ct(cmp_ct), .wr_cache(wr_ct), .tag_cache(tag_ct), .DataIn_ct(data_in_ct),.valid_in_ct(valid_in_ct),
 	// Output to fourbank
-	.Addr_mem(addr_in_m), .DataIn_mem(data_in_m),
-	.wr_mem(wr_m), .rd_mem(rd_m),
+	.Addr_mem(addr_in_m), .DataIn_mem(data_in_m), .wr_mem(wr_m), .rd_mem(rd_m),
 	// Output to system
 	.Done(Done), .CacheHit(CacheHit), .Stall_sys(Stall), .victimway_out(victimway_in_c), .ori(ori), .idle(idle), .final_state(final_state), .DataOut_ct(DataOut_ct)
 );
