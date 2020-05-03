@@ -172,7 +172,8 @@ module proc_hier_pbench();
    // //    
    assign DCacheHit = DUT.p0.mem.CacheHit;
    
-   assign Halt = DUT.p0.Halt_reg_MEM;
+   assign Halt = DUT.p0.Reg_wrt_reg_MEM ? DUT.p0.Halt_reg_MEM : DUT.p0.Halt_reg_EX;
+   
    // Processor halted
    
    
