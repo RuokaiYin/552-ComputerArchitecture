@@ -22,7 +22,7 @@ module fetch (
    output [15:0] PC_Next, No_Branch, instr; 
    output halt_back, err, Stall_imem, branch_with_stall;
 
-   wire Stall_imem_nextcycle,Stall_dmem_nextcycle, Branch_stall_q, Stall_imem_q, Stall_dmem_q, dBranch_stall_q, dStall_imem_q, branch_with_stall_tmp; 
+   wire Stall_imem_nextcycle,Stall_dmem_nextcycle, Branch_stall_q, Stall_imem_q, Stall_dmem_q, dBranch_stall_q, dStall_imem_q; 
    // use a 16-bit register to store the PC value
    wire [15:0] PC_curr, PC_wb, PC_wb_plus_stall, PC_Back_q, PC_Back_with_stall, PC_branch_opt;
    wire err_reg, err_reg_dummy1,err_reg_dummy2,err_reg_dummy3;
@@ -47,11 +47,10 @@ module fetch (
 
    assign PC_Back_with_stall = (Stall_imem_nextcycle|Stall_dmem_nextcycle) ? PC_Back_q : PC_Back;
    //assign branch_with_stall = (Stall_imem_nextcycle|Stall_dmem_nextcycle) ? Branch_stall_q : Branch_stall;
-   assign branch_with_stall_tmp = (Stall_imem_nextcycle) ? Branch_stall_q : Branch_stall;
-   assign branch_with_stall = (Stall_dmem_nextcycle & Branch_stall_q) ? 1'b0 : branch_with_stall_tmp;
+   assign branch_with_stall = (Stall_imem_nextcycle) ? Branch_stall_q : Branch_stall;
 
     // a mux to choose from normal pc+2 or pc_back
-   assign PC_wb = (branch_with_stall_tmp) ? PC_Back_with_stall : PC_Next;
+   assign PC_wb = (branch_with_stall) ? PC_Back_with_stall : PC_Next;
    assign PC_wb_plus_stall = Stall_imem|Stall_dmem ? PC_curr: PC_wb;
    reg_16 pc_reg (.readData(PC_curr), .err(err_reg), .clk(clk), .rst(rst), .writeData(PC_wb_plus_stall), .writeEn(~STALL));
    assign PC_branch_opt = (Stall_dmem_nextcycle & Branch_stall_q) ? PC_Back_q : PC_curr;
