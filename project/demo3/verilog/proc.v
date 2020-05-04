@@ -74,12 +74,13 @@ module proc (/*AUTOARG*/
    // Forwarding and Stall
    wire[2:0] target_reg_ID, target_reg_EX;
    wire Rs_exe, Rs_mem, Rt_exe, Rt_mem, Rs_exe_q, Rs_mem_q, Rt_exe_q, Rt_mem_q, err_forwarding, Mem_read_reg_ID, Reg_wrt_reg_ID, Reg_wrt_reg_EX, Mem_read_reg_EX;
+   wire fwd_possible_EX, fwd_possible_ID;
    // stall detector
    stall_detector stalldetec(.instr_reg(instr_reg), .Reg_wrt_reg_ID(Reg_wrt_reg_ID), .target_reg_ID(target_reg_ID), .Reg_wrt_reg_EX(Reg_wrt_reg_EX), 
-   .target_reg_EX(target_reg_EX), .Mem_read_ID(Mem_read_reg_ID), .Mem_read_EX(Mem_read_reg_EX), .STALL(STALL));
+   .target_reg_EX(target_reg_EX), .Mem_read_ID(Mem_read_reg_ID), .Mem_read_EX(Mem_read_reg_EX), .fwd_possible_ID(fwd_possible_ID), .fwd_possible_EX(fwd_possible_EX), .STALL(STALL));
 
    forwarding_detector forwardingdetec(.instr_reg(instr_reg), .Reg_wrt_reg_ID(Reg_wrt_reg_ID), .target_reg_ID(target_reg_ID), .Reg_wrt_reg_EX(Reg_wrt_reg_EX), 
-   .target_reg_EX(target_reg_EX), .Mem_read_ID(Mem_read_reg_ID), .Rs_exe(Rs_exe), .Rs_mem(Rs_mem), .Rt_exe(Rt_exe), .Rt_mem(Rt_mem));
+   .target_reg_EX(target_reg_EX), .Mem_read_ID(Mem_read_reg_ID), .fwd_possible_ID(fwd_possible_ID), .fwd_possible_EX(fwd_possible_EX), .Rs_exe(Rs_exe), .Rs_mem(Rs_mem), .Rt_exe(Rt_exe), .Rt_mem(Rt_mem));
    reg_16 #(.SIZE(1)) Rs_exe_reg(.readData(Rs_exe_q), .err(err_forwarding), .clk(clk), .rst(rst), .writeData(Rs_exe), .writeEn(1'b1));
    reg_16 #(.SIZE(1)) Rs_mem_reg(.readData(Rs_mem_q), .err(err_forwarding), .clk(clk), .rst(rst), .writeData(Rs_mem), .writeEn(1'b1));
    reg_16 #(.SIZE(1)) Rt_exe_reg(.readData(Rt_exe_q), .err(err_forwarding), .clk(clk), .rst(rst), .writeData(Rt_exe), .writeEn(1'b1));
@@ -122,7 +123,7 @@ module proc (/*AUTOARG*/
 
 
    // Decode stage
-   wire Mem_read, Mem_wrt, Reg_wrt, Reg_wrt_reg_MEM, err_mem_fetch_reg_ID;
+   wire Mem_read, Mem_wrt, Reg_wrt, Reg_wrt_reg_MEM, err_mem_fetch_reg_ID, fwd_possible;
    wire [15:0] WB;
    wire [1:0] Op_ext, WB_sel,Alu_src, Alu_src_reg;
    wire [2:0] Alu_result, target_reg, target_reg_MEM;
@@ -145,7 +146,7 @@ module proc (/*AUTOARG*/
         // Out to Fetch
         .PC_back(PC_Back), .Branch_stall(Branch_stall),
         // Global out
-        .err(err_1));
+        .err(err_1), .fwd(fwd_possible));
 
     // ID/EX pip reg
    wire IDEX_en,IDEX_err;
@@ -170,7 +171,7 @@ module proc (/*AUTOARG*/
    reg_16 #(.SIZE(16)) IDEX_reg_DATA2ID(.readData(data2_reg_ID), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(data2), .writeEn(IDEX_en));
    reg_16 #(.SIZE(16)) IDEX_reg_EXTENDID(.readData(extend_reg_ID), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(extend), .writeEn(IDEX_en));
    reg_16 #(.SIZE(16)) IDEX_reg_PCNEXTID(.readData(pc_next_reg_ID), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(pc_next_reg_IF), .writeEn(IDEX_en));
-   
+   reg_16 #(.SIZE(1)) IDEX_reg_FWD(.readData(fwd_possible_ID), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(fwd_possible), .writeEn(IDEX_en));
     
     // Execute stage
    wire neg, zero;
@@ -208,6 +209,7 @@ module proc (/*AUTOARG*/
    reg_16 #(.SIZE(16)) EXMEM_reg_COUT(.readData(Cout_reg), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(Cout), .writeEn(EXMEM_en));
    reg_16 #(.SIZE(16)) EXMEM_reg_SLBI(.readData(SLBI_reg), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(SLBI), .writeEn(EXMEM_en));
    reg_16 #(.SIZE(16)) EXMEM_reg_BTR(.readData(BTR_reg), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(BTR), .writeEn(EXMEM_en));
+   reg_16 #(.SIZE(1)) EXMEM_reg_FWD(.readData(fwd_possible_EX), .err(EXMEM_err), .clk(clk), .rst(rst), .writeData(fwd_possible_ID), .writeEn(EXMEM_en));
 
    assign Mem_read_real = Mem_read_reg_EX & (~Stall_dmem); 
    assign Mem_wrt_real = Mem_wrt_reg_EX & (~Stall_dmem);

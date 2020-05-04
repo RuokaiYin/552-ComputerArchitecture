@@ -193,8 +193,8 @@ always @*
 					index_cache = Addr[10:3];
 					offset_cache = 3'b000;
 					tag_cache = Addr[15:11];
-					DataIn_ct = (isWr_q & (Addr[2:0] === 3'b000)) ? DataIn : DataOut_mem;
-					DataOut_ct = (isRd_q & (Addr[2:0] === 3'b000)) ? DataOut_mem : Data_latch;
+					DataIn_ct = (isWr_q & (Addr[2:0] == 3'b000)) ? DataIn : DataOut_mem;
+					DataOut_ct = (isRd_q & (Addr[2:0] == 3'b000)) ? DataOut_mem : Data_latch;
 					next_state = ACC_WT_3;
 				end
 			ACC_WT_3:
@@ -209,8 +209,8 @@ always @*
 					index_cache = Addr[10:3];
 					offset_cache = 3'b010;
 					tag_cache = Addr[15:11];
-					DataIn_ct = (isWr_q & (Addr[2:0] === 3'b010)) ? DataIn : DataOut_mem;
-					DataOut_ct = (isRd_q & (Addr[2:0] === 3'b010)) ? DataOut_mem : Data_latch;
+					DataIn_ct = (isWr_q & (Addr[2:0] == 3'b010)) ? DataIn : DataOut_mem;
+					DataOut_ct = (isRd_q & (Addr[2:0] == 3'b010)) ? DataOut_mem : Data_latch;
 					next_state = ACC_WT_4;
 				end
 			ACC_WT_4:
@@ -222,8 +222,8 @@ always @*
 					index_cache = Addr[10:3];
 					offset_cache = 3'b100;
 					tag_cache = Addr[15:11];
-					DataIn_ct = (isWr_q & (Addr[2:0] === 3'b100)) ? DataIn : DataOut_mem;
-					DataOut_ct = (isRd_q & (Addr[2:0] === 3'b100)) ? DataOut_mem : Data_latch;
+					DataIn_ct = (isWr_q & (Addr[2:0] == 3'b100)) ? DataIn : DataOut_mem;
+					DataOut_ct = (isRd_q & (Addr[2:0] == 3'b100)) ? DataOut_mem : Data_latch;
 					next_state = ACC_WT_5;
 				end
 			ACC_WT_5:
@@ -236,8 +236,8 @@ always @*
 					index_cache = Addr[10:3];
 					offset_cache = 3'b110;
 					tag_cache = Addr[15:11];
-					DataIn_ct = (isWr_q & (Addr[2:0] === 3'b110)) ? DataIn : DataOut_mem;
-					DataOut_ct = (isRd_q & (Addr[2:0] === 3'b110)) ? DataOut_mem : Data_latch;
+					DataIn_ct = (isWr_q & (Addr[2:0] == 3'b110)) ? DataIn : DataOut_mem;
+					DataOut_ct = (isRd_q & (Addr[2:0] == 3'b110)) ? DataOut_mem : Data_latch;
 					next_state = IDLE;
 					final_state = 1'b1;
 					Done = 1'b1;

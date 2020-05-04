@@ -20,7 +20,7 @@ module decode (
         // Out to Fetch
         PC_back, Branch_stall,
         // Global out
-        err);
+        err, fwd);
 	
 
    // TODO: Your code here
@@ -28,7 +28,7 @@ module decode (
    input [2:0] target_reg_WB;
    input [15:0] instr, WB, No_Branch, data1_exe;
 
-   output Halt,Mem_read,Mem_wrt,err,Branch_stall, Reg_wrt;
+   output Halt,Mem_read,Mem_wrt,err,Branch_stall, Reg_wrt, fwd;
    output [1:0] Op_ext, WB_sel,Alu_src;
    output [2:0] Alu_result, target_reg;
    output [4:0] Alu_op;
@@ -52,7 +52,7 @@ module decode (
    // control unit
    wire err_control;
    instr_decoder ins_dec(instr_valid,halt_back,Halt,WB_sel,Branch_sel,Alu_src,Alu_result,Alu_op,Mem_read,Mem_wrt,I_sel,J_sel
-	,Sign_sel,WB_tar,Reg_wrt, Branch, Jmp_sel, Jmp, err_control);
+	,Sign_sel,WB_tar,Reg_wrt, Branch, Jmp_sel, Jmp, err_control, fwd);
    
    // signal to choose which reg to write
    assign target_reg = (WB_tar[1]) ? ((WB_tar[0]) ? (3'b111) : (instr[4:2])) : ((WB_tar[0]) ? (instr[7:5]) : (instr[10:8]));

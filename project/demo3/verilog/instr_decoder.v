@@ -3,13 +3,13 @@ module instr_decoder(
 instr, halt_back,
 //Output
 Halt,WB_sel,Branch_sel,Alu_src,Alu_result,Alu_op,Mem_read,Mem_wrt,I_sel,J_sel,
-Sign_sel,WB_tar,Reg_wrt, Branch, Jmp_sel, Jmp, err);
+Sign_sel,WB_tar,Reg_wrt, Branch, Jmp_sel, Jmp, err, fwd);
 
 input halt_back;
 input [4:0] instr;
 
 output Halt,Mem_read,Mem_wrt,I_sel,J_sel,
-       Sign_sel,Reg_wrt, Branch, Jmp_sel, Jmp, err;
+       Sign_sel,Reg_wrt, Branch, Jmp_sel, Jmp, err, fwd;
 
 output [1:0] WB_tar, Branch_sel, WB_sel, Alu_src;
 output [2:0] Alu_result;
@@ -71,52 +71,52 @@ output [4:0] Alu_op;
 `define SIIC 5'b00010
 `define RTI 5'b00011
 
-reg[25:0] op_temp;
+reg[26:0] op_temp;
 reg err_temp;
 always @*
    case(instr)
        default: err_temp = 1;
-      `HALT: op_temp = 26'b0_x_x_x_xx_xx_0_0_xx_0_0_xx_xxx_00000_1_0; 
-      `NOP: op_temp = 26'b0_x_x_x_xx_xx_0_0_xx_0_0_xx_xxx_00001_0_0;
+      `HALT: op_temp = 27'b00_x_x_x_xx_xx_0_0_xx_0_0_xx_xxx_00000_1_0; 
+      `NOP: op_temp = 27'b00_x_x_x_xx_xx_0_0_xx_0_0_xx_xxx_00001_0_0;
       // I-1 type
-      `ADDI: op_temp = 26'b0_0_0_1_01_01_0_0_xx_0_1_01_000_01000_0_0;
-      `SUBI: op_temp = 26'b0_0_0_1_01_01_0_0_xx_0_1_01_000_01001_0_0;
-      `XORI: op_temp = 26'b0_0_x_0_01_01_0_0_xx_0_1_01_000_01010_0_0;
-      `ANDNI: op_temp = 26'b0_0_x_0_01_01_0_0_xx_0_1_01_000_01011_0_0;
-      `ROLI: op_temp = 26'b0_0_x_0_01_01_0_0_xx_0_1_01_000_10100_0_0;
-      `SLLI: op_temp = 26'b0_0_x_0_01_01_0_0_xx_0_1_01_000_10101_0_0;
-      `RORI: op_temp = 26'b0_0_x_0_01_01_0_0_xx_0_1_01_000_10110_0_0;
-      `SRLI: op_temp = 26'b0_0_x_0_01_01_0_0_xx_0_1_01_000_10111_0_0;
+      `ADDI: op_temp = 27'b10_0_0_1_01_01_0_0_xx_0_1_01_000_01000_0_0;
+      `SUBI: op_temp = 27'b10_0_0_1_01_01_0_0_xx_0_1_01_000_01001_0_0;
+      `XORI: op_temp = 27'b10_0_x_0_01_01_0_0_xx_0_1_01_000_01010_0_0;
+      `ANDNI: op_temp = 27'b10_0_x_0_01_01_0_0_xx_0_1_01_000_01011_0_0;
+      `ROLI: op_temp = 27'b10_0_x_0_01_01_0_0_xx_0_1_01_000_10100_0_0;
+      `SLLI: op_temp = 27'b10_0_x_0_01_01_0_0_xx_0_1_01_000_10101_0_0;
+      `RORI: op_temp = 27'b10_0_x_0_01_01_0_0_xx_0_1_01_000_10110_0_0;
+      `SRLI: op_temp = 27'b10_0_x_0_01_01_0_0_xx_0_1_01_000_10111_0_0;
       // MEM
-      `ST: op_temp = 26'b0_0_0_1_xx_xx_0_0_xx_1_0_01_000_10000_0_0;
-      `LD: op_temp = 26'b1_0_0_1_01_00_0_0_xx_0_1_01_000_10001_0_0;
-      `STU: op_temp = 26'b0_0_0_1_00_01_0_0_xx_1_1_01_000_10011_0_0;
+      `ST: op_temp = 27'b00_0_0_1_xx_xx_0_0_xx_1_0_01_000_10000_0_0;
+      `LD: op_temp = 27'b11_0_0_1_01_00_0_0_xx_0_1_01_000_10001_0_0;
+      `STU: op_temp = 27'b10_0_0_1_00_01_0_0_xx_1_1_01_000_10011_0_0;
       // R type
-      `BTR: op_temp = 26'b0_x_x_x_10_01_0_0_xx_0_1_xx_101_11001_0_0;
-      `ADD: op_temp = 26'b0_x_x_x_10_01_0_0_xx_0_1_00_000_11011_0_0;
-      `SUB: op_temp = 26'b0_x_x_x_10_01_0_0_xx_0_1_00_000_11011_0_0;
-      `XOR: op_temp = 26'b0_x_x_x_10_01_0_0_xx_0_1_00_000_11011_0_0;
-      `ANDN: op_temp = 26'b0_x_x_x_10_01_0_0_xx_0_1_00_000_11011_0_0;
-      `ROL: op_temp = 26'b0_x_x_x_10_01_0_0_xx_0_1_00_000_11010_0_0;
-      `SLL: op_temp = 26'b0_x_x_x_10_01_0_0_xx_0_1_00_000_11010_0_0;
-      `ROR: op_temp = 26'b0_x_x_x_10_01_0_0_xx_0_1_00_000_11010_0_0;
-      `SRL: op_temp = 26'b0_x_x_x_10_01_0_0_xx_0_1_00_000_11010_0_0;
-      `SEQ: op_temp = 26'b0_x_x_x_10_01_0_0_xx_0_1_00_010_11100_0_0;
-      `SLT: op_temp = 26'b0_x_x_x_10_01_0_0_xx_0_1_00_011_11101_0_0;
-      `SLE: op_temp = 26'b0_x_x_x_10_01_0_0_xx_0_1_00_100_11110_0_0;
-      `SCO: op_temp = 26'b0_x_x_x_10_01_0_0_xx_0_1_00_001_11111_0_0;
+      `BTR: op_temp = 27'b10_x_x_x_10_01_0_0_xx_0_1_xx_101_11001_0_0;
+      `ADD: op_temp = 27'b10_x_x_x_10_01_0_0_xx_0_1_00_000_11011_0_0;
+      `SUB: op_temp = 27'b10_x_x_x_10_01_0_0_xx_0_1_00_000_11011_0_0;
+      `XOR: op_temp = 27'b10_x_x_x_10_01_0_0_xx_0_1_00_000_11011_0_0;
+      `ANDN: op_temp = 27'b10_x_x_x_10_01_0_0_xx_0_1_00_000_11011_0_0;
+      `ROL: op_temp = 27'b10_x_x_x_10_01_0_0_xx_0_1_00_000_11010_0_0;
+      `SLL: op_temp = 27'b10_x_x_x_10_01_0_0_xx_0_1_00_000_11010_0_0;
+      `ROR: op_temp = 27'b10_x_x_x_10_01_0_0_xx_0_1_00_000_11010_0_0;
+      `SRL: op_temp = 27'b10_x_x_x_10_01_0_0_xx_0_1_00_000_11010_0_0;
+      `SEQ: op_temp = 27'b10_x_x_x_10_01_0_0_xx_0_1_00_010_11100_0_0;
+      `SLT: op_temp = 27'b10_x_x_x_10_01_0_0_xx_0_1_00_011_11101_0_0;
+      `SLE: op_temp = 27'b10_x_x_x_10_01_0_0_xx_0_1_00_100_11110_0_0;
+      `SCO: op_temp = 27'b10_x_x_x_10_01_0_0_xx_0_1_00_001_11111_0_0;
       // I-2 type
-      `BEQZ: op_temp = 26'b0_1_0_1_xx_xx_1_0_00_0_0_10_xxx_01100_0_0;
-      `BNEZ: op_temp = 26'b0_1_0_1_xx_xx_1_0_01_0_0_10_xxx_01101_0_0;
-      `BLTZ: op_temp = 26'b0_1_0_1_xx_xx_1_0_10_0_0_10_xxx_01110_0_0;
-      `BGEZ: op_temp = 26'b0_1_0_1_xx_xx_1_0_11_0_0_10_xxx_01111_0_0;
-      `LBI: op_temp = 26'b0_1_0_1_00_10_0_0_xx_0_1_xx_xxx_11000_0_0;
-      `SLBI: op_temp = 26'b0_1_x_0_00_01_0_0_xx_0_1_11_110_10010_0_0;
+      `BEQZ: op_temp = 27'b00_1_0_1_xx_xx_1_0_00_0_0_10_xxx_01100_0_0;
+      `BNEZ: op_temp = 27'b00_1_0_1_xx_xx_1_0_01_0_0_10_xxx_01101_0_0;
+      `BLTZ: op_temp = 27'b00_1_0_1_xx_xx_1_0_10_0_0_10_xxx_01110_0_0;
+      `BGEZ: op_temp = 27'b00_1_0_1_xx_xx_1_0_11_0_0_10_xxx_01111_0_0;
+      `LBI: op_temp = 27'b10_1_0_1_00_10_0_0_xx_0_1_xx_xxx_11000_0_0;
+      `SLBI: op_temp = 27'b10_1_x_0_00_01_0_0_xx_0_1_11_110_10010_0_0;
       // J type
-      `J: op_temp = 26'b0_x_1_1_xx_xx_0_0_xx_0_0_xx_xxx_00100_0_1;
-      `JR: op_temp = 26'b0_1_0_1_xx_xx_0_1_xx_0_0_01_xxx_00101_0_0;
-      `JAL: op_temp = 26'b0_x_1_1_11_11_0_0_xx_0_1_xx_xxx_00110_0_1;
-      `JALR: op_temp = 26'b0_1_0_1_11_11_0_1_xx_0_1_01_xxx_00111_0_0;
+      `J: op_temp = 27'b00_x_1_1_xx_xx_0_0_xx_0_0_xx_xxx_00100_0_1;
+      `JR: op_temp = 27'b00_1_0_1_xx_xx_0_1_xx_0_0_01_xxx_00101_0_0;
+      `JAL: op_temp = 27'b10_x_1_1_11_11_0_0_xx_0_1_xx_xxx_00110_0_1;
+      `JALR: op_temp = 27'b10_1_0_1_11_11_0_1_xx_0_1_01_xxx_00111_0_0;
     endcase
 
 assign Mem_read = op_temp[25];
@@ -135,7 +135,8 @@ assign Alu_result = op_temp[9:7];
 assign Alu_op = op_temp[6:2];
 assign Halt = halt_back ? 1'b1 : op_temp[1];
 assign Jmp = op_temp[0];
+assign fwd = op_temp[26]; // if it is possible to forward to later instruction
 
-assign err = (err_temp === 1);
+assign err = (err_temp == 1);
 
 endmodule
