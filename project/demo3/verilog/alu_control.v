@@ -114,7 +114,7 @@ endcase
    assign sign = temp_op[3];
    assign op = temp_op[2:0];
 
-  assign err = (err_temp === 1);
+  assign err = (err_temp == 1);
 
 endmodule
 
