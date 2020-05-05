@@ -7,7 +7,8 @@ module proc (/*AUTOARG*/
    // Inputs
    clk, rst
    // Outputs for synthesis
-   Reg_wrt_real, 
+   Reg_wrt_real,target_reg_MEM, Mem_read_real, Mem_wrt_real, Halt_reg_MEM, Halt_reg_EX, Reg_wrt_reg_MEM,
+   instr_reg, PC_curr, data_mem, data_in_mem
    );
 
    input clk;
