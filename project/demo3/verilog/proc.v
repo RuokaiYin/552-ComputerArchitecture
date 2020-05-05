@@ -6,12 +6,16 @@ module proc (/*AUTOARG*/
    err, 
    // Inputs
    clk, rst
+   // Outputs for synthesis
+   Reg_wrt_real, 
    );
 
    input clk;
    input rst;
 
    output err;
+   output Reg_wrt_real, target_reg_MEM, Mem_read_real, Mem_wrt_real, Halt_reg_MEM, Halt_reg_EX, Reg_wrt_reg_MEM;
+   output[15:0] instr_reg, PC_curr, data_mem, data_in_mem;
 
    // None of the above lines can be modified
 
@@ -43,7 +47,7 @@ module proc (/*AUTOARG*/
 	// Outputs to Decode
 	.No_Branch(No_Branch), .instr(instr), .halt_back(halt_back),
         // Output to WB
-        .PC_Next(PC_Next), // .PC_curr(PC_curr)
+        .PC_Next(PC_Next), .PC_curr(PC_curr), 
 	.err(err_mem_fetch), .Stall_imem(Stall_imem), .branch_with_stall(branch_with_stall));
 
    
@@ -191,7 +195,7 @@ module proc (/*AUTOARG*/
 
     // EX/MEM pip reg
    wire EXMEM_en, EXMEM_err;
-   wire Mem_read_real, Mem_wrt_real, Reg_wrt_real; // Mem_read_copy, Mem_wrt_copy;
+   wire Mem_read_real, Mem_wrt_real; // Mem_read_copy, Mem_wrt_copy;
    wire Halt_reg_EX, Mem_wrt_reg_EX, err_mem_fetch_reg_EX, fwd_mm_EX;
    wire [15:0] data2_reg_EX; 
    assign EXMEM_en = ~Stall_dmem;
