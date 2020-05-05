@@ -130,8 +130,8 @@ always @*
         op_temp = 27'b00_x_x_x_xx_xx_0_0_xx_0_0_xx_xxx_00011_0_0;
         rti = 1'b1;
         end
-      end
     endcase
+  end
 
 assign Mem_read = op_temp[25];
 assign I_sel = op_temp[24];
