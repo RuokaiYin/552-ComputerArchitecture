@@ -16,60 +16,60 @@ output [2:0] Alu_result;
 output [4:0] Alu_op;
 
 // termination
-`define HALT 5'b00000;
-`define NOP 5'b00001;
+`define HALT 5'b00000
+`define NOP 5'b00001
 
 //I type
-`define ADDI 5'b01000;
-`define SUBI 5'b01001;
-`define XORI 5'b01010;
-`define ANDNI 5'b01011;
-`define ROLI 5'b10100;
-`define SLLI 5'b10101;
-`define RORI 5'b10110;
-`define SRLI 5'b10111;
+`define ADDI 5'b01000
+`define SUBI 5'b01001
+`define XORI 5'b01010
+`define ANDNI 5'b01011
+`define ROLI 5'b10100
+`define SLLI 5'b10101
+`define RORI 5'b10110
+`define SRLI 5'b10111
 
 //Mem
-`define ST 5'b10000;
-`define LD 5'b10001;
-`define STU 5'b10011;
+`define ST 5'b10000
+`define LD 5'b10001
+`define STU 5'b10011
 
 //Strange one
-`define BTR 5'b11001;
+`define BTR 5'b11001
 
 //R type
-`define ADD 5'b11011;
-`define SUB 5'b11011;
-`define XOR 5'b11011;
-`define ANDN 5'b11011;
-`define ROL 5'b11010;
-`define SLL 5'b11010;
-`define ROR 5'b11010;
-`define SRL 5'b11010;
-`define SEQ 5'b11100;
-`define SLT 5'b11101;
-`define SLE 5'b11110;
-`define SCO 5'b11111;
+`define ADD 5'b11011
+`define SUB 5'b11011
+`define XOR 5'b11011
+`define ANDN 5'b11011
+`define ROL 5'b11010
+`define SLL 5'b11010
+`define ROR 5'b11010
+`define SRL 5'b11010
+`define SEQ 5'b11100
+`define SLT 5'b11101
+`define SLE 5'b11110
+`define SCO 5'b11111
 
 //Branch
-`define BEQZ 5'b01100;
-`define BNEZ 5'b01101;
-`define BLTZ 5'b01110;
-`define BGEZ 5'b01111;
+`define BEQZ 5'b01100
+`define BNEZ 5'b01101
+`define BLTZ 5'b01110
+`define BGEZ 5'b01111
 
 //Strange ones
-`define LBI 5'b11000;
-`define SLBI 5'b10010;
+`define LBI 5'b11000
+`define SLBI 5'b10010
 
 //J type
-`define J 5'b00100;
-`define JR 5'b00101;
-`define JAL 5'b00110;
-`define JALR 5'b00111;
+`define J 5'b00100
+`define JR 5'b00101
+`define JAL 5'b00110
+`define JALR 5'b00111
 
 //For geniuses
-`define SIIC 5'b00010;
-`define RTI 5'b00011;
+`define SIIC 5'b00010
+`define RTI 5'b00011
 
 reg[26:0] op_temp;
 reg err_temp;
