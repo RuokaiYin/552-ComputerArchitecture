@@ -24,7 +24,7 @@ module fetch (
 
    wire Stall_imem_nextcycle,Stall_dmem_nextcycle, Branch_stall_q, Stall_imem_q, Stall_dmem_q; 
    // use a 16-bit register to store the PC value
-   wire [15:0] PC_curr, PC_wb, PC_wb_plus_stall, PC_Back_q, PC_Back_with_stall;
+   wire [15:0] PC_curr, PC_wb, PC_wb_plus_stall, PC_Back_q, PC_Back_with_stall, PC_with_exception;
    wire err_reg, err_reg_dummy1,err_reg_dummy2,err_reg_dummy3;
    wire Done, CacheHit;
    wire branch_stall_reg_clr, branch_stall_reg_en;
