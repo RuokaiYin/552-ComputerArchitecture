@@ -1,10 +1,11 @@
-module forwarding_detector (instr_reg, Reg_wrt_reg_ID, target_reg_ID, Reg_wrt_reg_EX, target_reg_EX, Mem_read_ID, Rs_exe, Rs_mem, Rt_exe, Rt_mem, fwd_possible_ID, fwd_possible_EX);
+module forwarding_detector (instr_reg, Reg_wrt_reg_ID, target_reg_ID, Reg_wrt_reg_EX, target_reg_EX, Mem_read_ID, fwd_possible_ID, fwd_possible_EX, op_ID, Rs_exe, Rs_mem, Rt_exe, Rt_mem, fwd_mm);
 input [15:0] instr_reg;
+input [4:0] op_ID;
 input Reg_wrt_reg_ID, Reg_wrt_reg_EX, Mem_read_ID, fwd_possible_ID, fwd_possible_EX;
 // input [1:0] Alu_src_reg;
 input [2:0] target_reg_ID, target_reg_EX; 
 // input [4:0] Alu_op_reg; 
-output Rs_exe, Rs_mem, Rt_exe, Rt_mem;
+output Rs_exe, Rs_mem, Rt_exe, Rt_mem, fwd_mm;
 
 wire Rt_valid; // Rt is used
 assign Rt_valid = ((instr_reg[15:14] == 2'b11) & (instr_reg[15:11] != 5'b11001) & (instr_reg[15:11] != 5'b11000)) | ((instr_reg[15:11] == 5'b10000) | (instr_reg[15:11] == 5'b10011));
@@ -21,6 +22,7 @@ assign IDEX_Rs = (instr_reg[10:8] == target_reg_ID); // Rs RAW
 assign IDEX_Rt = (instr_reg[7:5] == target_reg_ID) & (Rt_valid); // Rt RAW
 assign Rs_exe = (rs_nox & fwd_possible_ID) ? (IDEX_wrt & IDEX_Rs & (~Mem_read_ID)) : 1'b0;
 assign Rt_exe = (rt_nox & fwd_possible_ID) ? (IDEX_wrt & IDEX_Rt & (~Mem_read_ID)) : 1'b0;
+assign fwd_mm = (op_ID == 5'b10001 & instr_reg[15:11] == 5'b10000) ? (instr_reg[7:5] == target_reg_ID) : 1'b0; 
 
 wire EXM_wrt;
 wire EXM_Rs;

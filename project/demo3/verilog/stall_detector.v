@@ -33,13 +33,16 @@ assign EXM_stall = (rt_nox&fwd_possible_EX) ? (EXM_wrt & (EXM_Rs | EXM_Rt)) : 1'
 
 
 // Two situations that a STALL cannot be avoided
-// a stall is needed when it is dependent on previous load
+// a stall is needed when it is dependent on previous load (except store rt)
 // a stall is needed when a branch/jumpR is dependent on its previous instruction
 // a stall is needed when a branch/jumpR is dependent on the load before its previous instruction i.e. load, other, branch/jumpR
-wire isBranch, isJumpR; 
+wire isBranch, isJumpR, notSt, st_rs; 
 assign isBranch = (instr_reg[15:11] == 5'b01100) | (instr_reg[15:11] == 5'b01101) | (instr_reg[15:11] == 5'b01110) | (instr_reg[15:11] == 5'b01111);
 assign isJumpR = (instr_reg[15:11] == 5'b00101) | (instr_reg[15:11] == 5'b00111);
-assign STALL = (IDEX_stall & Mem_read_ID) | (IDEX_stall & (isBranch|isJumpR) | EXM_stall & Mem_read_EX & (isBranch|isJumpR));
+assign notSt = instr_reg[15:11] != 5'b10000;
+// handle st's rs dependency on ld
+assign st_rs = (rs_nox&fwd_possible_ID) ? (IDEX_wrt & IDEX_Rs) : 1'b0;
+assign STALL = (~notSt & st_rs) | (IDEX_stall & Mem_read_ID & notSt) | (IDEX_stall & (isBranch|isJumpR) | EXM_stall & Mem_read_EX & (isBranch|isJumpR));
 
 
 endmodule
