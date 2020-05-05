@@ -24,11 +24,11 @@ module proc (/*AUTOARG*/
    
    /* your code here -- should include instantiations of fetch, decode, execute, mem and wb modules */
    wire err_1, err_2;
-   wire err_mem_fetch, Stall_imem, Stall_dmem, branch_with_stall;
+   wire err_mem_fetch, Stall_imem, Stall_dmem, branch_with_stall, siic, rti;
 
 
    // test wires
-   wire[15:0] instr_test_ex, instr_test_mem;
+   wire[15:0] instr_test_ex, instr_test_mem, PC_recover;
 
 
    // Fetch Stage
@@ -39,7 +39,7 @@ module proc (/*AUTOARG*/
         // system inputs
 	.clk(clk), .rst(rst), .Stall_dmem(Stall_dmem),
 	// inputs from Decode
-	.PC_Back(PC_Back), .Halt(Halt), .STALL(STALL), .Branch_stall(Branch_stall),
+	.PC_Back(PC_Back), .Halt(Halt), .STALL(STALL), .Branch_stall(Branch_stall), .siic(siic), .rti(rti), .epc(PC_recover),
 	// Outputs to Decode
 	.No_Branch(No_Branch), .instr(instr), .halt_back(halt_back),
         // Output to WB
@@ -146,7 +146,7 @@ module proc (/*AUTOARG*/
         // Out to Fetch
         .PC_back(PC_Back), .Branch_stall(Branch_stall),
         // Global out
-        .err(err_1), .fwd(fwd_possible));
+        .err(err_1), .fwd(fwd_possible), .siic(siic), .rti(rti));
 
     // ID/EX pip reg
    wire IDEX_en,IDEX_err;
@@ -173,6 +173,9 @@ module proc (/*AUTOARG*/
    reg_16 #(.SIZE(16)) IDEX_reg_PCNEXTID(.readData(pc_next_reg_ID), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(pc_next_reg_IF), .writeEn(IDEX_en));
    reg_16 #(.SIZE(1)) IDEX_reg_FWD(.readData(fwd_possible_ID), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(fwd_possible), .writeEn(IDEX_en));
    reg_16 #(.SIZE(1)) IDEX_reg_FWD_mm(.readData(fwd_mm_ID), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(fwd_mm), .writeEn(IDEX_en));
+
+
+   reg_16 #(.SIZE(16)) SIIC_PC_Curr(.readData(PC_recover), .err(IDEX_err), .clk(clk), .rst(rst), .writeData(no_branch_reg), .writeEn(siic));
     
     // Execute stage
    wire neg, zero;

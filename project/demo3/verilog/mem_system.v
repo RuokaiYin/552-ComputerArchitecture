@@ -111,12 +111,19 @@ module mem_system(/*AUTOARG*/
 	// Output to system
 	.Done(Done), .CacheHit(CacheHit), .Stall_sys(Stall), .victimway_out(victimway_in_c), .ori(ori), .idle(idle), .final_state(final_state), .DataOut_ct(DataOut_ct)
 );
+
+
    assign tag_out_c = enable_ct ? tag_out_0 : tag_out_1; 
    assign data_out_c = enable_ct ? data_out_0 : data_out_1;
    assign Hit = ((hit_0 & valid_0) | (hit_1 & valid_1));
    assign err = err_c0 | err_c1 | err_m; 
    assign enable_ct_0 = idle ? 1'b0 : (ori ? 1 : enable_ct);
    assign enable_ct_1 = idle ? 1'b0 : (ori ? 1 : (!enable_ct)); 
+   
+   reg_16 #(.SIZE(1)) LRU_cnter_way0(.readData(victimway_out_c), .err(err_reg), .clk(clk), .rst(rst), .writeData(victimway_in_c), .writeEn(1'b1));
+   reg_16 #(.SIZE(1)) LRU_cnter_way1(.readData(victimway_out_c), .err(err_reg), .clk(clk), .rst(rst), .writeData(victimway_in_c), .writeEn(1'b1));
+
+
    reg_16 #(.SIZE(1)) latch_victimway(.readData(victimway_out_c), .err(err_reg), .clk(clk), .rst(rst), .writeData(victimway_in_c), .writeEn(1'b1));
 
    reg_16 #(.SIZE(16)) latch_DataOut(.readData(dataout_temp), .err(err_reg), .clk(clk), .rst(rst), .writeData(DataOut_ct), .writeEn(1'b1));
