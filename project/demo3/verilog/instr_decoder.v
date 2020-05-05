@@ -16,60 +16,60 @@ output [2:0] Alu_result;
 output [4:0] Alu_op;
 
 // termination
-localparam HALT 5'b00000
-localparam NOP 5'b00001
+localparam HALT 5'b00000;
+localparam NOP 5'b00001;
 
 //I type
-localparam ADDI 5'b01000
-localparam SUBI 5'b01001
-localparam XORI 5'b01010
-localparam ANDNI 5'b01011
-localparam ROLI 5'b10100
-localparam SLLI 5'b10101
-localparam RORI 5'b10110
-localparam SRLI 5'b10111
+localparam ADDI 5'b01000;
+localparam SUBI 5'b01001;
+localparam XORI 5'b01010;
+localparam ANDNI 5'b01011;
+localparam ROLI 5'b10100;
+localparam SLLI 5'b10101;
+localparam RORI 5'b10110;
+localparam SRLI 5'b10111;
 
 //Mem
-localparam ST 5'b10000
-localparam LD 5'b10001
-localparam STU 5'b10011
+localparam ST 5'b10000;
+localparam LD 5'b10001;
+localparam STU 5'b10011;
 
 //Strange one
-localparam BTR 5'b11001
+localparam BTR 5'b11001;
 
 //R type
-localparam ADD 5'b11011
-localparam SUB 5'b11011
-localparam XOR 5'b11011
-localparam ANDN 5'b11011
-localparam ROL 5'b11010
-localparam SLL 5'b11010
-localparam ROR 5'b11010
-localparam SRL 5'b11010
-localparam SEQ 5'b11100
-localparam SLT 5'b11101
-localparam SLE 5'b11110
-localparam SCO 5'b11111
+localparam ADD 5'b11011;
+localparam SUB 5'b11011;
+localparam XOR 5'b11011;
+localparam ANDN 5'b11011;
+localparam ROL 5'b11010;
+localparam SLL 5'b11010;
+localparam ROR 5'b11010;
+localparam SRL 5'b11010;
+localparam SEQ 5'b11100;
+localparam SLT 5'b11101;
+localparam SLE 5'b11110;
+localparam SCO 5'b11111;
 
 //Branch
-localparam BEQZ 5'b01100
-localparam BNEZ 5'b01101
-localparam BLTZ 5'b01110
-localparam BGEZ 5'b01111
+localparam BEQZ 5'b01100;
+localparam BNEZ 5'b01101;
+localparam BLTZ 5'b01110;
+localparam BGEZ 5'b01111;
 
 //Strange ones
-localparam LBI 5'b11000
-localparam SLBI 5'b10010
+localparam LBI 5'b11000;
+localparam SLBI 5'b10010;
 
 //J type
-localparam J 5'b00100
-localparam JR 5'b00101
-localparam JAL 5'b00110
-localparam JALR 5'b00111
+localparam J 5'b00100;
+localparam JR 5'b00101;
+localparam JAL 5'b00110;
+localparam JALR 5'b00111;
 
 //For geniuses
-localparam SIIC 5'b00010
-localparam RTI 5'b00011
+localparam SIIC 5'b00010;
+localparam RTI 5'b00011;
 
 reg[26:0] op_temp;
 reg err_temp;
