@@ -8,7 +8,7 @@
 
 // Clock period is 100 time units, and reset length
 // to 201 time units (two rising edges of clock).
-
+`timescale 1ns/10ps
 module clkrst (clk, rst, err);
 
     output clk;
