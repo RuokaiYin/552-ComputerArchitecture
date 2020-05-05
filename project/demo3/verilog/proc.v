@@ -24,7 +24,7 @@ module proc (/*AUTOARG*/
    
    /* your code here -- should include instantiations of fetch, decode, execute, mem and wb modules */
    wire err_1, err_2;
-   wire err_mem_fetch, Stall_imem, Stall_dmem, branch_with_stall, siic, rti, branch_taken, Branch, branch_taken_dy;
+   wire err_mem_fetch, Stall_imem, Stall_dmem, branch_with_stall, siic, rti;
 
 
    // test wires
@@ -39,21 +39,17 @@ module proc (/*AUTOARG*/
         // system inputs
 	.clk(clk), .rst(rst), .Stall_dmem(Stall_dmem),
 	// inputs from Decode
-	.PC_Back(PC_Back), .Halt(Halt), .STALL(STALL), .Branch_stall(Branch_stall), .siic(siic), .rti(rti), .epc(PC_recover), .branch_taken(branch_taken), .Branch(Branch), 
+	.PC_Back(PC_Back), .Halt(Halt), .STALL(STALL), .Branch_stall(Branch_stall), .siic(siic), .rti(rti), .epc(PC_recover),
 	// Outputs to Decode
 	.No_Branch(No_Branch), .instr(instr), .halt_back(halt_back),
         // Output to WB
         .PC_Next(PC_Next), // .PC_curr(PC_curr)
-	.err(err_mem_fetch), .Stall_imem(Stall_imem), .branch_with_stall(branch_with_stall), .branch_taken_dy(branch_taken_dy));
+	.err(err_mem_fetch), .Stall_imem(Stall_imem), .branch_with_stall(branch_with_stall));
 
    
-   wire [15:0] instr_withNOP, instr_dynamic, instr_dynamic_withNOP;
-
+   wire [15:0] instr_withNOP;
    // add a mux to choose from normal instr or NOP on stall of Branch
    assign instr_withNOP = (Branch_stall|Stall_imem|branch_with_stall) ? 16'b00001_xxxxxxxxxxx : instr;
-   assign instr_dynamic_withNOP = (Branch & ~branch_taken) ? 16'b00001_xxxxxxxxxxx : instr;
-
-   assign instr_dynamic = (Branch & branch_taken_dy) ? instr_dynamic_withNOP : instr_withNOP;
 
 
    // IF/ID Pip Reg
@@ -150,7 +146,7 @@ module proc (/*AUTOARG*/
         // Out to Fetch
         .PC_back(PC_Back), .Branch_stall(Branch_stall),
         // Global out
-        .err(err_1), .fwd(fwd_possible), .siic(siic), .rti(rti), .branch_taken(branch_taken), .Branch(Branch));
+        .err(err_1), .fwd(fwd_possible), .siic(siic), .rti(rti));
 
     // ID/EX pip reg
    wire IDEX_en,IDEX_err;

@@ -20,7 +20,7 @@ module decode (
         // Out to Fetch
         PC_back, Branch_stall,
         // Global out
-        err, fwd, siic, rti, branch_taken, Branch);
+        err, fwd, siic, rti);
 	
 
    // TODO: Your code here
@@ -28,7 +28,7 @@ module decode (
    input [2:0] target_reg_WB;
    input [15:0] instr, WB, No_Branch, data1_exe;
 
-   output Halt,Mem_read,Mem_wrt,err,Branch_stall, Reg_wrt, fwd, siic, rti, branch_taken, Branch;
+   output Halt,Mem_read,Mem_wrt,err,Branch_stall, Reg_wrt, fwd, siic, rti;
    output [1:0] Op_ext, WB_sel,Alu_src;
    output [2:0] Alu_result, target_reg;
    output [4:0] Alu_op;
@@ -37,7 +37,7 @@ module decode (
    // local control unit
    wire[15:0] result_jmp;
    wire[1:0] WB_tar, Branch_sel;
-   wire I_sel, J_sel, Sign_sel, Jmp, Jmp_sel, neg, zero;
+   wire I_sel, J_sel, Sign_sel, Jmp, Jmp_sel, neg, zero, Branch;
 
    wire valid,err_valid_temp, Stall_dmem_q;
    wire [15:0] previous_instr;
@@ -92,7 +92,7 @@ module decode (
    assign pc_back_sel = (Branch & branch_sel_mux) | Jmp;
    assign PC_back = pc_back_sel ? Bran : branch_mux_1;
    assign Op_ext = instr[1:0];
-   assign branch_taken = Branch & branch_sel_mux;
+
    // signal to detect Branch stall
    assign Branch_stall = (Jmp_sel | pc_back_sel) | (siic | rti);
 
