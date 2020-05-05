@@ -9,7 +9,9 @@ input halt_back;
 input [4:0] instr;
 
 output Halt,Mem_read,Mem_wrt,I_sel,J_sel,
-       Sign_sel,Reg_wrt, Branch, Jmp_sel, Jmp, err, fwd, siic, rti;
+       Sign_sel,Reg_wrt, Branch, Jmp_sel, Jmp, err, fwd;
+       
+output reg siic, rti;
 
 output [1:0] WB_tar, Branch_sel, WB_sel, Alu_src;
 output [2:0] Alu_result;
