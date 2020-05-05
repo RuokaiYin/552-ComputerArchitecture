@@ -74,10 +74,8 @@ module fetch (
    
    assign branch_prefetch = (instr[14]&instr[13]) ? (instr[15] ? 1'b0 : 1'b1) : 1'b0;
    cla_16b branch_adder(.A({{8{instr[7]}},instr[7:0]}), .B(No_Branch), .C_in(1'b0), .S(pc_branch_taken), .C_out(C_out));
-   reg_16 #(.SIZE(1)) dynamic_pc_latch (.readData(branch_taken_dy), .err(err_reg), .clk(clk), .rst(rst), .writeData(PC_wb_plus_stall), .writeEn(branch_taken_dy&branch_prefetch));
-   
-   
-   reg_16 #(.SIZE(16)) dynamic_predict (.readData(pc_dyn_latch), .err(err_reg), .clk(clk), .rst(rst), .writeData(branch_taken), .writeEn(Branch));
+   reg_16 #(.SIZE(1)) dynamic_predict (.readData(branch_taken_dy), .err(err_reg), .clk(clk), .rst(rst), .writeData(branch_taken), .writeEn(Branch));
+   reg_16 #(.SIZE(16)) dynamic_pc_latch (.readData(pc_dyn_latch), .err(err_reg), .clk(clk), .rst(rst), .writeData(PC_wb_plus_stall), .writeEn(branch_taken_dy&branch_prefetch));
 
 
    assign halt_back = halt_q;
