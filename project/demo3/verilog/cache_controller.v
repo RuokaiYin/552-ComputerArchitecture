@@ -27,7 +27,7 @@ module cache_controller(
 input clk, rst, creat_dump, Wr, Rd, hit_0, hit_1, dirty_0, dirty_1, valid_0, valid_1, Hit;
 input [15:0] Addr, DataIn, DataOut_mem, DataOut_cache_0, DataOut_cache_1, DataOut_cache, Data_latch; // FIXME add tag_out and DataOut_cache
 input [4:0] tag_out_0, tag_out_1, tag_out;
-input [255:0] victimway_in
+input [255:0] victimway_in;
 
 output reg enable_ct, cmp_ct, wr_cache, valid_in_ct, wr_mem, rd_mem, Done, CacheHit, Stall_sys, ori, final_state, idle;
 output reg[15:0] DataIn_ct, Addr_mem, DataIn_mem, DataOut_ct;
