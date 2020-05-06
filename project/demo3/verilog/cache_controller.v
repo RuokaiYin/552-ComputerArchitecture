@@ -67,7 +67,7 @@ reg enable_ct_d, enable_ct_en; // FIXME change enable_ct_q to wire
 wire enable_ct_q;
 reg_16 #(.SIZE(1)) latch_enable(.readData(enable_ct_q), .err(err_reg), .clk(clk), .rst(rst), .writeData(enable_ct_d), .writeEn(enable_ct_en));
 
-wire isWr_q;
+wire isWr_q， idle_cout_cache;
 reg isWr;
 reg_16 #(.SIZE(1)) Wr_track(.readData(isWr_q), .err(err_reg), .clk(clk), .rst(rst), .writeData(isWr), .writeEn(1'b1));
 
