@@ -25,13 +25,13 @@ module mem_system(/*AUTOARG*/
 
    // needed wires
    wire enable_ct, hit_0, hit_1, dirty_0, dirty_1, valid_0, valid_1, err_c0, err_c1, cmp_ct, wr_ct, valid_in_ct;
-   wire Hit, stall_dummy, err_m, wr_m, rd_m, ori, victimway_in_c, victimway_out_c, err_reg, enable_ct_0, enable_ct_1, final_state, idle;
+   wire Hit, stall_dummy, err_m, wr_m, rd_m, ori, err_reg, enable_ct_0, enable_ct_1, final_state, idle;
    wire [2:0] offset_ct;
    wire [3:0] busy_dummy;
    wire [4:0] tag_out_0, tag_out_1, tag_out_c, tag_ct;
    wire [7:0] index_ct;
    wire [15:0] data_out_0, data_out_1, data_out_c, data_in_ct, data_out_m, addr_in_m, data_in_m, DataOut_ct, dataout_temp;
-    
+   wire [255:0] victimway_in_c, victimway_out_c;
 
 
    /* data_mem = 1, inst_mem = 0 *
@@ -119,12 +119,11 @@ module mem_system(/*AUTOARG*/
    assign err = err_c0 | err_c1 | err_m; 
    assign enable_ct_0 = idle ? 1'b0 : (ori ? 1 : enable_ct);
    assign enable_ct_1 = idle ? 1'b0 : (ori ? 1 : (!enable_ct)); 
-   
-   reg_16 #(.SIZE(1)) LRU_cnter_way0(.readData(victimway_out_c), .err(err_reg), .clk(clk), .rst(rst), .writeData(victimway_in_c), .writeEn(1'b1));
-   reg_16 #(.SIZE(1)) LRU_cnter_way1(.readData(victimway_out_c), .err(err_reg), .clk(clk), .rst(rst), .writeData(victimway_in_c), .writeEn(1'b1));
 
 
-   reg_16 #(.SIZE(1)) latch_victimway(.readData(victimway_out_c), .err(err_reg), .clk(clk), .rst(rst), .writeData(victimway_in_c), .writeEn(1'b1));
+   reg_16 #(.SIZE(256)) LRU_cnter(.readData(victimway_out_c), .err(err_reg), .clk(clk), .rst(rst), .writeData(victimway_in_c), .writeEn(1'b1));
+
+   // reg_16 #(.SIZE(1)) latch_victimway(.readData(victimway_out_c), .err(err_reg), .clk(clk), .rst(rst), .writeData(victimway_in_c), .writeEn(1'b1));
 
    reg_16 #(.SIZE(16)) latch_DataOut(.readData(dataout_temp), .err(err_reg), .clk(clk), .rst(rst), .writeData(DataOut_ct), .writeEn(1'b1));
    assign DataOut = final_state ? (DataOut_ct) : (dataout_temp);
