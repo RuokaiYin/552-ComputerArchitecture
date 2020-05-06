@@ -10,7 +10,7 @@ module fetch (
 	// inputs from Decode
 	PC_Back, Halt, STALL, Branch_stall, siic, rti, epc, 
 	// Outputs to Decode
-	PC_Next, No_Branch, instr, halt_back, PC_curr, 
+	PC_Next, No_Branch, instr, halt_back, // PC_curr
 	//system output
 	err, Stall_imem, branch_with_stall
 	); 
@@ -19,12 +19,12 @@ module fetch (
    input clk, rst, Halt, STALL, Branch_stall, Stall_dmem, siic, rti; 
    input [15:0] PC_Back, epc;
 
-   output [15:0] PC_Next, No_Branch, instr, PC_curr; 
+   output [15:0] PC_Next, No_Branch, instr; 
    output halt_back, err, Stall_imem, branch_with_stall;
 
    wire Stall_imem_nextcycle,Stall_dmem_nextcycle, Branch_stall_q, Stall_imem_q, Stall_dmem_q; 
    // use a 16-bit register to store the PC value
-   wire [15:0] PC_wb, PC_wb_plus_stall, PC_Back_q, PC_Back_with_stall, PC_with_exception;
+   wire [15:0] PC_curr, PC_wb, PC_wb_plus_stall, PC_Back_q, PC_Back_with_stall, PC_with_exception;
    wire err_reg, err_reg_dummy1,err_reg_dummy2,err_reg_dummy3;
    wire Done, CacheHit;
    wire branch_stall_reg_clr, branch_stall_reg_en;

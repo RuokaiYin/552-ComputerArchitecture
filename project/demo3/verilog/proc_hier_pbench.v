@@ -152,26 +152,26 @@ module proc_hier_pbench();
    assign MemAddress = DUT.p0.mem.data_exe;
    // Address to access memory with (for both reads and writes to memory, 16 bits)
    
-   assign MemDataIn = DUT.p0.data_in_mem;
+   assign MemDataIn = DUT.p0.mem.data2;
    // Data to be written to memory for memory writes (16 bits)
    
-   assign MemDataOut = DUT.p0.data_mem;
+   assign MemDataOut = DUT.p0.mem.data_mem;
    // Data read from memory for memory reads (16 bits)
 
    // // new added 05/03
-   // assign ICacheReq = DUT.p0.fet.mem_instr.ctrl.valid_req;
-   // // // Signal indicating a valid instruction read request to cache
-   // // // Above assignment is a dummy example
+   assign ICacheReq = DUT.p0.fet.mem_instr.ctrl.valid_req;
+   // // Signal indicating a valid instruction read request to cache
+   // // Above assignment is a dummy example
    
-   // assign ICacheHit = DUT.p0.fet.CacheHit;
-   // // // Signal indicating a valid instruction cache hit
-   // // // Above assignment is a dummy example
+   assign ICacheHit = DUT.p0.fet.CacheHit;
+   // // Signal indicating a valid instruction cache hit
+   // // Above assignment is a dummy example
 
-   // assign DCacheReq = DUT.p0.mem.mem_data.ctrl.valid_req;
-   // // // Signal indicating a valid instruction data read or write request to cache
-   // // // Above assignment is a dummy examplememmem
-   // // //    
-   // assign DCacheHit = DUT.p0.mem.CacheHit;
+   assign DCacheReq = DUT.p0.mem.mem_data.ctrl.valid_req;
+   // // Signal indicating a valid instruction data read or write request to cache
+   // // Above assignment is a dummy examplememmem
+   // //    
+   assign DCacheHit = DUT.p0.mem.CacheHit;
    
    assign Halt =  DUT.p0.Halt_reg_MEM | (DUT.p0.Halt_reg_EX & ~DUT.p0.Reg_wrt_reg_MEM);
    
