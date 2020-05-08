@@ -8,7 +8,7 @@ module fetch (
 	// system inputs
 	clk, rst, Stall_dmem,
 	// inputs from Decode
-	PC_Back, Halt, STALL, Branch_stall, siic, rti, epc, 
+	PC_Back, Halt, STALL, Branch_stall,
 	// Outputs to Decode
 	PC_Next, No_Branch, instr, halt_back, // PC_curr
 	//system output
@@ -16,15 +16,15 @@ module fetch (
 	); 
 
    // TODO: Your code here
-   input clk, rst, Halt, STALL, Branch_stall, Stall_dmem, siic, rti; 
-   input [15:0] PC_Back, epc;
+   input clk, rst, Halt, STALL, Branch_stall, Stall_dmem; 
+   input [15:0] PC_Back;
 
    output [15:0] PC_Next, No_Branch, instr; 
    output halt_back, err, Stall_imem, branch_with_stall;
 
-   wire Stall_imem_nextcycle,Stall_dmem_nextcycle, Branch_stall_q, Stall_imem_q, Stall_dmem_q; 
+   wire Stall_imem_nextcycle,Stall_dmem_nextcycle, Branch_stall_q, Stall_imem_q, Stall_dmem_q, dBranch_stall_q, dStall_imem_q; 
    // use a 16-bit register to store the PC value
-   wire [15:0] PC_curr, PC_wb, PC_wb_plus_stall, PC_Back_q, PC_Back_with_stall, PC_with_exception;
+   wire [15:0] PC_curr, PC_wb, PC_wb_plus_stall, PC_Back_q, PC_Back_with_stall;
    wire err_reg, err_reg_dummy1,err_reg_dummy2,err_reg_dummy3;
    wire Done, CacheHit;
    wire branch_stall_reg_clr, branch_stall_reg_en;
@@ -42,6 +42,8 @@ module fetch (
    reg_16 #(.SIZE(1)) branch_stall_reg(.readData(Branch_stall_q), .err(err_reg_dummy2), .clk(clk), .rst(rst|branch_stall_reg_clr), .writeData(Branch_stall), .writeEn(branch_stall_reg_en));
    reg_16 #(.SIZE(16)) pc_back_reg(.readData(PC_Back_q), .err(err_reg_dummy3), .clk(clk), .rst(rst), .writeData(PC_Back), .writeEn(Branch_stall));
 
+   // reg_16 #(.SIZE(1)) branch_stall_reg_d(.readData(dBranch_stall_q), .err(err_reg_dummy2), .clk(clk), .rst(rst|Stall_dmem_nextcycle), .writeData(Branch_stall), .writeEn(Branch_stall&Stall_imem));
+   // reg_16 #(.SIZE(16)) pc_back_reg_d(.readData(dPC_Back_q), .err(err_reg_dummy3), .clk(clk), .rst(rst), .writeData(PC_Back), .writeEn(Branch_stall));
 
    assign PC_Back_with_stall = (Stall_imem_nextcycle|Stall_dmem_nextcycle) ? PC_Back_q : PC_Back;
    assign branch_with_stall = (Stall_imem_nextcycle|Stall_dmem_nextcycle) ? Branch_stall_q : Branch_stall;
@@ -49,8 +51,7 @@ module fetch (
     // a mux to choose from normal pc+2 or pc_back
    assign PC_wb = (branch_with_stall) ? PC_Back_with_stall : PC_Next;
    assign PC_wb_plus_stall = Stall_imem|Stall_dmem ? PC_curr: PC_wb;
-   assign PC_with_exception = siic ? (16'b0000_0000_0000_0010) : (rti ? epc : PC_wb_plus_stall);
-   reg_16 pc_reg (.readData(PC_curr), .err(err_reg), .clk(clk), .rst(rst), .writeData(PC_with_exception), .writeEn(~STALL));
+   reg_16 pc_reg (.readData(PC_curr), .err(err_reg), .clk(clk), .rst(rst), .writeData(PC_wb_plus_stall), .writeEn(~STALL));
    
   
    // add current PC value by 2 

@@ -24,17 +24,15 @@ module cache_controller(
 );
 
 // Input, output
-input clk, rst, creat_dump, Wr, Rd, hit_0, hit_1, dirty_0, dirty_1, valid_0, valid_1, Hit;
+input clk, rst, creat_dump, Wr, Rd, hit_0, hit_1, dirty_0, dirty_1, valid_0, valid_1, victimway_in, Hit;
 input [15:0] Addr, DataIn, DataOut_mem, DataOut_cache_0, DataOut_cache_1, DataOut_cache, Data_latch; // FIXME add tag_out and DataOut_cache
 input [4:0] tag_out_0, tag_out_1, tag_out;
-input [255:0] victimway_in;
 
-output reg enable_ct, cmp_ct, wr_cache, valid_in_ct, wr_mem, rd_mem, Done, CacheHit, Stall_sys, ori, final_state, idle;
+output reg enable_ct, cmp_ct, wr_cache, valid_in_ct, wr_mem, rd_mem, Done, CacheHit, Stall_sys, victimway_out, ori, final_state, idle;
 output reg[15:0] DataIn_ct, Addr_mem, DataIn_mem, DataOut_ct;
 output reg[7:0] index_cache;
 output reg[2:0] offset_cache;
 output reg[4:0] tag_cache;
-output reg[255:0] victimway_out;
 
 
 // define states
@@ -75,7 +73,6 @@ wire isRd_q;
 reg isRd;
 reg_16 #(.SIZE(1)) Rd_track(.readData(isRd_q), .err(err_reg), .clk(clk), .rst(rst), .writeData(isRd), .writeEn(1'b1));
 
-// reg LRU_update;
 
 reg err_fsm;
 // FSM
@@ -104,13 +101,12 @@ always @*
 		enable_ct_d = 1'b0;
 		final_state = 1'b0;
 		valid_req = 1'b0;
-		// LRU_update = 256'b0;
 
 		case(state)
 			default: err_fsm = 1'b1;
 			IDLE:
 				begin
-					enable_ct = (Wr|Rd) ? ((hit_0 & valid_0) | (~Hit & ~valid_0 & valid_1) | (~Hit & ~valid_0 & ~valid_1) | (~Hit & valid_1 & valid_0 & victimway_in[Addr[10:3]])) : 1'b0;
+					enable_ct = (Wr|Rd) ? ((hit_0 & valid_0) | (~Hit & ~valid_0 & valid_1) | (~Hit & ~valid_0 & ~valid_1) | (~Hit & valid_1 & valid_0 & victimway_in)) : 1'b0;
 					cmp_ct = (Wr|Rd) ? 1'b1 : 1'b0;
 					wr_cache = Wr ? 1'b1 : 1'b0;
 					index_cache = Addr[10:3];
@@ -122,7 +118,7 @@ always @*
 					idle = (~Wr) & (~Rd); 
 					isWr = Wr ? 1'b1 : 1'b0;
 					isRd = Rd ? 1'b1 : 1'b0;
-					enable_ct_d = (hit_0 & valid_0) | (~Hit & ~valid_0 & valid_1) | (~Hit & ~valid_0 & ~valid_1) | (~Hit & valid_1 & valid_0 & victimway_in[Addr[10:3]]);
+					enable_ct_d = (hit_0 & valid_0) | (~Hit & ~valid_0 & valid_1) | (~Hit & ~valid_0 & ~valid_1) | (~Hit & valid_1 & valid_0 & victimway_in);
 					enable_ct_en = (Wr|Rd) ? 1'b1 : 1'b0;
 					Done = Hit;
                     CacheHit = Hit;
@@ -130,7 +126,6 @@ always @*
 					Stall_sys = (Wr|Rd) ? ~Hit : 1'b0;
 					next_state = (Wr|Rd) ? (Hit ? IDLE : ((((~Hit)&(enable_ct)&(valid_0)&(dirty_0))|(((~Hit)&(!enable_ct)&(valid_1)&(dirty_1)))) ? (ACC_RD_0) : (ACC_WT_0))) : IDLE;
 					valid_req = (Wr|Rd) ? (Hit ? 1'b1 : ((((~Hit)&(enable_ct)&(valid_0)&(dirty_0))|(((~Hit)&(!enable_ct)&(valid_1)&(dirty_1)))) ? (1'b1) : (1'b1))) : 1'b0;
-                    victimway_out[Addr[10:3]] = (Wr|Rd) ? ~enable_ct : victimway_in[Addr[10:3]];
 				end
 			ACC_RD_0:
 				begin
@@ -198,8 +193,8 @@ always @*
 					index_cache = Addr[10:3];
 					offset_cache = 3'b000;
 					tag_cache = Addr[15:11];
-					DataIn_ct = (isWr_q & (Addr[2:0] == 3'b000)) ? DataIn : DataOut_mem;
-					DataOut_ct = (isRd_q & (Addr[2:0] == 3'b000)) ? DataOut_mem : Data_latch;
+					DataIn_ct = (isWr_q & (Addr[2:0] === 3'b000)) ? DataIn : DataOut_mem;
+					DataOut_ct = (isRd_q & (Addr[2:0] === 3'b000)) ? DataOut_mem : Data_latch;
 					next_state = ACC_WT_3;
 				end
 			ACC_WT_3:
@@ -214,8 +209,8 @@ always @*
 					index_cache = Addr[10:3];
 					offset_cache = 3'b010;
 					tag_cache = Addr[15:11];
-					DataIn_ct = (isWr_q & (Addr[2:0] == 3'b010)) ? DataIn : DataOut_mem;
-					DataOut_ct = (isRd_q & (Addr[2:0] == 3'b010)) ? DataOut_mem : Data_latch;
+					DataIn_ct = (isWr_q & (Addr[2:0] === 3'b010)) ? DataIn : DataOut_mem;
+					DataOut_ct = (isRd_q & (Addr[2:0] === 3'b010)) ? DataOut_mem : Data_latch;
 					next_state = ACC_WT_4;
 				end
 			ACC_WT_4:
@@ -227,8 +222,8 @@ always @*
 					index_cache = Addr[10:3];
 					offset_cache = 3'b100;
 					tag_cache = Addr[15:11];
-					DataIn_ct = (isWr_q & (Addr[2:0] == 3'b100)) ? DataIn : DataOut_mem;
-					DataOut_ct = (isRd_q & (Addr[2:0] == 3'b100)) ? DataOut_mem : Data_latch;
+					DataIn_ct = (isWr_q & (Addr[2:0] === 3'b100)) ? DataIn : DataOut_mem;
+					DataOut_ct = (isRd_q & (Addr[2:0] === 3'b100)) ? DataOut_mem : Data_latch;
 					next_state = ACC_WT_5;
 				end
 			ACC_WT_5:
@@ -241,13 +236,12 @@ always @*
 					index_cache = Addr[10:3];
 					offset_cache = 3'b110;
 					tag_cache = Addr[15:11];
-					DataIn_ct = (isWr_q & (Addr[2:0] == 3'b110)) ? DataIn : DataOut_mem;
-					DataOut_ct = (isRd_q & (Addr[2:0] == 3'b110)) ? DataOut_mem : Data_latch;
+					DataIn_ct = (isWr_q & (Addr[2:0] === 3'b110)) ? DataIn : DataOut_mem;
+					DataOut_ct = (isRd_q & (Addr[2:0] === 3'b110)) ? DataOut_mem : Data_latch;
 					next_state = IDLE;
 					final_state = 1'b1;
 					Done = 1'b1;
-					// victimway_out = (Addr[10:3] == 8'b0) ?  : Addr[10:3] == 8'b0({victimway_in[255:(Addr[10:3]+1)], ~enable_ct_q, victimway_in[Addr[10:3]-1:0]});
-					victimway_out[Addr[10:3]] = ~enable_ct_q;
+					victimway_out = ~victimway_in;
 				end
 		endcase
 	end

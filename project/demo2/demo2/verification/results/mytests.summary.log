@@ -1,0 +1,5 @@
+../verification/mytests/p1-1.asm SUCCESS CPI:3.6 CYCLES:18 ICOUNT:5 IHITRATE: 0 DHITRATE: 0
+../verification/mytests/p1-2.asm SUCCESS CPI:2.8 CYCLES:14 ICOUNT:5 IHITRATE: 0 DHITRATE: 0
+../verification/mytests/p1-3.asm SUCCESS CPI:2.3 CYCLES:21 ICOUNT:9 IHITRATE: 0 DHITRATE: 0
+../verification/mytests/p2-1.asm SUCCESS CPI:4.6 CYCLES:32 ICOUNT:7 IHITRATE: 0 DHITRATE: 0
+../verification/mytests/p2-2.asm SUCCESS CPI:4.9 CYCLES:34 ICOUNT:7 IHITRATE: 0 DHITRATE: 0

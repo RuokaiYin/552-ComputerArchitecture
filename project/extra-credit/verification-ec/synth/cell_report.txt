@@ -1,0 +1,561 @@
+ 
+****************************************
+Report : cell
+Design : proc
+Version: P-2019.03
+Date   : Sat May  2 19:34:44 2020
+****************************************
+
+Attributes:
+    b - black box (unknown)
+    h - hierarchical
+    n - noncombinational
+    p - parameterized
+    r - removable
+    u - contains unmapped logic
+
+Cell                      Reference       Library             Area  Attributes
+--------------------------------------------------------------------------------
+EXMEM_reg_ALURESULTEX     reg_16_SIZE3_1                  57.723899 h, n, p
+EXMEM_reg_BTR             reg_16_SIZE16_22                280.172095
+                                                                    h, n, p
+EXMEM_reg_COUT            reg_16_SIZE16_24                273.601895
+                                                                    h, n, p
+EXMEM_reg_DATA2EX         reg_16_SIZE16_28                280.172095
+                                                                    h, n, p
+EXMEM_reg_ERRMEM          reg_16_SIZE1_21                 16.894800 h, n, p
+EXMEM_reg_EXTENDEX        reg_16_SIZE16_27                280.172095
+                                                                    h, n, p
+EXMEM_reg_HALTEX          reg_16_SIZE1_18                 16.894800 h, n, p
+EXMEM_reg_MEMREADEX       reg_16_SIZE1_17                 16.894800 h, n, p
+EXMEM_reg_MEMWRTEX        reg_16_SIZE1_16                 16.894800 h, n, p
+EXMEM_reg_NEG             reg_16_SIZE1_20                 16.894800 h, n, p
+EXMEM_reg_PCNEXTEX        reg_16_SIZE16_26                280.172095
+                                                                    h, n, p
+EXMEM_reg_REGWRTEX        reg_16_SIZE1_15                 16.894800 h, n, p
+EXMEM_reg_RESULT          reg_16_SIZE16_25                280.172095
+                                                                    h, n, p
+EXMEM_reg_SLBI            reg_16_SIZE16_23                280.172095
+                                                                    h, n, p
+EXMEM_reg_TARGETREGEX     reg_16_SIZE3_2                  50.684399 h, n, p
+EXMEM_reg_WBSELEX         reg_16_SIZE2_1                  33.789599 h, n, p
+EXMEM_reg_ZERO            reg_16_SIZE1_19                 16.894800 h, n, p
+IDEX_reg_ALUOP            reg_16_SIZE5                    86.820499 h, n, p
+IDEX_reg_ALURESULTID      reg_16_SIZE3_3                  52.092299 h, n, p
+IDEX_reg_ALUSRC           reg_16_SIZE2_2                  33.789599 h, n, p
+IDEX_reg_DATA1            reg_16_SIZE16_32                275.479095
+                                                                    h, n, p
+IDEX_reg_DATA2ID          reg_16_SIZE16_31                280.172095
+                                                                    h, n, p
+IDEX_reg_ERRMEM           reg_16_SIZE1_26                 16.894800 h, n, p
+IDEX_reg_EXTENDID         reg_16_SIZE16_30                280.172095
+                                                                    h, n, p
+IDEX_reg_HALTID           reg_16_SIZE1_23                 16.894800 h, n, p
+IDEX_reg_MEMREADID        reg_16_SIZE1_25                 16.894800 h, n, p
+IDEX_reg_MEMWRTID         reg_16_SIZE1_24                 16.894800 h, n, p
+IDEX_reg_OPEXT            reg_16_SIZE2_4                  33.789599 h, n, p
+IDEX_reg_PCNEXTID         reg_16_SIZE16_29                280.172095
+                                                                    h, n, p
+IDEX_reg_REGWRTID         reg_16_SIZE1_22                 16.894800 h, n, p
+IDEX_reg_TARGETREGID      reg_16_SIZE3_4                  52.092299 h, n, p
+IDEX_reg_WBSELID          reg_16_SIZE2_3                  33.789599 h, n, p
+IFD_reg_ERRMEM            reg_16_SIZE1_32                 16.894800 h, n, p
+IFD_reg_HALTBACK          reg_16_SIZE1_33                 16.894800 h, n, p
+IFD_reg_INSTR             reg_16_SIZE16_4                 290.027395
+                                                                    h, n
+IFD_reg_NOBRANCH          reg_16_SIZE16_5                 278.764195
+                                                                    h, n
+IFD_reg_PCNEXTIF          reg_16_SIZE16_6                 280.172095
+                                                                    h, n
+MEMWB_reg_DATAEXE         reg_16_SIZE16_20                275.479095
+                                                                    h, n, p
+MEMWB_reg_DATAMEM         reg_16_SIZE16_21                280.172095
+                                                                    h, n, p
+MEMWB_reg_ERRMEM          reg_16_SIZE1_14                 16.894800 h, n, p
+MEMWB_reg_EXTENDMEM       reg_16_SIZE16_19                276.886995
+                                                                    h, n, p
+MEMWB_reg_HALTMEM         reg_16_SIZE1_12                 16.894800 h, n, p
+MEMWB_reg_PCNEXTMEM       reg_16_SIZE16_18                273.601895
+                                                                    h, n, p
+MEMWB_reg_REGWRTMEM       reg_16_SIZE1_13                 16.894800 h, n, p
+MEMWB_reg_TARGETREGMEM    reg_16_SIZE3_0                  50.684399 h, n, p
+MEMWB_reg_WBSELMEM        reg_16_SIZE2_0                  33.789599 h, n, p
+Rs_exe_reg                reg_16_SIZE1_31                 17.833400 h, n, p
+Rs_mem_reg                reg_16_SIZE1_30                 17.833400 h, n, p
+Rt_exe_reg                reg_16_SIZE1_29                 17.833400 h, n, p
+Rt_mem_reg                reg_16_SIZE1_28                 17.833400 h, n, p
+U4                        AND2X2          gscl45nm        2.815800  
+U5                        AND2X2          gscl45nm        2.815800  
+U6                        AND2X2          gscl45nm        2.815800  
+U7                        AND2X2          gscl45nm        2.815800  
+U12                       OR2X2           gscl45nm        2.815800  
+U377                      INVX1           gscl45nm        1.407900  
+U378                      INVX1           gscl45nm        1.407900  
+U379                      INVX1           gscl45nm        1.407900  
+U380                      INVX1           gscl45nm        1.407900  
+U381                      INVX1           gscl45nm        1.407900  
+U382                      INVX1           gscl45nm        1.407900  
+U383                      INVX1           gscl45nm        1.407900  
+U384                      INVX1           gscl45nm        1.407900  
+U385                      INVX1           gscl45nm        1.407900  
+U386                      INVX1           gscl45nm        1.407900  
+U387                      INVX1           gscl45nm        1.407900  
+U388                      INVX1           gscl45nm        1.407900  
+U389                      INVX1           gscl45nm        1.407900  
+U390                      INVX1           gscl45nm        1.407900  
+U391                      INVX1           gscl45nm        1.407900  
+U392                      INVX1           gscl45nm        1.407900  
+U393                      INVX1           gscl45nm        1.407900  
+U394                      INVX1           gscl45nm        1.407900  
+U395                      INVX1           gscl45nm        1.407900  
+U396                      INVX1           gscl45nm        1.407900  
+U397                      INVX1           gscl45nm        1.407900  
+U398                      INVX1           gscl45nm        1.407900  
+U399                      INVX1           gscl45nm        1.407900  
+U400                      INVX1           gscl45nm        1.407900  
+U401                      INVX1           gscl45nm        1.407900  
+U402                      INVX1           gscl45nm        1.407900  
+U403                      INVX1           gscl45nm        1.407900  
+U404                      INVX1           gscl45nm        1.407900  
+U405                      INVX1           gscl45nm        1.407900  
+U406                      INVX1           gscl45nm        1.407900  
+U407                      INVX1           gscl45nm        1.407900  
+U408                      INVX1           gscl45nm        1.407900  
+U409                      INVX1           gscl45nm        1.407900  
+U410                      INVX1           gscl45nm        1.407900  
+U411                      INVX1           gscl45nm        1.407900  
+U412                      INVX1           gscl45nm        1.407900  
+U413                      INVX1           gscl45nm        1.407900  
+U414                      INVX1           gscl45nm        1.407900  
+U415                      INVX1           gscl45nm        1.407900  
+U416                      INVX1           gscl45nm        1.407900  
+U417                      INVX1           gscl45nm        1.407900  
+U418                      INVX1           gscl45nm        1.407900  
+U419                      INVX1           gscl45nm        1.407900  
+U420                      INVX1           gscl45nm        1.407900  
+U421                      INVX1           gscl45nm        1.407900  
+U422                      INVX1           gscl45nm        1.407900  
+U423                      INVX1           gscl45nm        1.407900  
+U424                      INVX1           gscl45nm        1.407900  
+U425                      INVX1           gscl45nm        1.407900  
+U426                      INVX1           gscl45nm        1.407900  
+U427                      INVX1           gscl45nm        1.407900  
+U428                      INVX1           gscl45nm        1.407900  
+U429                      INVX1           gscl45nm        1.407900  
+U430                      INVX1           gscl45nm        1.407900  
+U431                      INVX1           gscl45nm        1.407900  
+U432                      INVX1           gscl45nm        1.407900  
+U433                      INVX2           gscl45nm        1.877200  
+U434                      INVX1           gscl45nm        1.407900  
+U435                      INVX1           gscl45nm        1.407900  
+U436                      INVX1           gscl45nm        1.407900  
+U437                      INVX1           gscl45nm        1.407900  
+U438                      INVX1           gscl45nm        1.407900  
+U439                      INVX2           gscl45nm        1.877200  
+U440                      AND2X2          gscl45nm        2.815800  
+U441                      AND2X2          gscl45nm        2.815800  
+U442                      AND2X2          gscl45nm        2.815800  
+U443                      AND2X2          gscl45nm        2.815800  
+U444                      AND2X2          gscl45nm        2.815800  
+U445                      AND2X2          gscl45nm        2.815800  
+U446                      AND2X2          gscl45nm        2.815800  
+U447                      AND2X2          gscl45nm        2.815800  
+U448                      AND2X1          gscl45nm        2.346500  
+U449                      BUFX2           gscl45nm        2.346500  
+U450                      INVX2           gscl45nm        1.877200  
+U451                      INVX2           gscl45nm        1.877200  
+U452                      INVX4           gscl45nm        3.285100  
+U453                      NOR3X1          gscl45nm        2.815800  
+U454                      AND2X2          gscl45nm        2.815800  
+U455                      INVX1           gscl45nm        1.407900  
+U456                      INVX1           gscl45nm        1.407900  
+U457                      AND2X2          gscl45nm        2.815800  
+U458                      INVX1           gscl45nm        1.407900  
+U459                      INVX1           gscl45nm        1.407900  
+U460                      BUFX2           gscl45nm        2.346500  
+U461                      AND2X2          gscl45nm        2.815800  
+U462                      AND2X2          gscl45nm        2.815800  
+U463                      AND2X2          gscl45nm        2.815800  
+U464                      INVX1           gscl45nm        1.407900  
+U465                      AND2X2          gscl45nm        2.815800  
+U466                      INVX1           gscl45nm        1.407900  
+U467                      AND2X2          gscl45nm        2.815800  
+U468                      AND2X2          gscl45nm        2.815800  
+U469                      INVX1           gscl45nm        1.407900  
+U470                      INVX1           gscl45nm        1.407900  
+U471                      AND2X2          gscl45nm        2.815800  
+U472                      INVX1           gscl45nm        1.407900  
+U473                      INVX1           gscl45nm        1.407900  
+U474                      AND2X2          gscl45nm        2.815800  
+U475                      INVX1           gscl45nm        1.407900  
+U476                      INVX1           gscl45nm        1.407900  
+U477                      AND2X2          gscl45nm        2.815800  
+U478                      INVX1           gscl45nm        1.407900  
+U479                      INVX1           gscl45nm        1.407900  
+U480                      AND2X2          gscl45nm        2.815800  
+U481                      INVX1           gscl45nm        1.407900  
+U482                      INVX1           gscl45nm        1.407900  
+U483                      AND2X2          gscl45nm        2.815800  
+U484                      INVX1           gscl45nm        1.407900  
+U485                      INVX1           gscl45nm        1.407900  
+U486                      AND2X2          gscl45nm        2.815800  
+U487                      INVX1           gscl45nm        1.407900  
+U488                      INVX1           gscl45nm        1.407900  
+U489                      AND2X2          gscl45nm        2.815800  
+U490                      INVX1           gscl45nm        1.407900  
+U491                      INVX1           gscl45nm        1.407900  
+U492                      AND2X2          gscl45nm        2.815800  
+U493                      INVX1           gscl45nm        1.407900  
+U494                      INVX1           gscl45nm        1.407900  
+U495                      AND2X2          gscl45nm        2.815800  
+U496                      INVX1           gscl45nm        1.407900  
+U497                      INVX1           gscl45nm        1.407900  
+U498                      AND2X2          gscl45nm        2.815800  
+U499                      INVX1           gscl45nm        1.407900  
+U500                      INVX1           gscl45nm        1.407900  
+U501                      AND2X2          gscl45nm        2.815800  
+U502                      INVX1           gscl45nm        1.407900  
+U503                      INVX1           gscl45nm        1.407900  
+U504                      AND2X2          gscl45nm        2.815800  
+U505                      INVX1           gscl45nm        1.407900  
+U506                      INVX1           gscl45nm        1.407900  
+U507                      AND2X2          gscl45nm        2.815800  
+U508                      INVX1           gscl45nm        1.407900  
+U509                      INVX1           gscl45nm        1.407900  
+U510                      AND2X2          gscl45nm        2.815800  
+U511                      INVX1           gscl45nm        1.407900  
+U512                      INVX1           gscl45nm        1.407900  
+U513                      AND2X2          gscl45nm        2.815800  
+U514                      INVX1           gscl45nm        1.407900  
+U515                      INVX1           gscl45nm        1.407900  
+U516                      INVX1           gscl45nm        1.407900  
+U517                      INVX4           gscl45nm        3.285100  
+U518                      INVX1           gscl45nm        1.407900  
+U519                      INVX1           gscl45nm        1.407900  
+U520                      INVX4           gscl45nm        3.285100  
+U521                      INVX1           gscl45nm        1.407900  
+U522                      INVX1           gscl45nm        1.407900  
+U523                      INVX4           gscl45nm        3.285100  
+U524                      INVX1           gscl45nm        1.407900  
+U525                      INVX4           gscl45nm        3.285100  
+U526                      INVX8           gscl45nm        3.285100  
+U527                      INVX1           gscl45nm        1.407900  
+U528                      INVX4           gscl45nm        3.285100  
+U529                      INVX2           gscl45nm        1.877200  
+U530                      INVX8           gscl45nm        3.285100  
+U531                      BUFX2           gscl45nm        2.346500  
+U532                      INVX1           gscl45nm        1.407900  
+U533                      INVX1           gscl45nm        1.407900  
+U534                      INVX1           gscl45nm        1.407900  
+U535                      INVX1           gscl45nm        1.407900  
+U536                      OR2X1           gscl45nm        2.346500  
+U537                      INVX1           gscl45nm        1.407900  
+U538                      BUFX2           gscl45nm        2.346500  
+U539                      INVX1           gscl45nm        1.407900  
+U540                      BUFX2           gscl45nm        2.346500  
+U541                      INVX1           gscl45nm        1.407900  
+U542                      INVX1           gscl45nm        1.407900  
+U543                      INVX1           gscl45nm        1.407900  
+U544                      INVX8           gscl45nm        3.285100  
+U545                      BUFX2           gscl45nm        2.346500  
+U546                      BUFX2           gscl45nm        2.346500  
+U547                      INVX1           gscl45nm        1.407900  
+U548                      INVX1           gscl45nm        1.407900  
+U549                      NAND2X1         gscl45nm        1.877200  
+U550                      INVX8           gscl45nm        3.285100  
+U551                      INVX8           gscl45nm        3.285100  
+U552                      INVX8           gscl45nm        3.285100  
+U553                      INVX8           gscl45nm        3.285100  
+U554                      INVX8           gscl45nm        3.285100  
+U555                      INVX4           gscl45nm        3.285100  
+U556                      INVX4           gscl45nm        3.285100  
+U557                      INVX8           gscl45nm        3.285100  
+U558                      INVX8           gscl45nm        3.285100  
+U559                      INVX8           gscl45nm        3.285100  
+U560                      INVX8           gscl45nm        3.285100  
+U561                      INVX8           gscl45nm        3.285100  
+U562                      INVX8           gscl45nm        3.285100  
+U563                      NAND2X1         gscl45nm        1.877200  
+U564                      INVX2           gscl45nm        1.877200  
+U565                      NOR2X1          gscl45nm        2.346500  
+U566                      MUX2X1          gscl45nm        3.754400  
+U567                      NAND2X1         gscl45nm        1.877200  
+U568                      MUX2X1          gscl45nm        3.754400  
+U569                      MUX2X1          gscl45nm        3.754400  
+U570                      MUX2X1          gscl45nm        3.754400  
+U571                      NAND2X1         gscl45nm        1.877200  
+U572                      NAND2X1         gscl45nm        1.877200  
+U573                      AOI22X1         gscl45nm        3.285100  
+U574                      NAND2X1         gscl45nm        1.877200  
+U575                      NAND2X1         gscl45nm        1.877200  
+U576                      AOI22X1         gscl45nm        3.285100  
+U577                      NAND3X1         gscl45nm        2.346500  
+U578                      AOI22X1         gscl45nm        3.285100  
+U579                      AOI22X1         gscl45nm        3.285100  
+U580                      AOI22X1         gscl45nm        3.285100  
+U581                      OAI21X1         gscl45nm        2.815800  
+U582                      NAND2X1         gscl45nm        1.877200  
+U583                      INVX2           gscl45nm        1.877200  
+U584                      MUX2X1          gscl45nm        3.754400  
+U585                      INVX2           gscl45nm        1.877200  
+U586                      AOI22X1         gscl45nm        3.285100  
+U587                      OAI21X1         gscl45nm        2.815800  
+U588                      NAND3X1         gscl45nm        2.346500  
+U589                      AOI22X1         gscl45nm        3.285100  
+U590                      OAI21X1         gscl45nm        2.815800  
+U591                      OR2X2           gscl45nm        2.815800  
+U592                      AOI22X1         gscl45nm        3.285100  
+U593                      AOI22X1         gscl45nm        3.285100  
+U594                      AOI22X1         gscl45nm        3.285100  
+U595                      OAI21X1         gscl45nm        2.815800  
+U596                      MUX2X1          gscl45nm        3.754400  
+U597                      AOI22X1         gscl45nm        3.285100  
+U598                      OAI21X1         gscl45nm        2.815800  
+U599                      AOI22X1         gscl45nm        3.285100  
+U600                      OAI21X1         gscl45nm        2.815800  
+U601                      OR2X2           gscl45nm        2.815800  
+U602                      AOI22X1         gscl45nm        3.285100  
+U603                      AOI22X1         gscl45nm        3.285100  
+U604                      AOI22X1         gscl45nm        3.285100  
+U605                      OAI21X1         gscl45nm        2.815800  
+U606                      MUX2X1          gscl45nm        3.754400  
+U607                      INVX2           gscl45nm        1.877200  
+U608                      AOI22X1         gscl45nm        3.285100  
+U609                      OAI21X1         gscl45nm        2.815800  
+U610                      AOI22X1         gscl45nm        3.285100  
+U611                      OAI21X1         gscl45nm        2.815800  
+U612                      OR2X2           gscl45nm        2.815800  
+U613                      AOI22X1         gscl45nm        3.285100  
+U614                      AOI22X1         gscl45nm        3.285100  
+U615                      AOI22X1         gscl45nm        3.285100  
+U616                      OAI21X1         gscl45nm        2.815800  
+U617                      MUX2X1          gscl45nm        3.754400  
+U618                      INVX2           gscl45nm        1.877200  
+U619                      AOI22X1         gscl45nm        3.285100  
+U620                      OAI21X1         gscl45nm        2.815800  
+U621                      AOI22X1         gscl45nm        3.285100  
+U622                      OAI21X1         gscl45nm        2.815800  
+U623                      OR2X2           gscl45nm        2.815800  
+U624                      AOI22X1         gscl45nm        3.285100  
+U625                      AOI22X1         gscl45nm        3.285100  
+U626                      AOI22X1         gscl45nm        3.285100  
+U627                      OAI21X1         gscl45nm        2.815800  
+U628                      MUX2X1          gscl45nm        3.754400  
+U629                      INVX2           gscl45nm        1.877200  
+U630                      AOI22X1         gscl45nm        3.285100  
+U631                      OAI21X1         gscl45nm        2.815800  
+U632                      AOI22X1         gscl45nm        3.285100  
+U633                      OAI21X1         gscl45nm        2.815800  
+U634                      OR2X2           gscl45nm        2.815800  
+U635                      AOI22X1         gscl45nm        3.285100  
+U636                      AOI22X1         gscl45nm        3.285100  
+U637                      AOI22X1         gscl45nm        3.285100  
+U638                      OAI21X1         gscl45nm        2.815800  
+U639                      MUX2X1          gscl45nm        3.754400  
+U640                      INVX2           gscl45nm        1.877200  
+U641                      AOI22X1         gscl45nm        3.285100  
+U642                      OAI21X1         gscl45nm        2.815800  
+U643                      AOI22X1         gscl45nm        3.285100  
+U644                      OAI21X1         gscl45nm        2.815800  
+U645                      OR2X2           gscl45nm        2.815800  
+U646                      AOI22X1         gscl45nm        3.285100  
+U647                      AOI22X1         gscl45nm        3.285100  
+U648                      AOI22X1         gscl45nm        3.285100  
+U649                      OAI21X1         gscl45nm        2.815800  
+U650                      MUX2X1          gscl45nm        3.754400  
+U651                      INVX2           gscl45nm        1.877200  
+U652                      AOI22X1         gscl45nm        3.285100  
+U653                      OAI21X1         gscl45nm        2.815800  
+U654                      AOI22X1         gscl45nm        3.285100  
+U655                      OAI21X1         gscl45nm        2.815800  
+U656                      OR2X2           gscl45nm        2.815800  
+U657                      AOI22X1         gscl45nm        3.285100  
+U658                      AOI22X1         gscl45nm        3.285100  
+U659                      AOI22X1         gscl45nm        3.285100  
+U660                      OAI21X1         gscl45nm        2.815800  
+U661                      MUX2X1          gscl45nm        3.754400  
+U662                      INVX2           gscl45nm        1.877200  
+U663                      AOI22X1         gscl45nm        3.285100  
+U664                      OAI21X1         gscl45nm        2.815800  
+U665                      AOI22X1         gscl45nm        3.285100  
+U666                      OAI21X1         gscl45nm        2.815800  
+U667                      OR2X2           gscl45nm        2.815800  
+U668                      AOI22X1         gscl45nm        3.285100  
+U669                      AOI22X1         gscl45nm        3.285100  
+U670                      AOI22X1         gscl45nm        3.285100  
+U671                      OAI21X1         gscl45nm        2.815800  
+U672                      MUX2X1          gscl45nm        3.754400  
+U673                      INVX2           gscl45nm        1.877200  
+U674                      AOI22X1         gscl45nm        3.285100  
+U675                      OAI21X1         gscl45nm        2.815800  
+U676                      AOI22X1         gscl45nm        3.285100  
+U677                      OAI21X1         gscl45nm        2.815800  
+U678                      OR2X2           gscl45nm        2.815800  
+U679                      AOI22X1         gscl45nm        3.285100  
+U680                      AOI22X1         gscl45nm        3.285100  
+U681                      AOI22X1         gscl45nm        3.285100  
+U682                      OAI21X1         gscl45nm        2.815800  
+U683                      MUX2X1          gscl45nm        3.754400  
+U684                      INVX2           gscl45nm        1.877200  
+U685                      AOI22X1         gscl45nm        3.285100  
+U686                      OAI21X1         gscl45nm        2.815800  
+U687                      AOI22X1         gscl45nm        3.285100  
+U688                      OAI21X1         gscl45nm        2.815800  
+U689                      OR2X2           gscl45nm        2.815800  
+U690                      AOI22X1         gscl45nm        3.285100  
+U691                      AOI22X1         gscl45nm        3.285100  
+U692                      AOI22X1         gscl45nm        3.285100  
+U693                      OAI21X1         gscl45nm        2.815800  
+U694                      MUX2X1          gscl45nm        3.754400  
+U695                      INVX2           gscl45nm        1.877200  
+U696                      AOI22X1         gscl45nm        3.285100  
+U697                      OAI21X1         gscl45nm        2.815800  
+U698                      AOI22X1         gscl45nm        3.285100  
+U699                      OAI21X1         gscl45nm        2.815800  
+U700                      OR2X2           gscl45nm        2.815800  
+U701                      AOI22X1         gscl45nm        3.285100  
+U702                      AOI22X1         gscl45nm        3.285100  
+U703                      AOI22X1         gscl45nm        3.285100  
+U704                      OAI21X1         gscl45nm        2.815800  
+U705                      MUX2X1          gscl45nm        3.754400  
+U706                      INVX2           gscl45nm        1.877200  
+U707                      AOI22X1         gscl45nm        3.285100  
+U708                      OAI21X1         gscl45nm        2.815800  
+U709                      AOI22X1         gscl45nm        3.285100  
+U710                      OAI21X1         gscl45nm        2.815800  
+U711                      OR2X2           gscl45nm        2.815800  
+U712                      AOI22X1         gscl45nm        3.285100  
+U713                      AOI22X1         gscl45nm        3.285100  
+U714                      AOI22X1         gscl45nm        3.285100  
+U715                      OAI21X1         gscl45nm        2.815800  
+U716                      MUX2X1          gscl45nm        3.754400  
+U717                      INVX2           gscl45nm        1.877200  
+U718                      AOI22X1         gscl45nm        3.285100  
+U719                      OAI21X1         gscl45nm        2.815800  
+U720                      AOI22X1         gscl45nm        3.285100  
+U721                      OAI21X1         gscl45nm        2.815800  
+U722                      OR2X2           gscl45nm        2.815800  
+U723                      AOI22X1         gscl45nm        3.285100  
+U724                      AOI22X1         gscl45nm        3.285100  
+U725                      AOI22X1         gscl45nm        3.285100  
+U726                      OAI21X1         gscl45nm        2.815800  
+U727                      MUX2X1          gscl45nm        3.754400  
+U728                      INVX2           gscl45nm        1.877200  
+U729                      AOI22X1         gscl45nm        3.285100  
+U730                      OAI21X1         gscl45nm        2.815800  
+U731                      AOI22X1         gscl45nm        3.285100  
+U732                      OAI21X1         gscl45nm        2.815800  
+U733                      OR2X2           gscl45nm        2.815800  
+U734                      AOI22X1         gscl45nm        3.285100  
+U735                      AOI22X1         gscl45nm        3.285100  
+U736                      AOI22X1         gscl45nm        3.285100  
+U737                      OAI21X1         gscl45nm        2.815800  
+U738                      MUX2X1          gscl45nm        3.754400  
+U739                      INVX2           gscl45nm        1.877200  
+U740                      AOI22X1         gscl45nm        3.285100  
+U741                      OAI21X1         gscl45nm        2.815800  
+U742                      AOI22X1         gscl45nm        3.285100  
+U743                      OAI21X1         gscl45nm        2.815800  
+U744                      OR2X2           gscl45nm        2.815800  
+U745                      AOI22X1         gscl45nm        3.285100  
+U746                      AOI22X1         gscl45nm        3.285100  
+U747                      AOI22X1         gscl45nm        3.285100  
+U748                      OAI21X1         gscl45nm        2.815800  
+U749                      MUX2X1          gscl45nm        3.754400  
+U750                      INVX2           gscl45nm        1.877200  
+U751                      AOI22X1         gscl45nm        3.285100  
+U752                      OAI21X1         gscl45nm        2.815800  
+U753                      MUX2X1          gscl45nm        3.754400  
+U754                      INVX2           gscl45nm        1.877200  
+U755                      AOI22X1         gscl45nm        3.285100  
+U756                      OAI21X1         gscl45nm        2.815800  
+U757                      MUX2X1          gscl45nm        3.754400  
+U758                      INVX2           gscl45nm        1.877200  
+U759                      AOI22X1         gscl45nm        3.285100  
+U760                      OAI21X1         gscl45nm        2.815800  
+U761                      MUX2X1          gscl45nm        3.754400  
+U762                      INVX2           gscl45nm        1.877200  
+U763                      AOI22X1         gscl45nm        3.285100  
+U764                      OAI21X1         gscl45nm        2.815800  
+U765                      MUX2X1          gscl45nm        3.754400  
+U766                      INVX2           gscl45nm        1.877200  
+U767                      AOI22X1         gscl45nm        3.285100  
+U768                      OAI21X1         gscl45nm        2.815800  
+U769                      MUX2X1          gscl45nm        3.754400  
+U770                      INVX2           gscl45nm        1.877200  
+U771                      AOI22X1         gscl45nm        3.285100  
+U772                      OAI21X1         gscl45nm        2.815800  
+U773                      MUX2X1          gscl45nm        3.754400  
+U774                      INVX2           gscl45nm        1.877200  
+U775                      AOI22X1         gscl45nm        3.285100  
+U776                      OAI21X1         gscl45nm        2.815800  
+U777                      MUX2X1          gscl45nm        3.754400  
+U778                      INVX2           gscl45nm        1.877200  
+U779                      AOI22X1         gscl45nm        3.285100  
+U780                      OAI21X1         gscl45nm        2.815800  
+U781                      MUX2X1          gscl45nm        3.754400  
+U782                      INVX2           gscl45nm        1.877200  
+U783                      AOI22X1         gscl45nm        3.285100  
+U784                      OAI21X1         gscl45nm        2.815800  
+U785                      MUX2X1          gscl45nm        3.754400  
+U786                      INVX2           gscl45nm        1.877200  
+U787                      AOI22X1         gscl45nm        3.285100  
+U788                      OAI21X1         gscl45nm        2.815800  
+U789                      MUX2X1          gscl45nm        3.754400  
+U790                      INVX2           gscl45nm        1.877200  
+U791                      AOI22X1         gscl45nm        3.285100  
+U792                      OAI21X1         gscl45nm        2.815800  
+U793                      MUX2X1          gscl45nm        3.754400  
+U794                      INVX2           gscl45nm        1.877200  
+U795                      AOI22X1         gscl45nm        3.285100  
+U796                      OAI21X1         gscl45nm        2.815800  
+U797                      MUX2X1          gscl45nm        3.754400  
+U798                      INVX2           gscl45nm        1.877200  
+U799                      AOI22X1         gscl45nm        3.285100  
+U800                      OAI21X1         gscl45nm        2.815800  
+U801                      MUX2X1          gscl45nm        3.754400  
+U802                      INVX2           gscl45nm        1.877200  
+U803                      AOI22X1         gscl45nm        3.285100  
+U804                      OAI21X1         gscl45nm        2.815800  
+U805                      MUX2X1          gscl45nm        3.754400  
+U806                      INVX2           gscl45nm        1.877200  
+U807                      AOI22X1         gscl45nm        3.285100  
+U808                      OAI21X1         gscl45nm        2.815800  
+U809                      MUX2X1          gscl45nm        3.754400  
+U810                      INVX2           gscl45nm        1.877200  
+U811                      AOI22X1         gscl45nm        3.285100  
+U812                      OAI21X1         gscl45nm        2.815800  
+U813                      MUX2X1          gscl45nm        3.754400  
+U814                      INVX2           gscl45nm        1.877200  
+U815                      INVX2           gscl45nm        1.877200  
+U816                      NOR2X1          gscl45nm        2.346500  
+U817                      NOR3X1          gscl45nm        2.815800  
+U818                      AND2X2          gscl45nm        2.815800  
+U819                      AND2X2          gscl45nm        2.815800  
+U820                      AND2X2          gscl45nm        2.815800  
+U821                      AND2X2          gscl45nm        2.815800  
+data1_real_reg            reg_16_SIZE16_34                278.764195
+                                                                    h, n, p
+data2_real_reg            reg_16_SIZE16_33                278.764195
+                                                                    h, n, p
+dec                       decode                          6176.457199
+                                                                    h, n
+exe                       execute                         2349.785063
+                                                                    h, n
+fet                       fetch                           681374.782033
+                                                                    h, n
+forwardingdetec           forwarding_detector             115.447797
+                                                                    h
+fstall_dmem_reg           reg_16_SIZE1_27                 16.894800 h, n, p
+mem                       memory                          688522.690668
+                                                                    h, n
+stalldetec                stall_detector                  95.267897 h
+test_instr_EX             reg_16_SIZE16_3                 270.316795
+                                                                    h, n
+test_instr_MEM            reg_16_SIZE16_2                 276.886995
+                                                                    h, n
+wrib                      wb                              208.838498
+                                                                    h
+--------------------------------------------------------------------------------
+Total 512 cells                                           1387009.558325
+1

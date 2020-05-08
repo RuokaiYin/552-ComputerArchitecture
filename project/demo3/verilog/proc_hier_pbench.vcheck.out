@@ -1,0 +1,22 @@
+Line 33: Bad keyword integer
+Line 34: Bad keyword integer
+Line 35: Bad keyword integer
+Line 37: Bad keyword integer
+Line 38: Bad keyword integer
+Line 39: Bad keyword integer
+Line 40: Bad keyword integer
+Line 46: Bad keyword initial
+Line 47: begin without always/case
+Line 60: Bad keyword posedge
+Line 61: Bad keyword if
+Line 62: Bad keyword if
+Line 66: Bad keyword if
+Line 69: Bad keyword if
+Line 72: Bad keyword if
+Line 75: Bad keyword if
+Line 91: Bad keyword if
+Line 96: Bad keyword if
+Line 101: Bad keyword if
+Line 105: Bad keyword if
+Line 60: Always without case(x)
+End of file /u/r/u/ruokai/private/cs552/git_552/552-ComputerArchitecture/project/demo3/verilog/proc_hier_pbench.v. Hash = -690163673

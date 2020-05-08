@@ -1,0 +1,9 @@
+/u/s/i/sinclair/courses/cs552/spring2020/handouts/testprograms/public/complex_demofinal/complex_exception_test.asm SUCCESS CPI:6.7 CYCLES:54 ICOUNT:8 IHITRATE: 60.0 DHITRATE: 0
+/u/s/i/sinclair/courses/cs552/spring2020/handouts/testprograms/public/complex_demofinal/extraCreditTest.asm SUCCESS CPI:4.4 CYCLES:79 ICOUNT:18 IHITRATE: 82.9 DHITRATE: 83.3
+/u/s/i/sinclair/courses/cs552/spring2020/handouts/testprograms/public/complex_demofinal/simple-exception-test.asm SUCCESS CPI:5.4 CYCLES:38 ICOUNT:7 IHITRATE: 66.7 DHITRATE: 0
+/u/s/i/sinclair/courses/cs552/spring2020/handouts/testprograms/public/inst_tests/siic_0.asm SUCCESS CPI:7.0 CYCLES:35 ICOUNT:5 IHITRATE: 70.0 DHITRATE: 0
+/u/s/i/sinclair/courses/cs552/spring2020/handouts/testprograms/public/inst_tests_sp08/rti_0.asm SUCCESS CPI:5.4 CYCLES:38 ICOUNT:7 IHITRATE: 66.7 DHITRATE: 0
+/u/s/i/sinclair/courses/cs552/spring2020/handouts/testprograms/public/inst_tests_sp08/siic_0.asm SUCCESS CPI:7.0 CYCLES:35 ICOUNT:5 IHITRATE: 70.0 DHITRATE: 0
+/u/s/i/sinclair/courses/cs552/spring2020/handouts/testprograms/public/other/siic_0.asm SUCCESS CPI:7.0 CYCLES:35 ICOUNT:5 IHITRATE: 70.0 DHITRATE: 0
+/u/s/i/sinclair/courses/cs552/spring2020/handouts/testprograms/public/student_tests/t2_exception.asm SUCCESS CPI:5.0 CYCLES:45 ICOUNT:9 IHITRATE: 71.4 DHITRATE: 0
+/u/s/i/sinclair/courses/cs552/spring2020/handouts/testprograms/public/student_tests/t4_illegalOp.asm SUCCESS CPI:7.2 CYCLES:36 ICOUNT:5 IHITRATE: 80.0 DHITRATE: 0.0
